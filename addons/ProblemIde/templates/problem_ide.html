@@ -12,9 +12,6 @@
     <div class="section">
       <div class="section__header">
         <h1 class="section__title">{{ pdoc.title }}</h1>
-        <span class="section__tools">
-          <a class="button" href="{{ url('problem_detail', pid=pdoc.docId) }}">标准视图</a>
-        </span>
       </div>
       <div class="section__body typo problem-content" data-marker-enabled>
         {% include "partials/problem_description.html" %}
