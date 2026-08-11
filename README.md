@@ -11,7 +11,8 @@ FishOJ 是基于开源项目 [Hydro](https://hydro.js.org/) 二次开发的在�
 
 | 层次 | 技术 |
 |------|------|
-| 评测系统 | Hydro（Node.js + Vue） |
+| 评测系统 | Hydro 5.0.4（Node.js + TypeScript + **React 19**） |
+| 前端 UI | @hydrooj/ui-default 4.58.4（React + Mantine，`packages/ui-default`） |
 | 数据库 | MongoDB 7.0（PM2 管理） |
 | 判题环境 | Nix 包管理器 + hydro-sandbox 沙箱 |
 | Web 服务 | Caddy 反向代理（:80 → 127.0.0.1:8888） |
