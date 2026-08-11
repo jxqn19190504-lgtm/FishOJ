@@ -44,4 +44,19 @@ export function apply(ctx: Context) {
         }
         ctx.Route('problem_ide', '/ide/:pid', ProblemIdeHandler, PERM.PERM_VIEW_PROBLEM);
     });
+
+    // 参照 codefun2000 的 ProblemPages：访问 /p/:pid 自动 302 重定向到 /ide/:pid
+    // 正则只匹配 /p/xxx 与 /p/xxx/，不影响 /p/xxx/edit、/p/xxx/file 等深层路由
+    ctx.on('handler/after/ProblemDetail#get', async (that: any) => {
+        const body = that.response?.body;
+        if (!body) return;
+        const pdoc = body.pdoc;
+        if (!pdoc) return;
+        if (/^\/p\/[^/]+\/?$/.test(that.request?.path || '')) {
+            that.response.redirect = that.url('problem_ide', {
+                pid: that.request?.params?.pid || pdoc.pid || pdoc.docId,
+                query: that.request?.query || {},
+            });
+        }
+    });
 }
