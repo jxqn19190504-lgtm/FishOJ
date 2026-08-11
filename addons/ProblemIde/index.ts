@@ -1,4 +1,4 @@
-import { Context, PERM, ProblemConfigError, param, Types } from 'hydrooj';
+import { Context, PERM, ProblemConfigError, SettingModel, param, Types } from 'hydrooj';
 
 /**
  * FishOJ 最小版独立在线编程页：/ide/:pid
@@ -45,7 +45,7 @@ export function apply(ctx: Context) {
         ctx.Route('problem_ide', '/ide/:pid', ProblemIdeHandler, PERM.PERM_VIEW_PROBLEM);
     });
 
-    // 参照 codefun2000 的 ProblemPages：访问 /p/:pid 自动 302 重定向到 /ide/:pid
+    // 改路由：访问 /p/:pid 时 URL 不变，直接渲染 IDE 模板（不跳转）
     // 正则只匹配 /p/xxx 与 /p/xxx/，不影响 /p/xxx/edit、/p/xxx/file 等深层路由
     ctx.on('handler/after/ProblemDetail#get', async (that: any) => {
         const body = that.response?.body;
@@ -53,10 +53,12 @@ export function apply(ctx: Context) {
         const pdoc = body.pdoc;
         if (!pdoc) return;
         if (/^\/p\/[^/]+\/?$/.test(that.request?.path || '')) {
-            that.response.redirect = that.url('problem_ide', {
-                pid: that.request?.params?.pid || pdoc.pid || pdoc.docId,
-                query: that.request?.query || {},
-            });
+            that.response.template = 'problem_ide.html';
+            that.response.body.page_name = 'problem_ide';
+            // ProblemDetail#get 不提供 langRange，手动补上（参照 ProblemSubmitHandler.get）
+            that.response.body.langRange = (typeof pdoc.config === 'object' && pdoc.config.langs)
+                ? Object.fromEntries(pdoc.config.langs.map((i) => [i, SettingModel.langs[i]?.display || i]))
+                : SettingModel.SETTINGS_BY_KEY.codeLang.range;
         }
     });
 }
