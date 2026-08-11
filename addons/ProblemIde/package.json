@@ -1,0 +1,7 @@
+{
+  "name": "addon-problem-ide",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "description": "FishOJ 最小版独立在线编程页 /ide/:pid"
+}

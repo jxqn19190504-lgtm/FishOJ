@@ -1,0 +1,62 @@
+{% extends "layout/basic.html" %}
+{% block content %}
+{{ set(UiContext, 'pdoc', pdoc) }}
+<style>
+.problem-ide-panel { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.problem-ide-panel .ide-left { flex: 1 1 55%; min-width: 340px; }
+.problem-ide-panel .ide-right { flex: 1 1 38%; min-width: 320px; position: sticky; top: 12px; }
+.problem-ide-panel textarea[name="code"] { min-height: 440px; font-family: Consolas, "Courier New", monospace; font-size: 13px; line-height: 1.5; }
+</style>
+<div class="problem-ide-panel">
+  <div class="ide-left">
+    <div class="section">
+      <div class="section__header">
+        <h1 class="section__title">{{ pdoc.title }}</h1>
+        <span class="section__tools">
+          <a class="button" href="{{ url('problem_detail', pid=pdoc.docId) }}">标准视图</a>
+        </span>
+      </div>
+      <div class="section__body typo problem-content" data-marker-enabled>
+        {% include "partials/problem_description.html" %}
+      </div>
+    </div>
+  </div>
+  <div class="ide-right">
+    <div class="section">
+      <div class="section__header">
+        <h1 class="section__title">在线编程</h1>
+      </div>
+      <div class="section__body" name="submit_section">
+        <form method="post" enctype="multipart/form-data">
+          <div class="hasjs--hide">
+            {{ form.form_select({
+                label: '代码语言',
+                options: langRange,
+                name: 'lang',
+                value: handler.user.codeLang
+              }) }}
+          </div>
+          <div class="row nojs--hide" id="codelang-selector"></div>
+          {{ form.form_textarea({
+              label: 'Code',
+              columns: 12,
+              name: 'code',
+              extra_class: 'monospace',
+              autofocus: true,
+              nospellcheck: true
+            }) }}
+          <div class="row">
+            <div class="medium-12 columns">
+              <p>或上传文件：<input type="file" name="file"></p>
+              <br />
+            </div>
+          </div>
+          <div class="row"><div class="columns">
+            <input type="submit" class="rounded primary button" value="提交评测">
+          </div></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
