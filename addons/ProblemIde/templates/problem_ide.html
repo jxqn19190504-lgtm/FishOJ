@@ -1,0 +1,241 @@
+{% extends "layout/basic.html" %}
+{% block content %}
+<style id="problem-ide-boot-critical">
+#problemIdeRoot.problem-ide-root--boot .problem-ide-left,
+#problemIdeRoot.problem-ide-root--boot .problem-ide-gutter,
+#problemIdeRoot.problem-ide-root--boot .problem-ide-right,
+#problemIdeRoot.problem-ide-root--ready { visibility: visible !important; }
+#problemIdePageLoader {
+  position: fixed; z-index: 100000; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.96);
+}
+.theme--dark #problemIdePageLoader { background: rgba(17, 17, 17, 0.92); }
+#problemIdePageLoader .problem-ide-page-loader__spinner {
+  width: 44px; height: 44px;
+  border: 3px solid rgba(24, 144, 255, 0.2);
+  border-top-color: #1890ff;
+  border-radius: 50%;
+  animation: problem-ide-boot-spin 0.75s linear infinite;
+}
+@keyframes problem-ide-boot-spin { to { transform: rotate(360deg); } }
+#problemIdePageLoader.problem-ide-page-loader--hidden {
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+</style>
+<script>
+{{ set(UiContext, 'problemId', pdoc.pid|default(pdoc.docId)) }}
+{{ set(UiContext, 'problemNumId', pdoc.docId) }}
+{{ set(UiContext, 'codeLang', handler.user.codeLang) }}
+{{ set(UiContext, 'codeTemplate', handler.user.codeTemplate) }}
+{{ set(UiContext, 'problemIdeLoginRequired', problemIdeLoginRequired) }}
+{{ set(UiContext, 'problemIdeCanSubmit', problemIdeCanSubmit) }}
+{{ set(UiContext, 'ideShortCooldown', ideShortCooldown|default(false)) }}
+{{ set(UiContext, 'pdoc', pdoc) }}
+{% if tdoc and problemIdeCanSubmit %}
+  {{ set(UiContext, 'postSubmitUrl', url('problem_submit', pid=pdoc.docId, query={tid:tdoc.docId})) }}
+{% elif not tdoc and problemIdeCanSubmit %}
+  {{ set(UiContext, 'postSubmitUrl', url('problem_submit', pid=pdoc.docId)) }}
+{% endif %}
+{% if tdoc %}
+  {{ set(UiContext, 'getSubmissionsUrl', url('record_main', query={fullStatus:'true', pid:pdoc.docId, tid:tdoc.docId})) }}
+  {{ set(UiContext, 'getRecordDetailUrl', url('record_detail', rid='{rid}', query={tid:tdoc.docId})) }}
+  {{ set(UiContext, 'pretestConnUrl', "record-conn?pretest=1&uidOrName=" + handler.user._id + "&pid=" + pdoc.docId + "&domainId=" + handler.args.domainId + "&tid=" + tdoc.docId) }}
+  {{ set(UiContext, 'tdoc', tdoc) }}
+{% else %}
+  {{ set(UiContext, 'getSubmissionsUrl', url('record_main', query={fullStatus:'true', pid:pdoc.docId})) }}
+  {{ set(UiContext, 'getRecordDetailUrl', url('record_detail', rid='{rid}')) }}
+  {{ set(UiContext, 'pretestConnUrl', "record-conn?pretest=1&uidOrName=" + handler.user._id + "&pid=" + pdoc.docId + "&domainId=" + handler.args.domainId) }}
+{% endif %}
+</script>
+<script type="application/json" id="problem-ide-lang-json">{{ langRange | json | safe }}</script>
+<script type="application/json" id="problem-ide-config-json">{{ problemConfig | json | safe }}</script>
+<script>
+(function () {
+  var el = document.getElementById('problem-ide-lang-json');
+  try { window.__problemIdeLangRange = el ? JSON.parse(el.textContent) : {}; }
+  catch (e) { window.__problemIdeLangRange = {}; }
+  var cel = document.getElementById('problem-ide-config-json');
+  try { window.__problemIdeConfig = cel ? JSON.parse(cel.textContent) : {}; }
+  catch (e) { window.__problemIdeConfig = {}; }
+})();
+</script>
+
+<div class="problem-ide-page-loader" id="problemIdePageLoader" aria-busy="true" aria-label="加载中">
+  <div class="problem-ide-page-loader__spinner" role="status"></div>
+</div>
+
+<div class="problem-ide-root problem-ide-root--boot" id="problemIdeRoot">
+  <aside class="problem-ide-left" id="problemIdeLeft">
+    <div class="problem-ide-left__main pd-main-card">
+      <div class="section__tab-container problem-ide-left__tabs">
+        <div class="section__tab-header-wrapper problem-ide-tabbar">
+          <ul class="section__tab-header flex-row" id="problemIdeProblemTabs">
+            {% for k in pdoc.content|contentLang %}
+              <a class="section__tab-header-item {{'tab--active' if loop.first }}" data-type="{{ k }}">
+                {% if k in model.setting.SETTINGS_BY_KEY['viewLang'].range %}
+                  {{ model.setting.SETTINGS_BY_KEY['viewLang'].range[k] }}
+                {% else %}
+                  {{ _(k) }}
+                {% endif %}
+              </a>
+            {% endfor %}
+          </ul>
+          <div class="problem-ide-tab-actions">
+            <div class="problem-ide-section-switcher" id="problemIdeSectionSwitcher">
+              <button type="button" class="problem-ide-tab-action problem-ide-tab-action--labeled problem-ide-section-switcher__btn" id="problemIdeSectionSwitcherBtn" title="当前节点题目" aria-label="当前节点题目" aria-haspopup="true" aria-expanded="false" aria-controls="problemIdeSectionSwitcherMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h8v2H4V6zm0 5h8v2H4v-2zm0 5h8v2H4v-2zm10-9h4v12h-4V7z"/></svg>
+                <span class="problem-ide-tab-action__label">章节</span>
+              </button>
+              <div class="problem-ide-section-switcher__menu" id="problemIdeSectionSwitcherMenu" role="menu" hidden>
+                <div class="problem-ide-section-switcher__header" id="problemIdeSectionSwitcherTitle"></div>
+                <div class="problem-ide-section-switcher__body" id="problemIdeSectionSwitcherList"></div>
+              </div>
+            </div>
+            <div class="problem-ide-pset-drawer-trigger">
+              <button type="button" class="problem-ide-tab-action problem-ide-tab-action--labeled problem-ide-pset-drawer-btn" id="problemIdePsetDrawerBtn" title="打开题库列表" aria-label="打开题库列表">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v2H4V5zm0 6h16v2H4v-2zm0 6h16v2H4v-2z"/></svg>
+                <span class="problem-ide-tab-action__label">题库</span>
+              </button>
+            </div>
+            <button type="button" class="problem-ide-tab-action problem-ide-statement-layout-btn" id="problemIdeStatementExpandBtn" title="放大题面" aria-label="放大题面" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 9.5V5.5H9.5"/><path d="M14.5 5.5h4V9.5"/><path d="M5.5 14.5v4H9.5"/><path d="M14.5 18.5h4v-4"/></svg>
+            </button>
+            <button type="button" class="problem-ide-tab-action problem-ide-statement-layout-btn" id="problemIdeStatementCollapseBtn" title="折叠题面" aria-label="折叠题面" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.25 7.25 9.75 12l4.5 4.75"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="problem-ide-left__scroll markdown-body">
+        <div class="problem-content-container"><div class="problem-content" data-marker-enabled id="problemIdeProblemContent">
+          {% include "partials/problem_description.html" %}
+        </div></div>
+      </div>
+      <div class="problem-ide-statement-toc-shell problem-ide-statement-toc-shell--empty" id="problemIdeStatementTocShell">
+        <button type="button" class="problem-ide-statement-toc-drawer-btn" id="problemIdeStatementTocDrawerBtn" aria-expanded="false" aria-controls="problemIdeStatementToc" aria-label="打开目录">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg>
+          <span>目录</span>
+        </button>
+        <div class="problem-ide-statement-toc-drawer-backdrop" id="problemIdeStatementTocBackdrop" aria-hidden="true"></div>
+        <nav class="problem-ide-statement-toc" id="problemIdeStatementToc" aria-label="题目目录" hidden>
+          <div class="problem-ide-statement-toc__title"></div>
+          <ul class="problem-ide-statement-toc__list"></ul>
+        </nav>
+      </div>
+    </div>
+  </aside>
+  <template id="problemIdeStatementHeadingTpl">{% include "partials/problem_ide_statement_h1.html" %}</template>
+
+  <div class="problem-ide-gutter" id="problemIdeGutter"></div>
+
+  <div class="problem-ide-right" id="problemIdeRight">
+    <div class="problem-ide-right__pending" id="problemIdeRightPending" aria-busy="true" aria-label="代码编辑器加载中">
+      <div class="problem-ide-right__pending-spinner" role="status"></div>
+      <p class="problem-ide-right__pending-text">编辑器加载中…</p>
+    </div>
+    <div class="problem-ide-toolbar">
+      <label class="problem-ide-toolbar__label">语言</label>
+      <select id="problemIdeLang" class="problem-ide-select"></select>
+      <span id="problemIdeModeTag" class="problem-ide-mode-tag" style="display:none"></span>
+      <span id="problemIdeSpjTag" class="problem-ide-mode-tag" style="display:none"></span>
+      <button type="button" id="problemIdeResetCodeBtn" class="problem-ide-toolbar__btn problem-ide-reset-btn" title="重置为初始代码模板">↻ 重置代码</button>
+      <div class="problem-ide-timer" id="problemIdeTimerWrap">
+        <button type="button" id="problemIdeTimerDisplay" class="problem-ide-timer__display problem-ide-timer__trigger" title="点击打开计时器" aria-expanded="false">00:00:00</button>
+        <div id="problemIdeTimerPanel" class="problem-ide-timer-panel problem-ide-settings--hidden" role="dialog" aria-label="计时器">
+          <div class="problem-ide-timer-panel__shell">
+            <div class="problem-ide-timer-panel__actions">
+              <button type="button" id="problemIdeTimerStartPauseBtn" class="problem-ide-timer-panel__btn problem-ide-timer-panel__btn--primary">开始</button>
+              <button type="button" id="problemIdeTimerResetBtn" class="problem-ide-timer-panel__btn problem-ide-timer-panel__btn--ghost" title="重置计时">↺ 重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="problem-ide-exp-mode" role="group" aria-label="做题模式">
+        <button type="button" id="problemIdeModePractice" class="problem-ide-exp-mode__btn problem-ide-exp-mode__btn--active" data-mode="practice" title="练习模式">练习</button>
+        <button type="button" id="problemIdeModeExam" class="problem-ide-exp-mode__btn" data-mode="exam" title="考试模式">考试</button>
+      </div>
+      <div class="problem-ide-toolbar__spacer"></div>
+      <button type="button" id="problemIdeSettingsBtn" class="problem-ide-toolbar__btn">⚙</button>
+      <div id="problemIdeSettingsPanel" class="problem-ide-settings problem-ide-settings--hidden">
+        <label>字号 <input type="number" id="problemIdeFontSize" min="10" max="28" value="14" /></label>
+        <label>主题 <select id="problemIdeThemeSelect" class="problem-ide-settings__select"></select></label>
+      </div>
+    </div>
+    <div class="problem-ide-editor-wrap">
+      <div id="problemIdeMonaco" class="problem-ide-monaco"></div>
+    </div>
+    <div class="problem-ide-drawer" id="problemIdeDrawer">
+      <div class="problem-ide-drawer__resize" id="problemIdeDrawerResize"></div>
+      <div class="problem-ide-drawer__bar">
+        <button type="button" class="problem-ide-drawer__toggle" id="problemIdeDrawerToggle" aria-expanded="true">
+          <span class="problem-ide-drawer__chevron">▲</span>
+          <span>控制台</span>
+        </button>
+        <div class="problem-ide-drawer__bar-spacer"></div>
+        <button type="button" id="problemIdeRunBtn" class="problem-ide-btn problem-ide-btn--run"{% if not problemIdeCanSubmit %} disabled title="登录后才能自测运行"{% endif %}>▶ 自测运行</button>
+        <button type="button" id="problemIdeSubmitBtn" class="problem-ide-btn problem-ide-btn--submit"{% if not problemIdeCanSubmit %} disabled title="登录后才能提交"{% endif %}>提交</button>
+      </div>
+      <div class="problem-ide-drawer__body" id="problemIdeDrawerBody">
+        <div class="problem-ide-tabs">
+          <button type="button" class="problem-ide-tab problem-ide-tab--active" data-tab="run">自测用例</button>
+          <button type="button" class="problem-ide-tab" data-tab="result">运行结果</button>
+          <button type="button" class="problem-ide-tab" data-tab="history">历史提交</button>
+        </div>
+        <div class="problem-ide-panel problem-ide-panel--run" data-panel="run">
+          <div class="problem-ide-cases-bar">
+            <div class="problem-ide-cases-tabs" id="problemIdeCaseTabs"></div>
+            <div class="problem-ide-cases-actions">
+              <button type="button" id="problemIdeCaseFillSamples" class="problem-ide-case-fill" title="从题面代码块识别样例">填入样例</button>
+              <button type="button" id="problemIdeCaseAdd" class="problem-ide-case-add" title="添加用例（最多5组）">+</button>
+            </div>
+          </div>
+          <div class="problem-ide-run-cols">
+            <div class="problem-ide-run-col">
+              <label class="problem-ide-label">输入</label>
+              <textarea id="problemIdeInput" class="problem-ide-textarea problem-ide-textarea--fill" placeholder="在此输入测试用例…"></textarea>
+            </div>
+            <div class="problem-ide-run-col">
+              <label class="problem-ide-label">预期输出（选填）</label>
+              <textarea id="problemIdeExpected" class="problem-ide-textarea problem-ide-textarea--fill" placeholder="填写预期输出，运行后自动对比结果…"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="problem-ide-panel" data-panel="result" hidden>
+          <div class="problem-ide-status-row">
+            <span id="problemIdeStatus" class="problem-ide-status" hidden></span>
+            <span id="problemIdePassRate" class="problem-ide-pass-rate" hidden></span>
+          </div>
+          <label class="problem-ide-label">输出</label>
+          <div id="problemIdeOutput" class="problem-ide-output"></div>
+        </div>
+        <div class="problem-ide-panel" data-panel="history" hidden>
+          <div class="history-hint">提示：点击提交记录可在新标签打开详情</div>
+          <div id="problemIdeHistory" class="problem-ide-history"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="problem-ide-pset-overlay" id="problemIdePsetOverlay" hidden>
+  <div class="problem-ide-pset-mask" data-role="close"></div>
+  <aside class="problem-ide-pset-drawer" role="dialog" aria-modal="true" aria-label="题库列表">
+    <header class="problem-ide-pset-header">
+      <div class="problem-ide-pset-header__titles">
+        <div class="problem-ide-pset-title-row">
+          <div class="problem-ide-pset-title" id="problemIdePsetTitle">题库</div>
+        </div>
+        <div class="problem-ide-pset-subtitle" id="problemIdePsetSubtitle"></div>
+      </div>
+      <button type="button" class="problem-ide-pset-close" data-role="close" aria-label="关闭">×</button>
+    </header>
+    <div class="problem-ide-pset-progress" id="problemIdePsetProgress"></div>
+    <div class="problem-ide-pset-list" id="problemIdePsetList"></div>
+    <div class="problem-ide-pset-footer" id="problemIdePsetFooter"></div>
+  </aside>
+</div>
+<div id="problemIdeCooldownUpgradeToast" class="problem-ide-cooldown-toast" role="status" aria-live="polite" aria-hidden="true">
+  <span class="problem-ide-cooldown-toast__text"><a href="/vip" class="problem-ide-cooldown-toast__link">升级会员</a>，可将运行与提交冷却时间缩短至 1 秒起</span>
+</div>
+{% endblock %}

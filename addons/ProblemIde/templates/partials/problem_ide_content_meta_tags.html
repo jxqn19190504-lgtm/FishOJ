@@ -1,0 +1,29 @@
+<div class="pd-header-card problem-ide-content-meta">
+  {% if not (tdoc and tdoc.docType == model.document.TYPE_CONTEST) %}
+  <div class="section__body">
+    <ul class="problem__tags problem-ide-content-meta__tags">
+      {% if pdoc.config and pdoc.config.type != 'objective' and pdoc.config.type != 'submit_answer' and (pdoc.config.timeMax or pdoc.config.timeMin) %}
+        <span class="bp6-tag bp6-large bp6-minimal problem__tag-item icon icon-stopwatch problem-ide-meta--any-mode">{{ pdoc.config.timeMax if pdoc.config.timeMax == pdoc.config.timeMin else (pdoc.config.timeMin or '') ~ '~' ~ (pdoc.config.timeMax or '') }}ms</span>
+      {% endif %}
+      {% if pdoc.config and pdoc.config.memoryMax %}
+        <span class="bp6-tag bp6-large bp6-minimal problem__tag-item problem-ide-meta--any-mode">{{ pdoc.config.memoryMax }}MB</span>
+      {% endif %}
+      {% if not tdoc %}
+        <a class="bp6-tag bp6-large bp6-minimal bp6-interactive problem__tag-item problem__tag-item--tried problem-ide-meta--practice-only" href="{{ url('record_main', query={pid:pdoc.docId}) }}">{{ _('Tried') }}: {{ pdoc.nSubmit or 0 }}</a>
+        <a class="bp6-tag bp6-large bp6-minimal bp6-interactive problem__tag-item problem__tag-item--ac problem-ide-meta--practice-only" href="{{ url('record_main', query={pid:pdoc.docId, status:1}) }}">{{ _('Accepted') }}: {{ pdoc.nAccept or 0 }}</a>
+        {% if pdoc.difficulty %}
+        <span class="bp6-tag bp6-large bp6-minimal problem__tag-item problem__tag-item--diff problem-ide-meta--practice-only">{{ _('Difficulty') }}: {{ pdoc.difficulty }}</span>
+        {% endif %}
+      {% endif %}
+      {% if pdoc.tag and pdoc.tag.length %}
+      <div class="problem__tags-nested problem-ide-alg-tags-block problem-ide-meta--practice-only">
+        <span name="show_tags" role="button" tabindex="0" class="bp6-tag bp6-large bp6-minimal bp6-interactive problem__tag-item nojs--hide icon icon-tag problem__tag-item--alg-toggle">算法与标签&gt;</span>
+        {%- for tag in pdoc.tag -%}
+          <span class="bp6-tag bp6-large bp6-minimal problem__tag-item tags hasjs--hide problem-ide-alg-collapsible pd-tag-hue-{{ loop.index0 % 6 }}">{{ tag }}</span>
+        {%- endfor -%}
+      </div>
+      {% endif %}
+    </ul>
+  </div>
+  {% endif %}
+</div>

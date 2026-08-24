@@ -1,0 +1,5 @@
+{# 在线编程题面内题目标题行 #}
+<h1 class="problem-ide-statement-title">
+  <span class="problem-ide-statement-title__text">{{ pdoc.pid|default(pdoc.docId) }}. {{ pdoc.title }}</span>
+</h1>
+{% include "partials/problem_ide_content_meta_tags.html" %}
