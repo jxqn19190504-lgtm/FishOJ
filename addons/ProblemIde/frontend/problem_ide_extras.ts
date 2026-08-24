@@ -225,15 +225,20 @@ function idePathForItem(pid: string | number, href?: string): string {
     return `/ide/${encodeURIComponent(id)}${q ? `?${q}` : ''}`;
 }
 
+function goIdeSameTab(path: string) {
+    window.location.assign(path);
+}
+
 function bindSamePageIdeLinks(root: HTMLElement, selector: string) {
     root.addEventListener('click', (ev) => {
-        const a = (ev.target as HTMLElement | null)?.closest?.(selector) as HTMLAnchorElement | null;
-        if (!a || !root.contains(a)) return;
-        if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+        const el = (ev.target as HTMLElement | null)?.closest?.(selector) as HTMLElement | null;
+        if (!el || !root.contains(el)) return;
+        if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
         ev.preventDefault();
-        ev.stopPropagation();
-        window.location.assign(a.getAttribute('href') || a.href);
-    });
+        ev.stopImmediatePropagation();
+        const path = el.getAttribute('data-ide-path') || (el as HTMLAnchorElement).getAttribute?.('href');
+        if (path) goIdeSameTab(path);
+    }, true);
 }
 
 export function setupIdePsetDrawer() {
@@ -271,15 +276,15 @@ export function setupIdePsetDrawer() {
                     item.current ? 'problem-ide-pset-item--current' : '',
                     item.accepted ? 'problem-ide-pset-item--ac' : '',
                 ].filter(Boolean).join(' ');
-                const href = escapeHtml(idePathForItem(item.pid, item.href));
-                return `<a class="${cls}" href="${href}" target="_self"><span class="problem-ide-pset-item__idx">${escapeHtml(String(item.index ?? ''))}</span><span class="problem-ide-pset-item__title">${escapeHtml(item.title || String(item.pid))}</span></a>`;
+                const path = idePathForItem(item.pid, item.href);
+                return `<button type="button" class="${cls}" data-ide-path="${escapeHtml(path)}"><span class="problem-ide-pset-item__idx">${escapeHtml(String(item.index ?? ''))}</span><span class="problem-ide-pset-item__title">${escapeHtml(item.title || String(item.pid))}</span></button>`;
             }).join('');
             footerEl.textContent = '点击题目在本页切换';
         } catch {
             footerEl.textContent = '当前还没有题库服务。创建题库并接上 /api/problem/ide-pset-list 后，这里会自动列出题目。';
         }
     };
-    bindSamePageIdeLinks(listEl, 'a.problem-ide-pset-item');
+    bindSamePageIdeLinks(listEl, '.problem-ide-pset-item[data-ide-path]');
     btn.addEventListener('click', () => {
         overlay.hidden = false;
         void load();
@@ -325,15 +330,15 @@ export function setupIdeSectionSwitcher() {
                 return;
             }
             listEl.innerHTML = items.map((item: any) => {
-                const href = escapeHtml(idePathForItem(item.pid, item.href));
+                const path = idePathForItem(item.pid, item.href);
                 const cur = item.current ? ' problem-ide-section-switcher__item--current' : '';
-                return `<a class="problem-ide-section-switcher__item${cur}" href="${href}" target="_self" role="menuitem">${escapeHtml(item.title || String(item.pid))}</a>`;
+                return `<button type="button" class="problem-ide-section-switcher__item${cur}" data-ide-path="${escapeHtml(path)}" role="menuitem">${escapeHtml(item.title || String(item.pid))}</button>`;
             }).join('');
         } catch {
             renderEmpty('章节接口尚未接入。题库上线后，这里会列出同节点题目。');
         }
     };
-    bindSamePageIdeLinks(listEl, 'a.problem-ide-section-switcher__item');
+    bindSamePageIdeLinks(listEl, '.problem-ide-section-switcher__item[data-ide-path]');
     btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
