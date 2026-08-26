@@ -1,0 +1,7 @@
+/* IDE 页仅保留层级修正，视觉样式与 Hot100 共用 assistant.css */
+
+.page--problem_ide .cf-assistant-root,
+body[data-page='problem_ide'] .cf-assistant-root,
+.cf-assistant-root--scene-acm-problem {
+  z-index: 1000100;
+}

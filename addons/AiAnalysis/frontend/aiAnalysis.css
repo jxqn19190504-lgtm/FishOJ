@@ -1,0 +1,44 @@
+/* AiAnalysis 补充样式（主体已在 ProblemIde problem_ide.css） */
+
+.record-ai-stream-panel {
+  min-height: 12em;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.record-ai-stream-panel.is-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #8c8c8c;
+}
+
+.record-ai-await-start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 10em;
+  color: #8c8c8c;
+}
+
+.record-ai-await-start__btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #d0d7de;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.record-ai-await-start__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.theme--dark .record-ai-await-start__btn {
+  background: #21262d;
+  border-color: #30363d;
+  color: #e6edf3;
+}

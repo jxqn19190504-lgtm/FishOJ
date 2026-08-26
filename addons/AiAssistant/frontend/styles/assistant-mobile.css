@@ -1,0 +1,87 @@
+@media (max-width: 640px) {
+  .cf-assistant-root {
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    top: auto !important;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .cf-assistant-dock {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0));
+    z-index: 12055;
+  }
+
+  /* 关闭后的小圆点入口独立定位，不依赖 root 布局 */
+  .cf-assistant-restore {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0));
+    z-index: 12055;
+  }
+
+  .cf-assistant-launcher {
+    height: 42px;
+    padding: 0 14px 0 7px;
+    gap: 8px;
+  }
+
+  .cf-assistant-launcher-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .cf-assistant-launcher-label {
+    font-size: 13px;
+  }
+
+  .cf-assistant-panel.cf-assistant-panel--open {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    max-width: none;
+    height: min(88vh, 760px) !important;
+    max-height: 88vh;
+    border-radius: 16px 16px 0 0;
+    z-index: 12060;
+  }
+
+  /* 移动端为全宽抽屉，隐藏 resize 抓手 */
+  .cf-assistant-resize-handle {
+    display: none;
+  }
+
+  .cf-assistant-messages,
+  .cf-assistant-message-scroll {
+    padding-left: 16px;
+    padding-right: 8px;
+  }
+
+  .cf-assistant-conversation-hint,
+  .cf-assistant-hint {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .cf-assistant-composer {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+  }
+
+  .cf-assistant-footer,
+  .cf-assistant-statusbar {
+    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
+  }
+}
+
+@media (max-width: 1299px) and (min-width: 641px) {
+  .cf-assistant-root {
+    right: 16px;
+    bottom: 16px;
+    gap: 12px;
+  }
+}

@@ -5,8 +5,16 @@
 # 请注意在防火墙/安全组中放行端口，且部分运营商会拦截未经备案的域名。
 # 其他需求清参照 https://caddyserver.com/docs/ 说明进行设置。
 # For more information, refer to caddy v2 documentation.
+#
+# 与 39.106.166.216（CodeFun）对齐的站点侧设置：
+# - 音视频不走 gzip，避免拖慢大文件
+# - reverse_proxy 读写超时 30 分钟，保证 AI 流式输出不被网关掐断
 :80 {
-  encode zstd gzip
+  @compressible {
+    not path *.mp4 *.webm *.m4v *.mp3 *.m3u8 *.ts
+    not path /video-course/*/file/*
+  }
+  encode @compressible zstd gzip
   log {
     output file /data/access.log {
       roll_size 1gb
@@ -14,6 +22,7 @@
     }
     format json
   }
+  # 课程 mp4 / HLS 一律进 Hydro（登录 + 签名），不要静态直出，否则会绕过鉴权。
   # Handle static files directly, for better performance.
   root * /root/.hydro/static
   @static {
@@ -25,7 +34,13 @@
     file_server
   }
   handle {
-    reverse_proxy http://127.0.0.1:8888
+    reverse_proxy http://127.0.0.1:8888 {
+      transport http {
+        read_timeout 30m
+        write_timeout 30m
+        dial_timeout 10s
+      }
+    }
   }
 }
 

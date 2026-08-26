@@ -1,6 +1,6 @@
 # ProblemIde 教学扩展协议
 
-ProblemIde 是教学插件宿主。`LearningScaffold` / `AiTutor` **禁止** `import` ProblemIde 内部文件。
+ProblemIde 是教学插件宿主。`LearningScaffold` / `AiTutor` / `AiAnalysis` **禁止** `import` ProblemIde 内部文件。
 
 ## UiContext
 
@@ -36,5 +36,25 @@ window.FishOJProblemIde.hasMeaningfulCode()
 | `problem-ide-apply-code-blocked` | IDE → | 拒绝静默覆盖 |
 | `problem-ide-hint-request` | 任意 → Tutor | 请求提示 |
 | `problem-ide-scaffold-request` | 任意 → Scaffold | 打开学习方式 / 指定 mode |
+| `problem-ide-ai-analysis-open` | 任意 → AiAnalysis | 打开 AI 分析面板；`detail: { rid, rdoc? }` |
+
+## AiAnalysis（`addons/AiAnalysis`）
+
+`handler/after`（仅 `problem_ide.html`）写入：
+
+```ts
+UiContext.aiAnalysis = {
+  enabled: true,
+  streamUrl: '/ai-analysis/stream',
+  cacheUrl: '/ai-analysis/cache',
+  quotaUrl: '/ai-analysis/quota',
+  canUseCustomApiKey: boolean, // 管理员或 ideShortCooldown（会员）
+  quota: { limited, remaining, dailyLimit, unlimited?, source: 'daily_count' },
+}
+```
+
+路由：`POST /ai-analysis/stream`（SSE）、`GET /ai-analysis/cache?rid=`、`GET /ai-analysis/quota`。
+
+`problem-ide-submit-result` 的 `detail` 可含 `rid` / `rdoc`，供「运行结果」旁 AI 按钮使用。
 
 Judge 与编辑器不等待 AI。AI 失败不得影响提交。

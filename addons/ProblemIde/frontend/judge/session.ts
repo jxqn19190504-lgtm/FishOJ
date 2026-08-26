@@ -264,6 +264,8 @@ export function setupJudgeSession(opts: {
         const compiler = rdoc.compilerText || rdoc.compilerTexts;
         emitJudge('problem-ide-submit-result', {
             type: 'submit',
+            rid,
+            rdoc,
             status: SN[st] || String(st),
             stdout: rdoc.testCases?.[0]?.message != null ? String(rdoc.testCases[0].message) : '',
             stderr: Array.isArray(compiler) ? compiler.filter(Boolean).join('\n') : (compiler ? String(compiler) : ''),
