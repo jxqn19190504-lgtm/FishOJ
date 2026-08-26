@@ -1,0 +1,33 @@
+{% extends "layout/basic.html" %}
+{% block content %}
+<div class="row vip-intro">
+  <div class="page section transparent" style="margin-bottom: 40px;">
+    <div class="head">
+      <div class="logo"></div>
+      <div>
+        <div class="head-title">FishOJ 会员</div>
+        <div class="head-sub">开通后享受更短冷却、后续课程与会员专属能力</div>
+      </div>
+    </div>
+    {% if vipNotice %}
+    <div class="vip-notice">{{ vipNotice }}</div>
+    {% endif %}
+    <div class="medium-8 columns section transparent">
+      <div class="vip-top-row">
+        <div class="medium-5 columns section transparent">
+          {% include "partials/vip_status.html" %}
+        </div>
+        <div class="medium-7 columns section transparent">
+          {% include "partials/vip_plans.html" %}
+        </div>
+      </div>
+      {% include "partials/vip_privileges.html" %}
+    </div>
+    <div class="medium-4 columns section transparent">
+      {% include "partials/vip_order.html" %}
+    </div>
+  </div>
+</div>
+{% include "partials/vip_faq.html" %}
+{% include "partials/vip_modals.html" %}
+{% endblock %}

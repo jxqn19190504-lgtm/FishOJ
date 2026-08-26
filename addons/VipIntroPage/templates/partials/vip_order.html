@@ -1,0 +1,40 @@
+<aside class="aside">
+  <div class="card">
+    <div class="card-hd">订单详情</div>
+    <div class="card-bd">
+      <div class="order-line"><span>已选择：</span><span name="vip_type"> 永久会员</span></div>
+      <div class="order-line"><span>支付方式：</span><span> 微信 </span></div>
+      <div style="margin-top:10px">选择支付</div>
+      <div class="radio-row">
+        <label class="pay selected">
+          <input type="radio" name="pay" value="wechat">
+          <svg class="vip-pay-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1aad19" d="M9.5 8.2c.4-2.3 2.6-4 5.1-4 2.9 0 5.2 1.9 5.2 4.3 0 2.4-2.3 4.3-5.2 4.3-.3 0-.6 0-.9-.1l-2.1 1.2.6-1.8C10.6 11.3 9.2 9.9 9.5 8.2zm3.2-.9c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.3-.7-.7.3-.7.7-.7zm3.3 0c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.3-.7-.7.3-.7.7-.7zM8.7 11.6c-2.8 0-5.1 1.8-5.1 4.1 0 2.3 2.3 4.1 5.1 4.1.3 0 .6 0 .9-.1l2 1.1-.5-1.6c1.4-.7 2.4-2 2.2-3.6-.3-2.3-2.3-4-4.6-4zm-1.6 2.6c.3 0 .6.3.6.6s-.3.6-.6.6-.6-.3-.6-.6.3-.6.6-.6zm3.2 0c.3 0 .6.3.6.6s-.3.6-.6.6-.6-.3-.6-.6.3-.6.6-.6z"/></svg>
+          <b>微信</b>
+        </label>
+        <label class="pay" data-disabled="true">
+          <input type="radio" name="pay" value="alipay">
+          <svg class="vip-pay-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1677ff" d="M19.4 10.2c-.6-.3-2.3-.6-4.2-.6-2.7 0-5.1.6-6.9 1.6 1.2-1.6 3.2-3.7 5.1-4.9l-1.2-.8C9.8 7.3 7.3 9.8 6 11.7c-1.7.9-2.8 1.8-2.8 1.8s2.1.1 4.2-.2c.2 1.1.6 2.2 1.2 3.2-.9.3-1.8.4-2.5.4v1.1c3.3 0 5.7-1.1 7.4-2.4 2.6 1.2 5.8 2 8.5 2.2v-1.2c-2-.2-4.3-.8-6.3-1.7 1.3-1.3 2.2-2.8 2.7-4.7z"/></svg>
+          <b>暂不可用</b>
+        </label>
+      </div>
+      <div class="order-price"><span> 订单金额：</span><span class="num" name="vip_price">¥256</span></div>
+      <button id="openTuanModal" class="btn-primary" type="button" {% if vipStatus == 'vip' %}disabled{% endif %}>
+        开通会员
+      </button>
+    </div>
+  </div>
+</aside>
+<aside class="aside">
+  <div class="card" id="tuanCard" hidden>
+    <div class="card-hd">拼团须知</div>
+    <div class="card-bd">
+      <div class="steps" id="tuanSteps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">点击「开通会员」了解拼团流程。</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">支付能力上线后，支付成功会生成拼团链接。</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">将链接分享给好友一起参团。</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text">成团后完成核销即可成为会员。</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-text">如 24 小时未成团，将原路退款（支付上线后生效）。</div></div>
+      </div>
+    </div>
+  </div>
+</aside>

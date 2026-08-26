@@ -1,0 +1,28 @@
+<div id="tuanModal" class="modal" aria-hidden="true">
+  <div class="modal__overlay" data-close="modal"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="tuanModalTitle">
+    <button class="modal__close" type="button" aria-label="关闭" data-close="modal">×</button>
+    <h3 id="tuanModalTitle" class="modal__title">拼团流程</h3>
+    <div class="modal__steps">
+      <div>1. 支付上线后，付款会生成拼团链接</div>
+      <div>2. 将拼团链接分享给好友</div>
+      <div>3. 好友通过链接完成支付</div>
+      <div>4. 成团后核销即可成为会员</div>
+      <div>5. 未成团 24 小时自动退款</div>
+    </div>
+    <button id="tuanAckBtn" class="modal__btn" type="button" disabled>我已知晓拼团流程 (3)</button>
+  </div>
+</div>
+
+<div id="comingSoonModal" class="modal" aria-hidden="true">
+  <div class="modal__overlay" data-close="modal"></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="comingSoonTitle">
+    <button class="modal__close" type="button" aria-label="关闭" data-close="modal">×</button>
+    <h3 id="comingSoonTitle" class="modal__title">支付即将开放</h3>
+    <p style="text-align:center;color:#6b7280;margin:8px 0 0;line-height:1.7;">
+      会员页已经上线，微信支付、拼团和核销还在接入。<br>
+      开发阶段可由管理员把用户角色设为 <b>vip</b> 体验会员冷却。
+    </p>
+    <button class="modal__btn" type="button" data-close="modal">知道了</button>
+  </div>
+</div>

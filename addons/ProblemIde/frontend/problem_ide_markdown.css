@@ -1,0 +1,455 @@
+/* 对照 codefun ProblemPages 题面：左栏 .markdown-body + CodeNote markdown-body.css。
+   P0016（http://39.106.166.216/ide/P0016）分栏时也用这套，不是只在「放大题面」时才生效。
+   Hydro 默认 .typo 是 300 字重 / 更大行高，必须压掉。 */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap');
+
+.problem-ide-left__scroll,
+.problem-ide-left__scroll.markdown-body,
+.problem-ide-left__scroll .markdown-body,
+.problem-ide-left__scroll .typo,
+.problem-ide-left__scroll .section__body,
+.problem-ide-left__scroll .problem-content,
+.problem-ide-left__scroll .problem_content,
+.problem-ide-left__scroll .richmedia {
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+  font-weight: 400 !important;
+  color: #010101;
+  font-family: 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+  font-synthesis: weight style;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.problem-ide-left__scroll strong,
+.problem-ide-left__scroll b,
+.problem-ide-left__scroll .typo strong,
+.problem-ide-left__scroll .typo b {
+  font-weight: 700 !important;
+  font-style: inherit;
+}
+
+.problem-ide-left__scroll em,
+.problem-ide-left__scroll i {
+  font-style: italic !important;
+}
+
+.problem-ide-left__scroll h1 {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  margin-top: 0;
+  margin-bottom: 24px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #d0d7de;
+  color: #202124;
+  font-family: inherit !important;
+}
+
+.problem-ide-left__scroll h2 {
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #d0d7de;
+  color: #202124;
+  font-family: inherit !important;
+}
+
+.problem-ide-left__scroll h3 {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  color: #3c4043;
+  font-family: inherit !important;
+}
+
+.problem-ide-left__scroll h4 {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: #3c4043;
+  font-family: inherit !important;
+}
+
+.problem-ide-left__scroll p {
+  margin-bottom: 12px;
+}
+
+.problem-ide-left__scroll :not(pre) > code {
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  font-size: 14px !important;
+  color: #e83e8c;
+  font-weight: 400 !important;
+}
+
+.problem-ide-left__scroll pre {
+  background: #282828;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.problem-ide-left__scroll pre code {
+  background: #282828;
+  padding: 16px;
+  display: block;
+  overflow-x: auto;
+  color: #e5e7eb;
+  font-size: 14px !important;
+  line-height: 1.5;
+  border-radius: 0;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+.problem-ide-left__scroll pre:not([class*="language-"]) {
+  background: #e3f2fd;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+}
+
+.problem-ide-left__scroll pre:not([class*="language-"]) code {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 12px 16px !important;
+}
+
+.problem-ide-left__scroll pre[class*="language-input"],
+.problem-ide-left__scroll pre[class*="language-output"] {
+  background: #e3f2fd;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+}
+
+.problem-ide-left__scroll pre[class*="language-input"] code,
+.problem-ide-left__scroll pre[class*="language-output"] code {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 12px 16px !important;
+}
+
+.problem-ide-left__scroll ul,
+.problem-ide-left__scroll ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.problem-ide-left__scroll ul {
+  list-style: disc;
+}
+
+.problem-ide-left__scroll ol {
+  list-style: decimal;
+}
+
+.problem-ide-left__scroll li {
+  margin-bottom: 8px;
+}
+
+.problem-ide-left__scroll blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 16px;
+  margin: 20px 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.problem-ide-left__scroll,
+.problem-ide-left__scroll .markdown-body,
+.problem-ide-left__scroll .section__body,
+.problem-ide-left__scroll p,
+.problem-ide-left__scroll h1,
+.problem-ide-left__scroll h2,
+.problem-ide-left__scroll h3,
+.problem-ide-left__scroll li,
+.problem-ide-left__scroll .katex-display {
+  text-align: left !important;
+}
+
+.problem-ide-left__scroll .katex-display > .katex {
+  text-align: left;
+}
+
+.problem-ide-left__scroll img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 16px 0;
+}
+
+.problem-ide-left__scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.problem-ide-left__scroll th,
+.problem-ide-left__scroll td {
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  text-align: left;
+}
+
+.problem-ide-left__scroll th {
+  background: #f9fafb;
+  font-weight: 600 !important;
+}
+
+.problem-ide-left__scroll a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.problem-ide-left__scroll a:hover {
+  text-decoration: underline;
+}
+
+.problem-ide-left__scroll hr {
+  box-sizing: content-box;
+  overflow: hidden;
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #d0d7de;
+  border: 0;
+}
+
+/* 样例输入/输出：拆掉 Foundation .row 栅格，上下全宽对齐 */
+.problem-ide-left__scroll .problem-ide-sample-stack,
+.problem-ide-left__scroll .problem-ide-sample-row,
+.problem-ide-left__scroll .row:has(> .sample) {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 16px;
+  margin: 16px 0 20px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  padding: 0 !important;
+  float: none !important;
+}
+
+.problem-ide-left__scroll .problem-ide-sample-stack::before,
+.problem-ide-left__scroll .problem-ide-sample-stack::after,
+.problem-ide-left__scroll .problem-ide-sample-row::before,
+.problem-ide-left__scroll .problem-ide-sample-row::after,
+.problem-ide-left__scroll .row:has(> .sample)::before,
+.problem-ide-left__scroll .row:has(> .sample)::after {
+  content: none !important;
+  display: none !important;
+}
+
+.problem-ide-left__scroll .problem-ide-sample-stack > .sample,
+.problem-ide-left__scroll .problem-ide-sample-row > .sample,
+.problem-ide-left__scroll .row:has(> .sample) > .sample,
+.problem-ide-left__scroll .sample {
+  display: block !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  float: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+
+.problem-ide-left__scroll .sample .code-toolbar {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.problem-ide-left__scroll .sample > h2,
+.problem-ide-left__scroll .problem-ide-sample-head > h2 {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.4;
+  margin: 0 !important;
+  padding: 0;
+  border-bottom: none;
+  color: #1c2127;
+  text-align: left !important;
+}
+
+.problem-ide-left__scroll .problem-ide-sample-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.problem-ide-left__scroll .problem-ide-sample-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.problem-ide-left__scroll .problem-ide-sample-toolbar__btn {
+  border: 0;
+  background: transparent;
+  color: #57606a;
+  font-size: 13px;
+  line-height: 1.2;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.problem-ide-left__scroll .problem-ide-sample-toolbar__btn:hover {
+  color: #1890ff;
+}
+
+.problem-ide-left__scroll .toolbar,
+.problem-ide-left__scroll .code-toolbar > .toolbar,
+.problem-ide-left__scroll .scratchpad-fill-button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.problem-ide-left__scroll .sample pre,
+.problem-ide-left__scroll .sample pre code {
+  background: #f6f8fa !important;
+  color: #1f2328 !important;
+  box-shadow: none !important;
+  border-radius: 6px;
+}
+
+.problem-ide-left__scroll .sample pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  border: 1px solid #d0d7de;
+}
+
+.problem-ide-left__scroll .sample pre code {
+  padding: 12px 14px !important;
+  font-size: 13px !important;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.problem-ide-left__scroll .note-box {
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 8px 14px;
+  width: 100%;
+  margin: 12px 0;
+  box-sizing: border-box;
+}
+
+.problem-ide-left__scroll .info-box {
+  background-color: #e3f2fd;
+}
+
+.problem-ide-left__scroll .warning-box {
+  background-color: #fff3e0;
+  border: 2px solid #ff9800;
+}
+
+.problem-ide-left__scroll .success-box {
+  background-color: #e8f5e9;
+  border: 2px solid #4caf50;
+}
+
+.theme--dark .problem-ide-left__scroll,
+.theme--dark .problem-ide-left__scroll.markdown-body,
+.theme--dark .problem-ide-left__scroll .typo,
+.theme--dark .problem-ide-left__scroll .section__body,
+.theme--dark .problem-ide-left__scroll .problem-content,
+.theme--dark .problem-ide-left__scroll .problem_content {
+  color: #c9d1d9;
+}
+
+.theme--dark .problem-ide-left__scroll h1,
+.theme--dark .problem-ide-left__scroll h2,
+.theme--dark .problem-ide-left__scroll h3,
+.theme--dark .problem-ide-left__scroll h4 {
+  color: #c9d1d9;
+  border-bottom-color: #30363d;
+}
+
+.theme--dark .problem-ide-left__scroll .sample > h2,
+.theme--dark .problem-ide-left__scroll .problem-ide-sample-head > h2 {
+  color: #c9d1d9;
+}
+
+.theme--dark .problem-ide-left__scroll .problem-ide-sample-head {
+  border-bottom-color: #30363d;
+}
+
+.theme--dark .problem-ide-left__scroll .problem-ide-sample-toolbar__btn {
+  color: #8b949e;
+}
+
+.theme--dark .problem-ide-left__scroll .problem-ide-sample-toolbar__btn:hover {
+  color: #58a6ff;
+}
+
+.theme--dark .problem-ide-left__scroll .sample pre {
+  border-color: #30363d;
+}
+
+.theme--dark .problem-ide-left__scroll .sample pre,
+.theme--dark .problem-ide-left__scroll .sample pre code {
+  background: #161b22 !important;
+  color: #e6edf3 !important;
+}
+
+.theme--dark .problem-ide-left__scroll hr {
+  background-color: #30363d;
+}
+
+.theme--dark .problem-ide-left__scroll :not(pre) > code {
+  background: #21262d;
+  color: #ffa116;
+}
+
+.theme--dark .problem-ide-left__scroll pre:not([class*="language-"]),
+.theme--dark .problem-ide-left__scroll pre[class*="language-input"],
+.theme--dark .problem-ide-left__scroll pre[class*="language-output"] {
+  background: #1c3a4f;
+}
+
+.theme--dark .problem-ide-left__scroll pre:not([class*="language-"]) code,
+.theme--dark .problem-ide-left__scroll pre[class*="language-input"] code,
+.theme--dark .problem-ide-left__scroll pre[class*="language-output"] code {
+  background: #1c3a4f;
+  color: #58a6ff;
+}
+
+.theme--dark .problem-ide-left__scroll th,
+.theme--dark .problem-ide-left__scroll td {
+  border-color: #30363d;
+}
+
+.theme--dark .problem-ide-left__scroll th {
+  background: #21262d;
+}
+
+.theme--dark .problem-ide-left__scroll blockquote {
+  color: #8b949e;
+  border-left-color: #30363d;
+}
+
+.theme--dark .problem-ide-left__scroll a {
+  color: #58a6ff;
+}

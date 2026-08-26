@@ -1,0 +1,85 @@
+.fish-scaffold-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fish-scaffold-modal[hidden] { display: none !important; }
+.fish-scaffold-modal__mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+}
+.fish-scaffold-modal__card {
+  position: relative;
+  width: min(520px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.22);
+}
+.theme--dark .fish-scaffold-modal__card {
+  background: #1e1e1e;
+  color: #e8e8e8;
+}
+.fish-scaffold-modal__title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 650;
+}
+.fish-scaffold-modal__sub {
+  margin: 0 0 16px;
+  color: #64748b;
+  font-size: 13px;
+}
+.fish-scaffold-modal__opts { display: grid; gap: 10px; }
+.fish-scaffold-opt {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+.fish-scaffold-opt:hover { border-color: #1890ff; background: #f0f7ff; }
+.theme--dark .fish-scaffold-opt {
+  background: #252526;
+  border-color: #3c3c3c;
+  color: inherit;
+}
+.fish-scaffold-opt__emoji { font-size: 22px; line-height: 1.2; }
+.fish-scaffold-opt__title { font-weight: 650; }
+.fish-scaffold-opt__desc { font-size: 12px; color: #64748b; margin-top: 2px; }
+.fish-scaffold-diff {
+  position: fixed;
+  inset: 0;
+  z-index: 100011;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fish-scaffold-diff[hidden] { display: none !important; }
+.fish-scaffold-diff__card {
+  position: relative;
+  width: min(640px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+}
+.theme--dark .fish-scaffold-diff__card { background: #1e1e1e; color: #e8e8e8; }
+.fish-scaffold-diff pre {
+  max-height: 280px;
+  overflow: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+}
+.fish-scaffold-diff__actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }

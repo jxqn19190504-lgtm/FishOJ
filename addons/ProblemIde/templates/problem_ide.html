@@ -23,6 +23,52 @@
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity 0.35s ease, visibility 0.35s ease;
 }
+/* 样例框对齐：不依赖 webpack 打包，模板加载即生效 */
+#problemIdeProblemContent .problem-ide-sample-stack,
+#problemIdeProblemContent .row:has(> .sample) {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 16px 0 20px !important;
+  padding: 0 !important;
+  float: none !important;
+}
+#problemIdeProblemContent .problem-ide-sample-stack::before,
+#problemIdeProblemContent .problem-ide-sample-stack::after,
+#problemIdeProblemContent .row:has(> .sample)::before,
+#problemIdeProblemContent .row:has(> .sample)::after {
+  content: none !important;
+  display: none !important;
+}
+#problemIdeProblemContent .sample {
+  display: block !important;
+  float: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+#problemIdeProblemContent .sample .code-toolbar,
+#problemIdeProblemContent .sample pre {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+#problemIdeProblemContent .sample pre { border: 1px solid #d0d7de; border-radius: 6px; }
+#problemIdeProblemContent .problem-ide-sample-head {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  width: 100% !important;
+  box-sizing: border-box;
+}
 </style>
 <script>
 {{ set(UiContext, 'problemId', pdoc.pid|default(pdoc.docId)) }}
@@ -33,6 +79,8 @@
 {{ set(UiContext, 'problemIdeCanSubmit', problemIdeCanSubmit) }}
 {{ set(UiContext, 'ideShortCooldown', ideShortCooldown|default(false)) }}
 {{ set(UiContext, 'pdoc', pdoc) }}
+{{ set(UiContext, 'learning', learning|default({ scaffoldEnabled: false, tutorEnabled: false })) }}
+{{ set(UiContext, 'problemIdeHost', problemIdeHost) }}
 {% if tdoc and problemIdeCanSubmit %}
   {{ set(UiContext, 'postSubmitUrl', url('problem_submit', pid=pdoc.docId, query={tid:tdoc.docId})) }}
 {% elif not tdoc and problemIdeCanSubmit %}
@@ -59,6 +107,53 @@
   var cel = document.getElementById('problem-ide-config-json');
   try { window.__problemIdeConfig = cel ? JSON.parse(cel.textContent) : {}; }
   catch (e) { window.__problemIdeConfig = {}; }
+})();
+</script>
+<script>
+(function () {
+  function localizeH2(h2) {
+    if (!h2) return;
+    var raw = String(h2.textContent || '').replace(/\s+/g, ' ').trim();
+    var input = raw.match(/^(?:Sample\s+)?(?:Input|样例输入|输入数据)(?:\s+#?)?(\d+)$/i);
+    var output = raw.match(/^(?:Sample\s+)?(?:Output|样例输出|输出数据)(?:\s+#?)?(\d+)$/i);
+    if (input) h2.textContent = '输入数据 ' + input[1];
+    else if (output) h2.textContent = '输出数据 ' + output[1];
+  }
+  function strip(col) {
+    col.classList.remove('code-toolbar', 'medium-6', 'medium-12', 'small-12', 'columns');
+    col.classList.add('sample');
+  }
+  function flatten() {
+    var host = document.getElementById('problemIdeProblemContent');
+    if (!host) return;
+    host.querySelectorAll('.row, .problem-ide-sample-row').forEach(function (row) {
+      if (row.classList.contains('problem-ide-sample-stack')) return;
+      var samples = Array.prototype.slice.call(row.querySelectorAll(':scope > .sample'));
+      if (!samples.length) return;
+      var stack = document.createElement('div');
+      stack.className = 'problem-ide-sample-stack';
+      samples.forEach(function (col) {
+        strip(col);
+        stack.appendChild(col);
+      });
+      row.parentNode.replaceChild(stack, row);
+    });
+    host.querySelectorAll('.sample').forEach(function (col) {
+      strip(col);
+      localizeH2(col.querySelector('h2'));
+      col.querySelectorAll('.problem-ide-sample-toolbar__btn').forEach(function (btn) {
+        if (String(btn.textContent).trim() === 'Copy') btn.textContent = '复制';
+      });
+    });
+  }
+  function boot() {
+    flatten();
+    setTimeout(flatten, 200);
+    setTimeout(flatten, 600);
+    setTimeout(flatten, 1400);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
 </script>
 
@@ -110,7 +205,7 @@
       </div>
       <div class="problem-ide-left__scroll markdown-body">
         <div class="problem-content-container"><div class="problem-content" data-marker-enabled id="problemIdeProblemContent">
-          {% include "partials/problem_description.html" %}
+          {% include "partials/problem_ide_description.html" %}
         </div></div>
       </div>
       <div class="problem-ide-statement-toc-shell problem-ide-statement-toc-shell--empty" id="problemIdeStatementTocShell">
