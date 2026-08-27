@@ -757,3 +757,431 @@ html.theme--dark.page--vip .cb-card {
 .theme--dark .vip-ico-wrap svg { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.55)); }
 .vip-th-label { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .vip-pay-ico { width: 18px; height: 18px; flex-shrink: 0; }
+/* ============================================================
+   FishOJ VIP 页面 · V2 美化层（追加在原 vip.css 之后加载）
+   设计主题：深海鎏金（深蓝 + 金色）
+   说明：本层只做样式增强，不改任何类名与结构，
+         可直接整段追加到 addons/VipIntroPage/frontend/vip.css 末尾。
+   ============================================================ */
+
+/* ---------- 页面整体背景：柔和渐变 + 光晕 ---------- */
+.vip-intro {
+  position: relative;
+  background:
+    radial-gradient(900px 320px at 12% -6%, rgba(255, 184, 77, .16), transparent 62%),
+    radial-gradient(760px 300px at 92% -2%, rgba(79, 103, 255, .12), transparent 62%),
+    linear-gradient(180deg, #f3f6fd 0%, #f7f8fb 45%, #fdfaf3 100%);
+  border-radius: 24px;
+  padding: 6px 0 34px;
+  overflow: hidden;
+}
+
+/* ---------- 头部：居中 + 鎏金标题 ---------- */
+.vip-intro .head {
+  flex-direction: column;
+  text-align: center;
+  gap: 12px;
+  margin: 36px 0 28px;
+  width: 100%;
+}
+.vip-intro .head .logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffc45e 0%, #ff9f0a 55%, #f97316 100%);
+  box-shadow:
+    0 12px 28px -8px rgba(255, 159, 10, .55),
+    inset 0 1px 0 rgba(255, 255, 255, .45);
+}
+.vip-intro .head-title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(120deg, #b45309 0%, #f59e0b 45%, #f97316 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.vip-intro .head-sub {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(255, 184, 77, .12);
+  border: 1px solid rgba(245, 158, 11, .28);
+  color: #92600a;
+  font-size: 14px;
+}
+
+/* ---------- 公告条 ---------- */
+.vip-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 14px;
+  border: 1px solid #fde68a;
+  background: linear-gradient(180deg, #fffdf5, #fffbeb);
+  box-shadow: 0 8px 20px -12px rgba(245, 158, 11, .45);
+}
+.vip-notice::before {
+  content: "📢";
+  flex-shrink: 0;
+}
+
+/* ---------- 卡片：更柔和的圆角、阴影与悬浮反馈 ---------- */
+html.page--vip .cb-card,
+.vip-intro .card {
+  border-radius: 18px;
+  border: 1px solid rgba(23, 42, 84, .07);
+  box-shadow: 0 14px 34px -16px rgba(23, 42, 84, .16);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.vip-intro .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 44px -18px rgba(23, 42, 84, .22);
+}
+.vip-intro .card-hd {
+  font-size: 15px;
+  letter-spacing: .4px;
+  background: linear-gradient(180deg, #fcfdff, #f6f8fc);
+  border-bottom: 1px solid rgba(23, 42, 84, .06);
+}
+
+/* ---------- 会员状态卡：深蓝鎏金「会员卡」质感 ---------- */
+.vip-top-row .medium-5 .cb-card {
+  position: relative;
+  border: none;
+  background: linear-gradient(150deg, #141c3a 0%, #23204f 52%, #3b2f86 100%);
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 20px 44px -18px rgba(30, 30, 90, .6);
+}
+.vip-top-row .medium-5 .cb-card::after {
+  content: "";
+  position: absolute;
+  right: -46px;
+  top: -46px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle at center, rgba(255, 184, 77, .38), transparent 65%);
+  pointer-events: none;
+}
+.vip-top-row .medium-5 .cb-card::before {
+  content: "";
+  position: absolute;
+  left: -30px;
+  bottom: -60px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle at center, rgba(96, 165, 250, .22), transparent 65%);
+  pointer-events: none;
+}
+.vip-top-row .medium-5 .cb-card .card-hd {
+  background: transparent;
+  color: rgba(255, 255, 255, .88);
+  border-bottom: 1px solid rgba(255, 255, 255, .14);
+}
+.vip-top-row .medium-5 .member-status-text .status-main {
+  font-size: 1.12rem;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+.vip-top-row .medium-5 .member-status-text .status-sub {
+  color: rgba(255, 255, 255, .75);
+}
+
+/* ---------- 套餐卡：金色选中态 + 价格渐变 ---------- */
+.plan {
+  border-radius: 16px;
+  border: 2px solid #eef1f6;
+  background: linear-gradient(180deg, #ffffff, #fbfcfe);
+  transition: all .2s ease;
+}
+.plan:hover {
+  border-color: #ffd9a0;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -12px rgba(255, 159, 10, .38);
+}
+.plan.active {
+  border-color: #ffb84d;
+  background: linear-gradient(180deg, #fffdf7, #fff7e8);
+  box-shadow:
+    0 0 0 4px rgba(255, 184, 77, .18),
+    0 14px 30px -14px rgba(255, 159, 10, .45);
+}
+.plan .price {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  background: linear-gradient(120deg, #ff593d 0%, #ff9f0a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.plan .tag {
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+/* ---------- 特权对比表 ---------- */
+.table thead th {
+  background: linear-gradient(180deg, #fffaf0, #fdf3e3);
+  color: #7c4a03;
+  font-size: 14px;
+  letter-spacing: .3px;
+}
+.table tbody tr:hover td {
+  background: #fffbea;
+}
+.tick {
+  width: 24px;
+  height: 24px;
+  line-height: 22px;
+  font-size: 13px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px -4px rgba(34, 197, 94, .55);
+}
+.cross {
+  width: 24px;
+  height: 24px;
+  line-height: 22px;
+  font-size: 13px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px -4px rgba(244, 63, 94, .45);
+}
+
+/* ---------- 订单区 ---------- */
+.vip-intro .medium-4 .aside .card {
+  position: sticky;
+  top: 16px;
+}
+.order-price .num {
+  font-size: 30px;
+  font-weight: 800;
+  color: #ff593d;
+}
+.pay.selected {
+  border-color: #ffb84d;
+  background: #fffdf5;
+  box-shadow: 0 0 0 3px rgba(255, 184, 77, .18);
+}
+.btn-primary {
+  background: linear-gradient(135deg, #ffb84d 0%, #ff9f0a 55%, #f97316 100%);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 16px;
+  letter-spacing: 4px;
+  box-shadow: 0 12px 24px -8px rgba(255, 159, 10, .55);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px -8px rgba(255, 159, 10, .62);
+}
+.btn-primary:active {
+  transform: translateY(0) scale(.98);
+}
+
+/* ---------- 拼团步骤 ---------- */
+.step-num {
+  background: linear-gradient(135deg, #ffc45e, #ff9f0a);
+  box-shadow: 0 5px 12px -3px rgba(255, 159, 10, .55);
+}
+
+/* ---------- FAQ：收纳进卡片 ---------- */
+.faq-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(23, 42, 84, .07) !important;
+  box-shadow: 0 14px 34px -16px rgba(23, 42, 84, .14) !important;
+  border-radius: 20px !important;
+}
+.faq-title {
+  font-size: 24px;
+  font-weight: 800;
+}
+.faq-question {
+  font-size: 16px;
+  font-weight: 600;
+}
+.faq-toggle {
+  width: 28px;
+  height: 28px;
+  margin-left: 12px;
+  border-radius: 9px;
+  background: #f3f6fb;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: transform .25s ease, background .2s ease, color .2s ease;
+}
+.faq-item.active .faq-toggle {
+  background: #fff3dd;
+  color: #d97706;
+  transform: rotate(45deg);
+}
+.faq-answer {
+  font-size: 15px;
+  color: #4b5563;
+}
+
+/* ---------- 模态框：毛玻璃遮罩 + 修复 show 冲突 ---------- */
+.vip-intro .modal.show {
+  visibility: visible;
+  opacity: 1;
+}
+.modal__overlay {
+  background: rgba(15, 23, 42, .5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal__dialog {
+  border-radius: 18px;
+  box-shadow: 0 28px 64px -16px rgba(15, 23, 42, .4);
+}
+.modal__btn {
+  background: linear-gradient(135deg, #ffb84d, #ff9f0a);
+  border-radius: 12px;
+  box-shadow: 0 10px 22px -8px rgba(255, 159, 10, .55);
+  transition: filter .2s ease, transform .15s ease;
+}
+.modal__btn:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+.modal__btn:active:not(:disabled) {
+  transform: scale(.98);
+}
+
+/* ---------- 入场动画 ---------- */
+@keyframes vipFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.vip-intro .head,
+.vip-intro .cb-card,
+.vip-intro .card,
+.faq-card {
+  animation: vipFadeUp .5s ease both;
+}
+.vip-intro .card.table { animation-delay: .08s; }
+.faq-card { animation-delay: .14s; }
+@media (prefers-reduced-motion: reduce) {
+  .vip-intro .head,
+  .vip-intro .cb-card,
+  .vip-intro .card,
+  .faq-card { animation: none; }
+}
+
+/* ============================================================
+   深色主题适配
+   ============================================================ */
+.theme--dark .vip-intro {
+  background:
+    radial-gradient(900px 320px at 12% -6%, rgba(251, 191, 36, .10), transparent 62%),
+    radial-gradient(760px 300px at 92% -2%, rgba(99, 102, 241, .12), transparent 62%),
+    linear-gradient(180deg, #0b1020 0%, #0d1120 50%, #0f0d1a 100%);
+}
+.theme--dark .vip-intro .head .logo {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 60%, #b45309 100%);
+  box-shadow: 0 12px 28px -8px rgba(251, 191, 36, .35), inset 0 1px 0 rgba(255, 255, 255, .3);
+}
+.theme--dark .vip-intro .head-title {
+  background: linear-gradient(120deg, #fde68a 0%, #fbbf24 45%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.theme--dark .vip-intro .head-sub {
+  background: rgba(251, 191, 36, .10);
+  border-color: rgba(251, 191, 36, .28);
+  color: #fcd34d;
+}
+.theme--dark .vip-notice {
+  background: linear-gradient(180deg, #221b0e, #1c1917);
+  box-shadow: none;
+}
+.theme--dark html.page--vip .cb-card,
+html.theme--dark.page--vip .cb-card {
+  background: #1a1f2e;
+  border-color: #2b3245;
+  box-shadow: 0 16px 36px -18px rgba(0, 0, 0, .8);
+}
+.theme--dark .vip-intro .card-hd {
+  background: linear-gradient(180deg, #212738, #1a1f2e);
+  border-bottom-color: #2b3245;
+}
+.theme--dark .vip-top-row .medium-5 .cb-card {
+  background: linear-gradient(150deg, #10162e 0%, #1d1f4a 52%, #33296e 100%);
+  box-shadow: 0 20px 44px -18px rgba(0, 0, 0, .8);
+}
+.theme--dark .plan {
+  background: #161a26;
+  border-color: #262d3d;
+}
+.theme--dark .plan:hover {
+  border-color: #6b5220;
+  box-shadow: 0 12px 26px -12px rgba(251, 191, 36, .25);
+}
+.theme--dark .plan.active {
+  border-color: #fbbf24;
+  background: linear-gradient(180deg, #201b10, #191507);
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, .16), 0 14px 30px -14px rgba(251, 191, 36, .3);
+}
+.theme--dark .plan .price {
+  background: linear-gradient(120deg, #fb7185 0%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.theme--dark .table thead th {
+  background: linear-gradient(180deg, #26200f, #1c1908);
+  color: #fcd34d;
+}
+.theme--dark .table tbody tr:hover td {
+  background: #1a1f10;
+}
+.theme--dark .tick,
+.theme--dark .cross {
+  box-shadow: none;
+}
+.theme--dark .order-price .num {
+  color: #fb7185;
+}
+.theme--dark .pay.selected {
+  border-color: #fbbf24;
+  background: #1e1a0e;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, .18);
+}
+.theme--dark .btn-primary {
+  color: #111827;
+  box-shadow: 0 12px 24px -8px rgba(251, 191, 36, .35);
+}
+.theme--dark .step-num {
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  box-shadow: none;
+}
+.theme--dark .faq-card {
+  background: #141827 !important;
+  border-color: #262d3d !important;
+  box-shadow: 0 16px 36px -18px rgba(0, 0, 0, .8) !important;
+}
+.theme--dark .faq-toggle {
+  background: #212738;
+  color: #9ca3af;
+}
+.theme--dark .faq-item.active .faq-toggle {
+  background: #33270e;
+  color: #fbbf24;
+}
+.theme--dark .faq-answer {
+  color: #b6bdd0;
+}
+.theme--dark .modal__overlay {
+  background: rgba(2, 6, 23, .66);
+}
+.theme--dark .modal__btn {
+  color: #111827;
+}
