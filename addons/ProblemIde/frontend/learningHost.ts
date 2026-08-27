@@ -15,6 +15,8 @@ export const PROBLEM_IDE_EVENTS = {
     HINT_REQUEST: 'problem-ide-hint-request',
     /** 打开编程小助手（AiTutor）面板；detail: { requestHint?: boolean } */
     TUTOR_OPEN: 'problem-ide-tutor-open',
+    /** 打开 AI 分析 Tab 并选中提交；detail: { rid, rdoc? } */
+    AI_ANALYSIS_OPEN: 'problem-ide-ai-analysis-open',
     SCAFFOLD_REQUEST: 'problem-ide-scaffold-request',
     READY: 'problem-ide-ready',
 } as const;

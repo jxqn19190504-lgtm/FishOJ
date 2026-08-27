@@ -104,6 +104,23 @@ export function setupJudgeSession(opts: {
     };
 
     const normalizeRid = (v: unknown) => String(v ?? '').trim();
+    const recordIdStr = (rdoc: { _id?: unknown }) => {
+        const id = rdoc?._id;
+        if (id == null) return '';
+        if (typeof id === 'string') return id.trim();
+        if (typeof id === 'object' && id !== null && typeof (id as { toString?: () => string }).toString === 'function') {
+            const s = (id as { toString: () => string }).toString();
+            if (/^[a-f0-9]{24}$/i.test(s)) return s;
+        }
+        return String(id).trim();
+    };
+    const HISTORY_AI_BTN = (rid: string) => (
+        `<button type="button" class="history-ai-btn" data-rid="${escapeHtml(rid)}">`
+        + '<span class="history-ai-btn__ico" aria-hidden="true">'
+        + '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">'
+        + '<path d="M12 3l1.35 4.42L18 8.5l-4.65 1.08L12 14l-1.35-4.42L6 8.5l4.65-1.08L12 3zm6 9l.9 2.95 3.1 1.05-3.1 1.05L18 21l-2.1-3.95L12 17.1l3.9-1.15L18 12z"/></svg>'
+        + '</span>AI分析</button>'
+    );
     const getRecordStatus = (rdoc: any) => (typeof rdoc?.status === 'number' ? rdoc.status : parseInt(String(rdoc?.status), 10));
     const getRecordDetailUrl = (rid: string) =>
         UiContext.getRecordDetailUrl?.replace('%7Brid%7D', rid).replace('{rid}', rid) || `/record/${rid}`;
@@ -464,19 +481,38 @@ export function setupJudgeSession(opts: {
                 historyEl.innerHTML = '<div class="history-empty">暂无提交记录</div>';
                 return;
             }
-            let html = '<table class="history-table"><thead><tr><th>时间</th><th>结果</th><th>分数</th><th>语言</th></tr></thead><tbody>';
+            const aiCol = ideCanSubmit ? '<th>AI分析</th>' : '';
+            let html = `<table class="history-table"><thead><tr><th>时间</th><th>结果</th><th>分数</th><th>语言</th>${aiCol}</tr></thead><tbody>`;
             for (const r of rdocs) {
                 const st = getRecordStatus(r);
                 const lb = LABEL[SN[st] || ''] || String(st);
                 const t = r.judgeAt ? new Date(r.judgeAt).toLocaleString() : '-';
-                const href = getRecordDetailUrl(String(r._id));
-                html += `<tr class="history-row" data-href="${escapeHtml(href)}"><td>${escapeHtml(t)}</td>`;
+                const rid = recordIdStr(r);
+                const href = rid ? getRecordDetailUrl(rid) : '';
+                const judged = DONE.has(st);
+                html += `<tr class="history-row" data-rid="${escapeHtml(rid)}"${href ? ` data-href="${escapeHtml(href)}"` : ''}>`;
+                html += `<td>${escapeHtml(t)}</td>`;
                 html += `<td class="${st === 1 ? 'result-ac' : 'result-err'}">${escapeHtml(lb)}</td>`;
                 html += `<td>${r.score != null ? escapeHtml(String(r.score)) : '-'}</td>`;
-                html += `<td>${escapeHtml(langRange[r.lang] || r.lang || '-')}</td></tr>`;
+                html += `<td>${escapeHtml(langRange[r.lang] || r.lang || '-')}</td>`;
+                if (ideCanSubmit) {
+                    html += `<td class="history-ai-cell">${judged && rid ? HISTORY_AI_BTN(rid) : '-'}</td>`;
+                }
+                html += '</tr>';
             }
             html += '</tbody></table>';
             historyEl.innerHTML = html;
+            historyEl.querySelectorAll('.history-ai-btn').forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const rid = (btn as HTMLElement).dataset.rid || '';
+                    if (!rid) return;
+                    const row = btn.closest('.history-row');
+                    const rdoc = rdocs.find((r) => recordIdStr(r) === rid) || { _id: rid };
+                    emitJudge('problem-ide-ai-analysis-open', { rid, rdoc });
+                });
+            });
             historyEl.querySelectorAll('.history-row').forEach((row) => {
                 row.addEventListener('click', () => {
                     const href = (row as HTMLElement).dataset.href;

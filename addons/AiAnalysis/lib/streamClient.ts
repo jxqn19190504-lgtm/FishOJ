@@ -82,8 +82,10 @@ export const RECORD_AI_PAUSE_OR_LEAVE_NON_REFUND_HINT_ZH =
 /** 查询该提交是否已有服务端缓存的 AI 分析（不扣次） */
 export async function fetchRecordAiAnalysisCache(
     rid: string,
+    cacheUrl?: string,
 ): Promise<{ hasCache: boolean; contentHtml?: string }> {
-    const u = `${RECORD_AI_ANALYSIS_CACHE_URL}?rid=${encodeURIComponent(rid)}`;
+    const base = cacheUrl || RECORD_AI_ANALYSIS_CACHE_URL;
+    const u = `${base}?rid=${encodeURIComponent(rid)}`;
     try {
         const res = await fetch(u, { credentials: 'same-origin' });
         if (!res.ok) return { hasCache: false };
@@ -1769,6 +1771,8 @@ export type RecordAiStreamRequestOptions = {
     submitLanguage?: string;
     disableCache?: boolean;
     autoScroll?: boolean;
+    streamUrl?: string;
+    cacheUrl?: string;
 };
 
 /** 自 liveEl 向上查找实际负责滚动的面板（如 .record-ai-stream-panel） */
@@ -1826,7 +1830,8 @@ export async function runRecordAiAnalysisStream(
     liveEl.innerHTML = '<p style="color:#8c8c8c;">AI思考中，请稍候</p>';
 
     try {
-        const streamRes = await fetch(RECORD_AI_ANALYSIS_STREAM_URL, {
+        const streamUrl = options?.streamUrl || RECORD_AI_ANALYSIS_STREAM_URL;
+        const streamRes = await fetch(streamUrl, {
             method: 'POST',
             credentials: 'same-origin',
             headers: {

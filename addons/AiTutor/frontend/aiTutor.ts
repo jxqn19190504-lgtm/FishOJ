@@ -65,7 +65,7 @@ export function initAiTutor() {
           <span>编程小助手</span>
           <button type="button" class="fish-tutor__close" id="fishTutorClose" aria-label="关闭">×</button>
         </div>
-        <div class="fish-tutor__body" id="fishTutorBody">我在看着你的代码。需要时点下面的按钮，我会给最小的提示。</div>
+        <div class="fish-tutor__body" id="fishTutorBody">需要提示时点下面按钮，我会用简单的话问你一个问题。</div>
         <div class="fish-tutor__meta" id="fishTutorMeta"></div>
         <div class="fish-tutor__actions">
           <button type="button" class="fish-tutor__btn" id="fishTutorDismiss">我再想想</button>
@@ -116,7 +116,7 @@ export function initAiTutor() {
         }
         busy = true;
         setState('busy');
-        if (body) body.textContent = '我在看你现在的代码和刚才的运行结果…';
+        if (body) body.textContent = '正在看你的代码和运行结果…';
         open();
         try {
             const res = await request.post(hintUrl, {
@@ -148,12 +148,7 @@ export function initAiTutor() {
             }
             if (body) body.textContent = res.message || '';
             if (meta) {
-                const bits = [
-                    res.progressSummary,
-                    res.level ? `提示强度 H${res.level}` : '',
-                    res.category && res.category !== 'NONE' ? res.category : '',
-                ].filter(Boolean);
-                meta.textContent = bits.join(' · ');
+                meta.textContent = res.level ? `提示 H${res.level}` : '';
             }
             setState((snap.lastRun?.status || '').toUpperCase().includes('ACCEPT') ? 'ok' : 'hint');
         } catch {

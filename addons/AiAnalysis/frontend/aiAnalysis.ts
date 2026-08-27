@@ -14,7 +14,9 @@ import {
     RECORD_AI_STREAM_MD_CLASS,
     RECORD_AI_ANALYSIS_QUOTA_URL,
     ensureGithubMarkdownForRecordAi,
+    fetchRecordAiAnalysisCache,
     parseAiAnalysisQuotaRef,
+    renderRecordAiCachedAnalysisIntoStreamRoot,
     runRecordAiAnalysisStream,
     type AiAnalysisQuotaRef,
 } from '../lib/streamClient';
@@ -44,7 +46,23 @@ declare global {
     }
 }
 
-const AI_ICON = `<span class="history-ai-btn__ico" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l1.35 4.42L18 8.5l-4.65 1.08L12 14l-1.35-4.42L6 8.5l4.65-1.08L12 3zm6 9l.9 2.95 3.1 1.05-3.1 1.05L18 21l-2.1-3.95L12 17.1l3.9-1.15L18 12z"/></svg></span>`;
+const AI_ANALYSIS_OPEN = 'problem-ide-ai-analysis-open';
+
+function normalizeRecordId(raw: unknown): string {
+    if (raw == null) return '';
+    if (typeof raw === 'string') return raw.trim();
+    if (typeof raw === 'object' && raw !== null && typeof (raw as { toString?: () => string }).toString === 'function') {
+        const s = (raw as { toString: () => string }).toString();
+        if (/^[a-f0-9]{24}$/i.test(s)) return s;
+    }
+    return String(raw).trim();
+}
+
+function recordStatusNum(rdoc: any): number {
+    const st = rdoc?.status;
+    if (typeof st === 'number' && Number.isFinite(st)) return st;
+    return parseInt(String(st ?? ''), 10);
+}
 
 function escapeHtml(s: string): string {
     return String(s || '')
@@ -69,43 +87,20 @@ function showProblemTab(type: string) {
     } catch { /* ignore */ }
 }
 
-function ensureSettingsModal(): HTMLElement | null {
-    let modal = document.getElementById('problemIdeAiSettingsModal');
-    if (modal) return modal;
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `
-<div id="problemIdeAiSettingsModal" class="problem-ide-ai-modal problem-ide-ai-modal--hidden">
-  <div class="problem-ide-ai-modal__mask" data-role="close"></div>
-  <div class="problem-ide-ai-modal__dialog" role="dialog" aria-modal="true" aria-label="AI分析设置">
-    <div class="problem-ide-ai-modal__title">AI分析设置</div>
-    <label class="problem-ide-ai-panel__label">自定义API Key（仅本地保存）</label>
-    <div id="problemIdeAiApiKeyHint" class="problem-ide-ai-panel__hint">留空使用官方API Key，每天有次数限制</div>
-    <input id="problemIdeAiApiKey" class="problem-ide-ai-panel__input" type="password" placeholder="sk-..." autocomplete="off" />
-    <label class="problem-ide-ai-panel__label">分析模型</label>
-    <div id="problemIdeAiModelHint" class="problem-ide-ai-panel__hint">会员和管理员可切换模型</div>
-    <select id="problemIdeAiModelPreset" class="problem-ide-ai-panel__input">
-      <option value="deepseek-v4-flash">DeepSeek</option>
-      <option value="kimi">Kimi</option>
-      <option value="zhipu">智谱</option>
-      <option value="tongyi-qianwen">通义千问</option>
-      <option value="doubao">豆包</option>
-    </select>
-    <label class="problem-ide-ai-panel__label">模型名称（选填）</label>
-    <input id="problemIdeAiCustomModel" class="problem-ide-ai-panel__input" type="text" placeholder="留空使用默认模型" autocomplete="off" />
-    <label class="problem-ide-ai-panel__label">提示词模板</label>
-    <textarea id="problemIdeAiPromptTemplate" class="problem-ide-ai-panel__textarea" rows="10"></textarea>
-    <div class="problem-ide-ai-modal__footer">
-      <button type="button" id="problemIdeAiSettingsCancel" class="problem-ide-ai-modal__btn">取消</button>
-      <button type="button" id="problemIdeAiSettingsSave" class="problem-ide-ai-modal__btn problem-ide-ai-modal__btn--primary">保存</button>
-    </div>
-  </div>
-</div>`;
-    document.body.appendChild(wrap.firstElementChild as HTMLElement);
-    return document.getElementById('problemIdeAiSettingsModal');
+function getRecordDetailUrl(rid: string): string {
+    const id = normalizeRecordId(rid);
+    return UiContext.getRecordDetailUrl?.replace('%7Brid%7D', id).replace('{rid}', id) || `/record/${id}`;
 }
 
-function getRecordDetailUrl(rid: string): string {
-    return UiContext.getRecordDetailUrl?.replace('%7Brid%7D', rid).replace('{rid}', rid) || `/record/${rid}`;
+function showEmptyAiPanel(metaEl: HTMLElement | null, streamRoot: HTMLElement | null) {
+    if (metaEl) {
+        metaEl.innerHTML = '<span class="problem-ide-ai-panel__meta-empty">请从「运行结果」或「历史提交」选择一条记录，再点「开始AI分析」</span>';
+    }
+    if (streamRoot) {
+        streamRoot.classList.add('record-ai-stream-panel--await-start');
+        streamRoot.classList.remove('is-result', 'is-loading');
+        streamRoot.innerHTML = '<div class="record-ai-await-start"><span>选择提交后开始分析</span></div>';
+    }
 }
 
 const DONE = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
@@ -115,7 +110,6 @@ export function initAiAnalysis() {
     if (!cfg?.enabled) return;
     if (document.getElementById('content-aiAnalysis') == null) return;
 
-    ensureSettingsModal();
     ensureGithubMarkdownForRecordAi();
 
     const pid = String(UiContext.problemId || UiContext.problemNumId || '');
@@ -266,8 +260,13 @@ export function initAiAnalysis() {
         ].join('');
     };
 
-    const openAIAnalysis = async (rid: string, rdoc: any) => {
+    const openAIAnalysis = async (ridRaw: string, rdoc: any) => {
         if (!aiStartBtn || !aiStreamRoot) return;
+        const rid = normalizeRecordId(ridRaw || rdoc?._id);
+        if (!rid) {
+            Notification.error('无法识别提交记录，请从历史提交重试');
+            return;
+        }
         document
             .querySelector('#problemIdeProblemTabs .section__tab-header-item[data-type="aiAnalysis"]')
             ?.removeAttribute('hidden');
@@ -286,10 +285,10 @@ export function initAiAnalysis() {
         renderQuotaBar();
         try {
             const detail = await request.get(getRecordDetailUrl(rid)) as any;
-            const codeText = String(detail?.rdoc?.code || rdoc.code || '');
+            const codeText = String(detail?.rdoc?.code || rdoc?.code || '');
             aiCurrentTarget = { rid, rdoc: detail?.rdoc || rdoc, code: codeText };
             syncStartBtn();
-            aiStreamRoot.innerHTML = '<div class="record-ai-await-start"><button type="button" class="record-ai-await-start__btn" disabled>请点击上方“开始AI分析”</button></div>';
+            aiStreamRoot.innerHTML = '<div class="record-ai-await-start"><span>已选中提交记录，请点击上方「开始AI分析」</span></div>';
         } catch (e) {
             aiStartBtn.disabled = true;
             aiStartBtn.textContent = '开始AI分析';
@@ -310,6 +309,21 @@ export function initAiAnalysis() {
             Notification.error(`今日 AI 次数已用完（每日 ${quotaRef.dailyLimit} 次），明日刷新。`);
             return;
         }
+        const cacheUrl = cfg.cacheUrl;
+        if (!aiEverCompleted && cacheUrl) {
+            const cached = await fetchRecordAiAnalysisCache(aiCurrentTarget.rid, cacheUrl);
+            if (cached.hasCache && cached.contentHtml?.trim()) {
+                aiStreamRoot.classList.remove('record-ai-stream-panel--await-start', 'is-loading');
+                aiStreamRoot.classList.add('is-result');
+                renderRecordAiCachedAnalysisIntoStreamRoot(aiStreamRoot, cached.contentHtml, {
+                    submitCode: aiCurrentTarget.code,
+                    language: aiCurrentTarget.rdoc?.lang,
+                });
+                aiEverCompleted = true;
+                syncStartBtn();
+                return;
+            }
+        }
         aiStartBtn.textContent = '暂停';
         aiStartBtn.title = `点击暂停。${RECORD_AI_PAUSE_OR_LEAVE_NON_REFUND_HINT_ZH}`;
         aiStartBtn.classList.add('problem-ide-ai-panel__start-btn--abort');
@@ -329,6 +343,8 @@ export function initAiAnalysis() {
         aiStreamAbort = new AbortController();
         const outcome = await runRecordAiAnalysisStream(aiCurrentTarget.rid, liveEl, {
             signal: aiStreamAbort.signal,
+            streamUrl: cfg.streamUrl,
+            cacheUrl: cfg.cacheUrl,
             ...recordAiStreamRequestOptionsFromSavedSettings(settings, canUseCustomApiKey),
             ideCode: snap?.code,
             submitCode: aiCurrentTarget.code,
@@ -393,17 +409,22 @@ export function initAiAnalysis() {
     };
     bootFromUrl();
 
-    document.addEventListener('problem-ide-ai-analysis-open', ((ev: Event) => {
+    document.addEventListener(AI_ANALYSIS_OPEN, ((ev: Event) => {
         const d = (ev as CustomEvent<{ rid?: string; rdoc?: any }>).detail || {};
-        const rid = String(d.rid || '').trim();
+        const rid = normalizeRecordId(d.rid || d.rdoc?._id);
         if (!rid) return;
         void openAIAnalysis(rid, d.rdoc || { _id: rid });
     }) as EventListener);
 
     document.addEventListener('problem-ide-submit-result', ((ev: Event) => {
         const d = (ev as CustomEvent<{ rid?: string; status?: string; rdoc?: any }>).detail || {};
-        const rid = String(d.rid || '').trim();
+        const rid = normalizeRecordId(d.rid || d.rdoc?._id);
         if (!rid || !submitResultAiBtn) return;
+        const st = recordStatusNum(d.rdoc || {});
+        if (st === 1) {
+            submitResultAiBtn.hidden = true;
+            return;
+        }
         lastSubmitRid = rid;
         lastSubmitRdoc = d.rdoc || { _id: rid, status: d.status };
         submitResultAiBtn.hidden = false;
@@ -412,49 +433,16 @@ export function initAiAnalysis() {
         };
     }) as EventListener);
 
-    /** 增强历史表：注入 AI 列与按钮 */
-    const enhanceHistory = (root: HTMLElement) => {
-        const table = root.querySelector('table.history-table');
-        if (!table || table.getAttribute('data-ai-enhanced') === '1') return;
-        const theadRow = table.querySelector('thead tr');
-        const tbody = table.querySelector('tbody');
-        if (!theadRow || !tbody) return;
-        if (![...theadRow.children].some((th) => /AI/.test(th.textContent || ''))) {
-            const th = document.createElement('th');
-            th.textContent = 'AI分析';
-            theadRow.appendChild(th);
-        }
-        tbody.querySelectorAll('tr.history-row').forEach((row) => {
-            if (row.querySelector('.history-ai-cell')) return;
-            const href = (row as HTMLElement).dataset.href || '';
-            const ridMatch = href.match(/\/record\/([a-f0-9]+)/i)
-                || ((row as HTMLElement).dataset.rid ? [null, (row as HTMLElement).dataset.rid!] : null);
-            const rid = ridMatch?.[1] || '';
-            const cell = document.createElement('td');
-            cell.className = 'history-ai-cell';
-            if (rid) {
-                cell.innerHTML = `<button type="button" class="history-ai-btn" data-rid="${escapeHtml(rid)}">${AI_ICON}AI分析</button>`;
-                cell.querySelector('button')?.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    document.dispatchEvent(new CustomEvent('problem-ide-ai-analysis-open', {
-                        detail: { rid },
-                    }));
-                });
-            } else {
-                cell.textContent = '-';
-            }
-            row.appendChild(cell);
-        });
-        table.setAttribute('data-ai-enhanced', '1');
-    };
+    window.addEventListener('problem-ide:tab-changed', ((ev: Event) => {
+        const type = (ev as CustomEvent<{ type?: string }>).detail?.type;
+        if (type !== 'aiAnalysis') return;
+        if (aiCurrentTarget) return;
+        showEmptyAiPanel(aiMetaEl, aiStreamRoot);
+        syncStartBtn();
+    }) as EventListener);
 
-    const historyEl = document.getElementById('problemIdeHistory');
-    if (historyEl) {
-        const mo = new MutationObserver(() => enhanceHistory(historyEl));
-        mo.observe(historyEl, { childList: true, subtree: true });
-        enhanceHistory(historyEl);
-    }
+    showEmptyAiPanel(aiMetaEl, aiStreamRoot);
+    syncStartBtn();
 
     // exam mode：隐藏 AI tab
     const syncExam = () => {

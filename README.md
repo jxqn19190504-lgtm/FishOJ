@@ -1,91 +1,252 @@
-# FishOJ — 基于 Hydro 的在线评测系统
+# FishOJ
 
-> 教学驱动 · 面向少儿编程培训班的 Online Judge 系统
+基于 [Hydro](https://hydro.js.org/) 的在线评测系统，面向少儿编程培训班的教学与练习场景。
 
-## 📖 项目简介
+本仓库**不是**完整的 Hydro 安装包，而是 **FishOJ 自研插件层**、文档与服务器配置样例。Hydro 核心、MongoDB 数据、题库大文件均不在仓库内。
 
-FishOJ 是基于开源项目 [Hydro](https://hydro.js.org/) 二次开发的在线评测系统（Online Judge）。
-本项目是作者的**深度学习项目**：以真实项目为载体，系统性地补齐网站搭建、服务器运营、前后端架构、Docker 容器、网络安全等基础知识，并最终服务于校外少儿编程培训班的教学与练习场景。
+---
 
-## 🏗️ 技术栈
-
-| 层次 | 技术 |
-|------|------|
-| 评测系统 | Hydro 5.0.4（Node.js + TypeScript + **React 19**） |
-| 前端 UI | @hydrooj/ui-default 4.58.4（React + Mantine，`packages/ui-default`） |
-| 数据库 | MongoDB 7.0（PM2 管理） |
-| 判题环境 | Nix 包管理器 + hydro-sandbox 沙箱 |
-| Web 服务 | Caddy 反向代理（:80 → 127.0.0.1:8888） |
-| 进程管理 | PM2（4 进程：hydrooj / mongodb / hydro-sandbox / caddy） |
-| 服务器 | 阿里云 ECS · Ubuntu 22.04 · 4C8G |
-| 运维面板 | 1Panel（Docker 管理 / 文件 / 监控） |
-
-## 🌐 访问地址
+## 在线实例
 
 | 服务 | 地址 |
 |------|------|
-| Hydro OJ（主站） | `http://8.163.87.247` |
-| 1Panel 面板 | 见本地档案（含安全入口） |
-| SSH | `ssh root@8.163.87.247`（密钥登录，私钥见本地档案） |
+| 主站 | http://8.163.87.247 |
+| 编程题 IDE | `/ide/:pid`（编程题默认入口，由 ProblemIde 提供） |
 
-> ⚠️ **注意**：阿里云普通公网 IP 在实例停止/重启后可能变更，如无法访问请到控制台核对最新 IP。
+> 阿里云试用机公网 IP 可能在停机/重启后变更，无法访问时请核对控制台最新 IP。
 
-## 🗂️ 仓库结构
+---
+
+## 技术栈
+
+| 层次 | 技术 |
+|------|------|
+| 评测核心 | Hydro 5.0.4（Node.js + TypeScript） |
+| 前端 UI | @hydrooj/ui-default（React + Mantine） |
+| 数据库 | MongoDB 7.0 |
+| 判题 | hydro-sandbox + Nix 编译器工具链 |
+| 反向代理 | Caddy（`:80` → `127.0.0.1:8888`） |
+| 进程管理 | PM2（`hydrooj` / `mongodb` / `hydro-sandbox` / `caddy`） |
+| 当前部署 | 阿里云 ECS · Ubuntu 22.04 · PM2 + Nix（非 Docker） |
+
+---
+
+## 自研插件一览
+
+所有业务功能通过 `addons/` 下的 Hydro 插件实现，**不修改 Hydro 官方核心**。
+
+| 插件 | 路由 / 入口 | 职责 |
+|------|-------------|------|
+| **ProblemIde** | `/ide/:pid` | LeetCode 式做题 IDE：Monaco 编辑器、自测/提交、题面 TOC、计时器、练习/考试模式；**教学与 AI 功能的宿主页面** |
+| **LearningScaffold** | 控制面板「辅助编码管理」 | 按题目配置学习方式脚手架（Scaffold）开关 |
+| **AiTutor** | IDE 内「编程小助手」 | 启发式提示（`/ai-tutor/hint`），根据代码/运行结果给出引导，不直接给答案 |
+| **AiAssistant** | IDE 内「AI 助教」 | 多轮 LLM 对话（`/ai-assistant/stream`），支持历史、引用代码、深度思考 |
+| **AiAnalysis** | IDE 左侧「AI 分析」Tab | 对提交记录做 SSE 流式错因分析（`/ai-analysis/stream`） |
+| **VipIntroPage** | `/vip` | 会员介绍页与 `vip` 域角色；支付流程尚未接通 |
+
+### AI 功能关系（做题页）
 
 ```
-├── README.md              # 本文件（项目交接文档）
-├── docs/系统介绍.md       # 给脚手架 / 项目计划书用的完整系统说明
-├── docs/                  # 学习笔记 / 架构 / 风格
-├── addons/                # 自研 Hydro 插件（ProblemIde、VipIntroPage、LearningScaffold、AiTutor、AiAnalysis、AiAssistant）
-├── server-config/         # Caddy / Mongo 配置样例（无真实密码）
-└── 题库/                  # Hydro 格式题包（gitignore，不进仓库）
+ProblemIde（宿主）
+├── AiAssistant  AI 助教（右侧浮层，多轮对话）
+│   └── 头部灯泡按钮 → 打开 AiTutor（编程小助手）
+├── AiTutor      编程小助手（启发式提示；AI 助教开启时隐藏右下角 🤖）
+├── AiAnalysis   提交记录 AI 分析（左侧 Tab）
+└── LearningScaffold / AiTutor 开关由控制面板按题配置
 ```
 
-## 🔑 常用运维命令
+**IDE 右上角 ⚙ 设置** 提供「AI 助教」显示开关（关闭后不再显示右下角恢复圆点，统一从此处重新开启）。
+
+跨插件协作协议见 [`docs/problem-ide-learning-contract.md`](docs/problem-ide-learning-contract.md)（CustomEvent + `UiContext`，禁止跨插件 `import`）。
+
+---
+
+## 仓库结构
+
+```
+FishOJ/
+├── README.md                          # 本文件
+├── docs/
+│   ├── 系统介绍.md                    # 给脚手架 / 计划书用的完整系统说明
+│   ├── problem-ide-learning-contract.md  # ProblemIde 与 AI 插件的公开协议
+│   ├── problem-restyle.md             # 题面改写约定
+│   └── 题面模板.md
+├── addons/
+│   ├── ProblemIde/                    # 做题 IDE（宿主）
+│   ├── LearningScaffold/              # 学习方式脚手架
+│   ├── AiTutor/                       # 编程小助手
+│   ├── AiAssistant/                   # AI 助教
+│   ├── AiAnalysis/                    # AI 分析
+│   └── VipIntroPage/                  # 会员介绍
+├── server-config/
+│   ├── Caddyfile                      # 反向代理样例（含 SSE 长连接超时）
+│   └── config.example.json            # Mongo URI 占位，勿提交真实密码
+└── 题库/                              # Hydro 题包（gitignore，本地/服务器另存）
+```
+
+### 推荐插件目录结构
+
+```
+addons/<FeatureName>/
+  index.ts              # 仅 apply()：注册路由、钩子、组装
+  handler/              # HTTP Handler
+  hooks/                # ctx.on('handler/after') 等
+  lib/                  # 纯函数、配置键
+  frontend/
+    *.page.ts           # NamedPage 入口（Hydro 按此打包 UI）
+    *.ts / *.css
+  templates/            # Nunjucks 模板
+  package.json          # main 指向 index.js
+```
+
+---
+
+## 本地开发
+
+FishOJ 插件不能单独运行，需要本机或远程有一套 Hydro 实例。
+
+### 方式一：WSL 安装 Hydro（推荐联调 UI）
+
+Windows 请使用 **WSL2 + Ubuntu**（Hydro 仅支持 Linux）：
 
 ```bash
-pm2 list                        # 查看 Hydro 全部进程状态
-pm2 restart hydrooj             # 重启主程序（改配置后）
-pm2 logs                        # 查看日志（排查问题）
-hydrooj cli user setSuperAdmin <uid>   # 设置超级管理员
+# WSL 内，首次安装
+sudo su
+LANG=zh . <(curl https://hydro.ac/setup.sh) --no-caddy
+
+# 注册账号后设管理员
+hydrooj cli user setSuperAdmin <uid>
+
+# 挂载本仓库插件（Windows 盘符在 WSL 为 /mnt/d/...）
+hydrooj addon add /mnt/d/FishOJ/addons/ProblemIde
+hydrooj addon add /mnt/d/FishOJ/addons/LearningScaffold
+hydrooj addon add /mnt/d/FishOJ/addons/AiTutor
+hydrooj addon add /mnt/d/FishOJ/addons/AiAssistant
+hydrooj addon add /mnt/d/FishOJ/addons/AiAnalysis
+pm2 restart hydrooj
 ```
 
-## 🗺️ 项目路线图
+浏览器访问 `http://localhost:8888/ide/<题号>`。改 `frontend/*.page.ts` 或 CSS 后执行 `pm2 restart hydrooj` 重建 UI，再硬刷新。
+
+AI 功能需配置 LLM API Key（如 `DEEPSEEK_API_KEY` / `BUILTIN_API_KEY`，或 AiTutor 控制面板中的 key）。
+
+### 方式二：同步到线上机预览
+
+见下文「部署到服务器」。
+
+### 插件内单元测试
+
+部分插件提供本地测试脚本，无需启动 Hydro：
+
+```bash
+cd addons/AiAssistant
+npm test
+```
+
+---
+
+## 部署到服务器
+
+当前线上插件目录：`/root/.hydro/addons/`，清单：`/root/.hydro/addon.json`。
+
+**典型发布流程**（改插件代码后）：
+
+```bash
+# 1. 提交并推送（本机）
+git add ...
+git commit -m "..."
+git push origin main
+
+# 2. 同步改动到服务器（示例：scp 整个插件目录）
+scp -r addons/ProblemIde addons/AiAssistant addons/AiTutor root@<host>:/root/.hydro/addons/
+
+# 3. 重启 Hydro（需登录 shell 以加载 pm2）
+ssh root@<host> "bash -lc 'pm2 restart hydrooj'"
+```
+
+首次安装某插件：
+
+```bash
+hydrooj addon add /root/.hydro/addons/<PluginName>
+pm2 restart hydrooj
+```
+
+改 `frontend/*.page.ts` / CSS 必须重启 `hydrooj` 触发 UI 重建；只改 Nunjucks 模板有时刷新即可。
+
+线上已注册插件（参考）：`ui-default`、`hydrojudge`、`fps-importer`、`a11y`、`hydroac-client`，以及本仓库的 ProblemIde、LearningScaffold、AiTutor、AiAssistant、AiAnalysis。
+
+---
+
+## 常用运维命令
+
+在服务器上（需 `bash -lc` 或已加载 nix/pm2 环境）：
+
+```bash
+pm2 list
+pm2 restart hydrooj
+pm2 logs hydrooj --lines 50
+hydrooj cli user setSuperAdmin <uid>
+hydrooj addon add <绝对路径>
+```
+
+---
+
+## 插件开发约定
+
+用 AI 或人工编写代码时请遵守：
+
+1. **高内聚、低耦合。** 一个插件只做一件事。跨插件协作只用 Hydro 钩子、`UiContext` 字段、`document` CustomEvent 或 URL，**禁止** `import` 其他插件内部文件。
+2. **按功能拆文件。** `index.ts` 与 `*.page.ts` 只做注册与组装；handler、hook、lib、前端模块、模板 partial 分文件存放。
+3. **不实现评测核心。** 提交/自测走 Hydro 官方接口（`problem_submit`、`record-conn` 等）。
+4. **AI 失败不影响做题。** 判题、提交不等待 AI 响应。
+
+详细架构与各插件职责见 [`docs/系统介绍.md`](docs/系统介绍.md)。
+
+---
+
+## 路线图
 
 | 阶段 | 内容 | 状态 |
 |------|------|------|
-| 一、部署上线 | 服务器 / SSH / Docker / Hydro / 题库 / 公网访问 | ✅ 已完成（PM2 部署） |
-| 二、原理深挖 | Docker 原理、网络/DNS/端口、MongoDB、Hydro 前后端架构 | ⏳ 进行中 |
-| 三、二次开发 | Hydro 插件开发、主题定制、评测沙箱原理 | ⏳ 进行中（教学脚手架 + AI Tutor MVP） |
-| 四、运营落地 | 少儿培训班场景：域名备案、用户管理、监控备份 | 📅 规划中 |
+| 一、部署上线 | 服务器、Hydro、题库、公网访问 | ✅ 已完成 |
+| 二、原理深挖 | Docker、网络、MongoDB、Hydro 架构 | ⏳ 进行中 |
+| 三、二次开发 | 做题 IDE、教学脚手架、AI 助教/小助手/分析 | ⏳ 进行中（核心插件已上线） |
+| 四、运营落地 | 域名备案、会员支付、监控备份、Docker 正式环境 | 📅 规划中 |
 
-## 🤖 插件开发与 AI 生成约定
+---
 
-二次开发以 Hydro **addon 插件**为主（见仓库 `addons/`），不要改官方核心。用 AI 生成或补全代码时，也必须遵守下面两条：
+## 关键决策
 
-1. **高内聚、低耦合。** 一个插件只负责自己的功能；插件之间不要互相引用、不要把状态散落到别的插件里。需要跨插件协作时，用 Hydro 钩子、页面字段或约定好的接口，而不是直接 import 对方内部实现。
-2. **按功能拆文件。** 不要把多种职责堆进同一个 `index.ts`、`*.page.ts` 或超大 CSS。入口文件只做注册与组装；handler、hook、lib、前端模块、模板 partial 按功能分文件，避免单文件里堆大量互不相关的代码。
+- **不 fork Hydro**，跟随官方 [hydro-dev/Hydro](https://github.com/hydro-dev/Hydro) 升级。
+- **试用机**：阿里云 PM2 部署；**正式环境**规划京东云 + Docker。
+- **商业参考**：[`docs/codefun2000.addons分析.md`](docs/codefun2000.addons分析.md) 仅借鉴产品形态，不复制代码或密钥。
+- **合规**：大陆服务器绑域名需 ICP 备案；正式运营建议使用弹性 IP 或固定域名。
 
-参考现有拆分：`addons/VipIntroPage`、`addons/ProblemIde`、`addons/LearningScaffold`、`addons/AiTutor`、`addons/AiAnalysis`、`addons/AiAssistant`。跨插件协议见 `docs/problem-ide-learning-contract.md`。
+---
 
-## 📦 关键决策记录
+## 安全红线
 
-- **部署方式**：当前阿里云试用机用官方脚本（PM2 + Nix）部署；**京东云正式环境改用 Docker 部署**（环境一致性、迁移/升级/回滚更优）。
-- **不使用第三方 fork**（如 Hydro4LVJ，停更于 2024-01），直接使用官方 hydro-dev/Hydro。
-- **合规**：中国大陆服务器绑域名需 ICP 备案；正式运营前需绑定弹性 IP 或购买域名，避免 IP 变更导致服务不可达。
+以下内容**严禁**提交进 Git（已通过 `.gitignore` 排除）：
 
-## 🛠️ 交接指南（新环境快速部署）
+- SSH 私钥、API Key、数据库密码
+- 含真实凭据的 `config.json` / `.env`
+- `.workbuddy/` 等本地工作目录
 
-1. SSH 连接服务器（密钥登录）
-2. 运行 Hydro 官方安装脚本：`LANG=zh . <(curl https://hydro.ac/setup.sh)`
-3. 配置安全组放行端口（80 / 22）
-4. 注册第一个用户 → `hydrooj cli user setSuperAdmin <uid>` 设为管理员
-5. 导入 `题库/` 下的题包
-6. 参考 `DEPLOY.md` 中记录的踩坑点
+`server-config/` 中仅为占位样例，部署时使用服务器本地配置。
 
-## ⚠️ 安全红线
+---
 
-以下内容**严禁**提交到本仓库（已通过 `.gitignore` 排除）：
-- SSH 私钥（`*.pem`、`*.key`）
-- 数据库密码、面板密码等敏感配置
-- `.workbuddy/` 项目内部记忆目录
+## 文档索引
+
+| 文档 | 用途 |
+|------|------|
+| [`docs/系统介绍.md`](docs/系统介绍.md) | 完整系统说明、各插件细节、给 AI 脚手架的约束 |
+| [`docs/problem-ide-learning-contract.md`](docs/problem-ide-learning-contract.md) | ProblemIde 与 AI 插件的事件与 UiContext 协议 |
+| [`docs/problem-restyle.md`](docs/problem-restyle.md) | 题面改写工作流 |
+| [`docs/题面模板.md`](docs/题面模板.md) | 题面 Markdown 模板 |
+
+---
+
+## License
+
+插件代码 MIT（见各 `package.json`）。Hydro 本身遵循其官方许可证。
