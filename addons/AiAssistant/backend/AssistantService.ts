@@ -1,5 +1,4 @@
 import { PassThrough } from 'stream';
-import { SystemModel } from 'hydrooj';
 import { aiChatClient, type ChatRequest } from '../lib/api';
 import { renderMdSafe } from '../lib/markdown';
 import {
@@ -78,13 +77,10 @@ export async function streamFixedUnrelatedReply(input: {
   input.stream.end();
 }
 
+import { isAssistantEnabledFromSettings } from '../lib/assistantSettings';
+
 export async function isAssistantGloballyEnabled(): Promise<boolean> {
-  try {
-    const raw = await SystemModel.get('fishoj.aiassistant.enabled');
-    return raw !== '0' && raw !== false;
-  } catch {
-    return true;
-  }
+  return isAssistantEnabledFromSettings();
 }
 
 function isClientAbortError(e: any): boolean {

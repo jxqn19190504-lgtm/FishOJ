@@ -1,6 +1,5 @@
 import { PassThrough } from 'stream';
 import {
-    DocumentModel,
     Handler,
     ObjectId,
     PRIV,
@@ -8,6 +7,7 @@ import {
     RecordModel,
     SettingModel,
 } from 'hydrooj';
+import { getTextSolution } from '../../OfficialSolution/lib/ProblemSolutionUtils';
 import { aiChatClient, type ChatRequest } from '../lib/api';
 import { getAiAnalysisCacheIfValid, setAiAnalysisCache } from '../lib/cache';
 import { formatRecordJudgeResultPromptText } from '../lib/judgeResultPrompt';
@@ -87,25 +87,6 @@ function stringifyPlainText(value: unknown): string {
         if (typeof maybeZh === 'string') return maybeZh;
     }
     return '';
-}
-
-async function fetchOfficialSol(domainId: string, problemDocId: number): Promise<string> {
-    try {
-        const psdocs = await DocumentModel.getMulti(
-            domainId,
-            DocumentModel.TYPE_PROBLEM_SOLUTION,
-            {
-                parentType: DocumentModel.TYPE_PROBLEM,
-                parentId: problemDocId,
-            },
-        ).limit(20).toArray();
-        if (!psdocs.length) return '';
-        // 优先空 owner 过滤跳过：取最新一条作为参考题解（FishOJ 无固定管理员 UID 列表）
-        psdocs.sort((a: any, b: any) => b._id.getTimestamp().getTime() - a._id.getTimestamp().getTime());
-        return stringifyPlainText(psdocs[0]?.content) || '';
-    } catch {
-        return '';
-    }
 }
 
 type PromptVars = {
@@ -293,7 +274,7 @@ export class AiAnalysisStreamHandler extends Handler {
                 };
                 userPrompt = renderPromptTemplate(promptTemplate, vars);
             } else {
-                const officialSol = await fetchOfficialSol(rdoc.domainId, pdoc.docId);
+                const officialSol = await getTextSolution(rdoc.domainId, pdoc);
                 userPrompt = buildRecordAiAnalysisUserPrompt({
                     problemContent: stringifyPlainText(pdoc.content),
                     submitCode: String(rdoc.code || ''),

@@ -15,6 +15,14 @@ export async function getLearningProblem(ctx: Context, domainId: string, pid: st
     return problemColl(ctx).findOne({ domainId, pid });
 }
 
+export async function listLearningProblems(ctx: Context, domainId: string, limit = 200) {
+    return problemColl(ctx)
+        .find({ domainId })
+        .sort({ updatedAt: -1 })
+        .limit(limit)
+        .toArray();
+}
+
 export async function upsertLearningProblem(
     ctx: Context,
     domainId: string,
@@ -35,6 +43,8 @@ export async function upsertLearningProblem(
         commonMistakes: patch.commonMistakes ?? existing?.commonMistakes ?? [],
         maxHintLevel: patch.maxHintLevel ?? existing?.maxHintLevel ?? 4,
         tutorEnabled: patch.tutorEnabled ?? existing?.tutorEnabled ?? true,
+        assistantEnabled: patch.assistantEnabled ?? existing?.assistantEnabled ?? true,
+        analysisEnabled: patch.analysisEnabled ?? existing?.analysisEnabled ?? true,
         createdAt: existing?.createdAt || now,
         updatedAt: now,
     };

@@ -83,3 +83,14 @@ UiContext.learning.assistantEnabled = boolean // 与 aiAssistant.enabled 同步
 路由：`POST /ai-assistant/stream`（SSE）、`GET /ai-assistant/history`、`GET /ai-assistant/history/:id`、`POST /ai-assistant/acm/capability`。
 
 前端通过 `problemIdeAssistantBridge` 读取 `window.FishOJProblemIde.getSnapshot()`，监听 `problem-ide-*` 事件；挂载路由匹配 `/ide/:pid` 或 `page_name=problem_ide`。
+
+## OfficialSolution（`addons/OfficialSolution`）
+
+官方文字题解读写，移植自 CodeFun `ProblemSolutionUtils` + `MarkdownEdit`。
+
+- 管理：`/manage/problem-solution` → 输入题号 → `/manage/problem-solution/:pid`
+- 兼容 CodeFun：`GET/POST /markdown_edit?pid=`（`PRIV_EDIT_SYSTEM`）
+- 存储：Mongo `document`，`docType = TYPE_PROBLEM_SOLUTION`，`parentType = TYPE_PROBLEM`，`owner ∈ fishoj.solution.publisher_uids`（默认 UID `2`）
+- `handler/after`（仅 `problem_ide.html`）：有题解时写入 `pdoc.textSol`，IDE 左侧 Tab「题解」展示
+
+`AiAnalysis` 流式分析通过 `getTextSolution()` 读取同一题解作为 `problem_textsol` 上下文。

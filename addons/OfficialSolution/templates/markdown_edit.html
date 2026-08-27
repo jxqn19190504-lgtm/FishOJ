@@ -1,0 +1,21 @@
+{% extends "layout/basic.html" %}
+{% block content %}
+<div class="row">
+  <div class="medium-12 columns">
+    <div class="section">
+      <div class="section__header">
+        <h1 class="section__title">题解编辑：{{ pid }} {{ pdoc.title if pdoc else '' }}</h1>
+      </div>
+      <div class="section__body">
+        <p><a href="{{ url('manage_problem_solution_edit', pid=pid) }}">管理页编辑</a> · <a href="/ide/{{ pid }}">做题页</a></p>
+        <form method="post" id="solutionEditForm">
+          <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
+          <input type="hidden" name="pid" value="{{ pid }}">
+          <textarea data-editor data-markdown name="solContent" rows="24">{{ solContent }}</textarea>
+          <p><button type="submit" class="rounded primary button">保存题解</button></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

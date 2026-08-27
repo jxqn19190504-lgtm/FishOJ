@@ -1,8 +1,11 @@
 import { $ } from '@hydrooj/ui-default';
 
 function syncProblemTabLayout(type: string) {
+    const isAi = type === 'aiAnalysis';
     document.getElementById('problemIdeRoot')
-        ?.classList.toggle('problem-ide-root--ai-analysis-tab', type === 'aiAnalysis');
+        ?.classList.toggle('problem-ide-root--ai-analysis-tab', isAi);
+    document.querySelector('.problem-ide-left__scroll')
+        ?.classList.toggle('problem-ide-left__scroll--ai', isAi);
 }
 
 export function showProblemTab($root: ReturnType<typeof $>, type: string) {

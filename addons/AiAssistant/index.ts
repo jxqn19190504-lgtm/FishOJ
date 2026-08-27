@@ -1,4 +1,4 @@
-import { Context } from 'hydrooj';
+import { Context, PRIV } from 'hydrooj';
 import {
     AssistantHistoryDetailHandler,
     AssistantHistoryListHandler,
@@ -6,6 +6,7 @@ import {
 import { AssistantConversationService } from './backend/AssistantConversationService';
 import { AssistantStreamHandler } from './backend/AssistantStreamHandler';
 import { AcmAssistantCapabilityHandler } from './backend/AcmAssistantCapabilityHandler';
+import { AiAssistantAdminHandler } from './handler/assistantAdmin';
 import { bindAssistantOnProblemIde } from './hooks/problemIde';
 
 export async function apply(ctx: Context) {
@@ -22,6 +23,10 @@ export async function apply(ctx: Context) {
         '/ai-assistant/history/:id',
         AssistantHistoryDetailHandler,
     );
+    ctx.Route('manage_ai_assistant', '/manage/ai-assistant', AiAssistantAdminHandler, PRIV.PRIV_EDIT_SYSTEM);
+    ctx.injectUI('ControlPanel', 'manage_ai_assistant', { icon: 'comment', after: 'manage_ai_tutor' }, PRIV.PRIV_EDIT_SYSTEM);
+    ctx.i18n.load('zh', { manage_ai_assistant: 'AI 助教管理' });
+    ctx.i18n.load('en', { manage_ai_assistant: 'AI Assistant' });
     bindAssistantOnProblemIde(ctx);
     console.log('[AiAssistant] FishOJ AI 助教已加载');
 }

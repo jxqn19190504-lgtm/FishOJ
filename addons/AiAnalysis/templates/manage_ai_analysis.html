@@ -1,0 +1,30 @@
+{% extends "manage_base.html" %}
+{% block manage_content %}
+<div class="section">
+  <div class="section__header">
+    <h1 class="section__title">{{ _('manage_ai_analysis') }}</h1>
+  </div>
+  <div class="section__body">
+    <p>配置全站 <strong>AI 分析</strong>（IDE 内提交诊断 / Diff 修复）。按题开关请到「<a href="{{ url('manage_coding_assist') }}">辅助编码管理</a>」。</p>
+    <form method="post">
+      <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
+      <label>
+        <input type="checkbox" name="enabled" value="1"{% if stored.enabled %} checked{% endif %}>
+        全站启用 AI 分析
+      </label>
+      <label>登录用户每日次数（系统管理员不限）
+        <input type="number" name="daily_limit" min="1" max="999" value="{{ stored.dailyLimit }}" required>
+      </label>
+      <p><button type="submit" class="rounded primary button">保存</button></p>
+    </form>
+    <h2>运行概况</h2>
+    <ul>
+      <li>今日已消耗分析次数（全站合计）：{{ todayTotal }}</li>
+      <li>结果缓存条数：{{ cacheCount }}（TTL 约 {{ cacheTtlHours }} 小时）</li>
+      <li>默认日限额：{{ defaultDailyLimit }} 次（未在上方保存过自定义值时使用）</li>
+    </ul>
+    <p>{{ llmNote }}</p>
+    <p>编程小助手模型配置见「<a href="{{ url('manage_ai_tutor') }}">AI Tutor 管理</a>」。</p>
+  </div>
+</div>
+{% endblock %}

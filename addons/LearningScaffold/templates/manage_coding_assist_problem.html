@@ -9,6 +9,8 @@
       <a href="{{ url('manage_coding_assist') }}">返回辅助编码管理</a>
       ·
       <a href="/ide/{{ pid }}">打开做题页</a>
+      ·
+      <a href="{{ url('manage_problem_solution_edit', pid=pid) }}">编辑题解</a>
     </p>
     <form method="post">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
@@ -17,8 +19,10 @@
     <form method="post">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
       {% set m = meta or {} %}
-      <label><input type="checkbox" name="enabled" value="on"{% if m.enabled %} checked{% endif %}> 开启教学模式</label>
-      <label><input type="checkbox" name="tutorEnabled" value="on"{% if m.tutorEnabled != false %} checked{% endif %}> 开启 AI Tutor</label>
+      <label><input type="checkbox" name="enabled" value="on"{% if m.enabled %} checked{% endif %}> 开启教学模式（学习方式脚手架）</label>
+      <label><input type="checkbox" name="tutorEnabled" value="on"{% if m.tutorEnabled != false %} checked{% endif %}> 开启编程小助手（AiTutor）</label>
+      <label><input type="checkbox" name="assistantEnabled" value="on"{% if m.assistantEnabled != false %} checked{% endif %}> 开启 AI 助教（AiAssistant）</label>
+      <label><input type="checkbox" name="analysisEnabled" value="on"{% if m.analysisEnabled != false %} checked{% endif %}> 开启 AI 分析（AiAnalysis）</label>
       <p>教学目标（每行一条）</p>
       <textarea name="objectives" rows="3">{{ (m.objectives or [])|join('\n') }}</textarea>
       <p>知识点（每行一条）</p>

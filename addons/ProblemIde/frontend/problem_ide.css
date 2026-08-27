@@ -2390,16 +2390,44 @@ html.page--problem_ide body { overflow: hidden !important; height: 100%; margin:
 .theme--dark .history-end { color: #666; }
 
 /* ===================== 题面内嵌 AI 分析面板 ===================== */
+.problem-ide-left__scroll--ai {
+  display: flex;
+  flex-direction: column;
+}
+.problem-ide-left__scroll--ai > .problem-content-container,
+.problem-ide-left__scroll--ai .problem-content,
+.problem-ide-left__scroll--ai .section__body.show-hide-box-parent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
 #content-aiAnalysis.problem_content {
   margin-top: 0 !important;
   padding-top: 0 !important;
+}
+.problem-ide-left__scroll--ai #content-aiAnalysis.problem_content {
+  flex: 1;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 /* AI 分析 Tab：隐藏题面警告条等，只留分析面板（与 CodeFun 一致） */
 .problem-ide-root--ai-analysis-tab [data-fragment-id="problem-description"] > :not(#content-aiAnalysis) {
   display: none !important;
 }
 .problem-ide-root--ai-analysis-tab #content-aiAnalysis.problem_content {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column;
+}
+/* AI Tab 内不展示题目标题/限时限内存 meta（防 injectStatementHeading 误注入） */
+.problem-ide-root--ai-analysis-tab #content-aiAnalysis .problem-ide-statement-title,
+.problem-ide-root--ai-analysis-tab #content-aiAnalysis .problem-ide-content-meta {
+  display: none !important;
 }
 .problem-ide-ai-panel {
   display: flex;

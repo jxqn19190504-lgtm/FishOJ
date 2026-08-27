@@ -5,7 +5,8 @@
     <h1 class="section__title">{{ _('manage_ai_tutor') }}</h1>
   </div>
   <div class="section__body">
-    <p>在这里配置编程小助手调用的模型服务。密钥只保存在服务端，学生不可见。留空密钥并保存，将<strong>保留已有密钥</strong>。</p>
+    <p>在这里配置<strong>编程小助手</strong>（AiTutor，启发式提示）调用的模型服务。密钥只保存在服务端，学生不可见。留空密钥并保存，将<strong>保留已有密钥</strong>。</p>
+    <p>按题开关脚手架 / 小助手 / AI 助教 / AI 分析，请到「<a href="{{ url('manage_coding_assist') }}">辅助编码管理</a>」。</p>
     {% if fromEnv.apiKey or fromEnv.baseUrl or fromEnv.model %}
     <blockquote class="note">
       当前有环境变量覆盖本页配置：
@@ -32,7 +33,7 @@
       </div>
       <button type="submit" class="rounded primary button">保存</button>
     </form>
-    <p class="help-text">未配置密钥且不是本机模型时，做题页仍可用兜底提示，不影响自测和提交。按题开关请到「辅助编码管理」里编辑题目。</p>
+    <p class="help-text">未配置密钥且不是本机模型时，做题页仍可用兜底提示，不影响自测和提交。</p>
   </div>
 </div>
 {% endblock %}

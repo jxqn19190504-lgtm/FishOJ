@@ -178,6 +178,9 @@
                 {% endif %}
               </a>
             {% endfor %}
+            {% if 'textSol' in pdoc %}
+              <a class="section__tab-header-item" data-type="textSol">{{ _('TextSol') }}</a>
+            {% endif %}
             <a class="section__tab-header-item" data-type="aiAnalysis"{% if not problemIdeCanSubmit %} hidden{% endif %}>AI分析</a>
           </ul>
           <div class="problem-ide-tab-actions">

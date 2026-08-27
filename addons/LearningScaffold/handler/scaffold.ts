@@ -10,7 +10,7 @@ export class ScaffoldConfigHandler extends Handler {
         const pdoc = await ProblemModel.get(domainId, pid);
         const key = String(pdoc?.pid || pdoc?.docId || pid);
         const meta = await getLearningProblem(this.ctx, domainId, key);
-        if (meta && meta.enabled === false) {
+        if (!meta || meta.enabled !== true) {
             this.response.body = { enabled: false };
             return;
         }
@@ -38,8 +38,8 @@ export class ScaffoldSelectHandler extends Handler {
         }
         const key = String(pdoc.pid || pdoc.docId);
         const meta = await getLearningProblem(this.ctx, domainId, key);
-        if (meta && meta.enabled === false) {
-            this.response.body = { ok: false, error: '本题已关闭教学模式' };
+        if (!meta || meta.enabled !== true) {
+            this.response.body = { ok: false, error: '本题未开启教学模式' };
             return;
         }
         const m = (mode === 1 || mode === 2 ? mode : 0) as 0 | 1 | 2;

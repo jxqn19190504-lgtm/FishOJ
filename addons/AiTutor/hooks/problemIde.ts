@@ -12,7 +12,7 @@ export function bindTutorOnProblemIde(ctx: Context) {
             const domainId = that.args?.domainId;
             if (!pid || !domainId) return;
             const meta = await ctx.db.collection('fish_learning_problem').findOne({ domainId, pid });
-            if (meta && (meta.enabled === false || meta.tutorEnabled === false)) return;
+            if (!meta || meta.enabled !== true || meta.tutorEnabled === false) return;
             body.learning.tutorEnabled = true;
             body.learning.tutor = {
                 hintUrl: '/ai-tutor/hint',

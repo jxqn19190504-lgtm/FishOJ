@@ -28,5 +28,11 @@
 </div>
 {% endfor %}
 
+{% if 'textSol' in pdoc %}
+<div class="problem_content markdown-body" id="content-textSol" style="display:none">
+  {{ pdoc.textSol | markdown | safe }}
+</div>
+{% endif %}
+
 {% include "partials/problem_ide_ai_analysis_panel.html" %}
 </div>

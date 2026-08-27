@@ -1,0 +1,27 @@
+{% extends "manage_base.html" %}
+{% block manage_content %}
+<div class="section">
+  <div class="section__header">
+    <h1 class="section__title">{{ _('manage_ai_assistant') }}</h1>
+  </div>
+  <div class="section__body">
+    <p>配置全站 <strong>AI 助教</strong>（右侧浮层多轮聊天）。按题开关请到「<a href="{{ url('manage_coding_assist') }}">辅助编码管理</a>」。</p>
+    <form method="post">
+      <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
+      <label>
+        <input type="checkbox" name="enabled" value="1"{% if stored.enabled %} checked{% endif %}>
+        全站启用 AI 助教（未登录用户仍不可见）
+      </label>
+      <p><button type="submit" class="rounded primary button">保存</button></p>
+    </form>
+    <h2>LLM 与限频</h2>
+    <p>{{ llmNote }}</p>
+    <p>编程小助手（启发式提示）的模型配置见「<a href="{{ url('manage_ai_tutor') }}">AI Tutor 管理</a>」。</p>
+    <ul>
+      <li>单用户每分钟：{{ rateLimit.uidPerMinute }} 次</li>
+      <li>单 IP 每分钟：{{ rateLimit.ipPerMinute }} 次</li>
+      <li>同时生成中：每用户 {{ rateLimit.maxConcurrentPerUid }} 个</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

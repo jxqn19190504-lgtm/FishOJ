@@ -74,6 +74,8 @@ export class ScaffoldAdminHandler extends Handler {
         await upsertLearningProblem(this.ctx, domainId, key, {
             enabled: flag('enabled'),
             tutorEnabled: flag('tutorEnabled'),
+            assistantEnabled: flag('assistantEnabled'),
+            analysisEnabled: flag('analysisEnabled'),
             objectives: parseLines(str('objectives')),
             concepts: parseLines(str('concepts')),
             commonMistakes: parseLines(str('commonMistakes')),
