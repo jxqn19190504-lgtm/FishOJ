@@ -1,0 +1,98 @@
+/* ============================================================
+   FishOJ 全局主题 · 深海鎏金 (Deep-Sea Gilded)
+   通过覆盖 Hydro / Mantine 设计令牌，将整站默认页面
+   （题目列表、训练计划、讨论、排名、用户页等）统一为
+   深蓝 (#0b2447 ~ #2f6bff) + 鎏金 (#ffc45e / #f97316)
+   仅改配色，不改动任何功能逻辑。
+   ============================================================ */
+
+:root {
+  /* —— 鎏金点缀色（供组件引用）——
+     全部令牌加 !important，确保无论加载顺序都覆盖 Hydro 默认主题 */
+  --fishoj-gold: #ffc45e !important;
+  --fishoj-gold-deep: #f97316 !important;
+  --fishoj-navy: #0b2447 !important;
+  --fishoj-navy-2: #19376d !important;
+  --fishoj-blue: #2f6bff !important;
+
+  /* —— 覆盖 Mantine 主色阶：原 blue → 深海蓝 —— */
+  --mantine-color-blue-0: #eef3ff !important;
+  --mantine-color-blue-1: #d9e4ff !important;
+  --mantine-color-blue-2: #b9d0ff !important;
+  --mantine-color-blue-3: #8fb4ff !important;
+  --mantine-color-blue-4: #5e8dff !important;
+  --mantine-color-blue-5: #3f74ff !important;
+  --mantine-color-blue-6: #2f6bff !important; /* primary 主色 */
+  --mantine-color-blue-7: #1f57e6 !important; /* hover */
+  --mantine-color-blue-8: #1746c2 !important; /* active */
+  --mantine-color-blue-9: #0b2447 !important; /* 深海军蓝（暗色模式表面） */
+
+  /* primary 派生令牌显式跟随主色阶 */
+  --mantine-primary-color-filled: var(--mantine-color-blue-6) !important;
+  --mantine-primary-color-filled-hover: var(--mantine-color-blue-7) !important;
+  --mantine-primary-color-light: var(--mantine-color-blue-0) !important;
+  --mantine-primary-color-light-hover: var(--mantine-color-blue-1) !important;
+  --mantine-primary-color-light-color: var(--mantine-color-blue-7) !important;
+  --mantine-primary-color-0: var(--mantine-color-blue-0) !important;
+  --mantine-primary-color-1: var(--mantine-color-blue-1) !important;
+  --mantine-primary-color-2: var(--mantine-color-blue-2) !important;
+  --mantine-primary-color-3: var(--mantine-color-blue-3) !important;
+  --mantine-primary-color-4: var(--mantine-color-blue-4) !important;
+  --mantine-primary-color-5: var(--mantine-color-blue-5) !important;
+  --mantine-primary-color-6: var(--mantine-color-blue-6) !important;
+  --mantine-primary-color-7: var(--mantine-color-blue-7) !important;
+  --mantine-primary-color-8: var(--mantine-color-blue-8) !important;
+  --mantine-primary-color-9: var(--mantine-color-blue-9) !important;
+}
+
+/* —— 顶部导航：深海渐变 + 鎏金品牌 —— */
+.nav {
+  background: linear-gradient(90deg, #0b2447 0%, #19376d 55%, #1f57e6 100%) !important;
+  border-bottom: 1px solid rgba(255, 196, 94, 0.35) !important;
+}
+
+.nav__logo {
+  color: var(--fishoj-gold) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 10px rgba(255, 196, 94, 0.35) !important;
+}
+
+.nav__item.nav--active {
+  color: var(--fishoj-gold) !important;
+  box-shadow: inset 0 -3px 0 var(--fishoj-gold) !important;
+}
+
+.nav__item:hover {
+  color: var(--fishoj-gold) !important;
+}
+
+/* —— 下拉菜单选中 / 悬停 —— */
+.menu__item--active > .menu__link,
+.menu__link:hover {
+  color: var(--fishoj-gold-deep) !important;
+}
+
+/* —— 正文链接悬停鎏金（基础链接色由 primary 令牌统一为深海蓝）—— */
+a:hover {
+  color: var(--fishoj-gold-deep) !important;
+}
+
+/* —— 区块标题鎏金下划线 —— */
+.section__title {
+  border-bottom: 2px solid var(--fishoj-gold) !important;
+  padding-bottom: 4px;
+}
+
+/* —— 卡片 / 面板悬停鎏金描边 —— */
+.paper:hover,
+.card:hover {
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 6px 22px rgba(47, 107, 255, 0.18) !important;
+}
+
+/* —— 重点高亮（选中项、当前页指示）统一深海蓝 —— */
+.tab--active,
+.pagination__item--active {
+  color: var(--fishoj-blue) !important;
+  border-color: var(--fishoj-blue) !important;
+}
