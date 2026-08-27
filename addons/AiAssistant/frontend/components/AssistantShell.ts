@@ -31,6 +31,14 @@ import {
 } from '../core/assistantDismissEvents';
 import { renderReferenceCardHtml, wireReferenceCard } from './AssistantReferenceCard';
 
+declare const UiContext: {
+  learning?: {
+    tutorEnabled?: boolean;
+  };
+};
+
+const PROBLEM_IDE_TUTOR_OPEN = 'problem-ide-tutor-open';
+
 const DEFAULT_CONFIG: AIAssistantConfig = {
   id: 'assistant',
   scene: 'default',
@@ -93,6 +101,7 @@ export class AssistantShell {
   private headerCodeLangEl: HTMLElement;
   private headerLangDropdown: AssistantWelcomeLanguageDropdown | null = null;
   private addSelectionBtn: HTMLButtonElement;
+  private codingHelperBtn: HTMLButtonElement | null = null;
   private config: AIAssistantConfig;
   private toastEl: HTMLElement;
   private toastTimer: number | null = null;
@@ -146,6 +155,9 @@ export class AssistantShell {
             </button>
             <button type="button" class="cf-assistant-icon-btn cf-assistant-header-action cf-assistant-history" aria-label="历史对话" title="历史对话">
               <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="cf-assistant-icon-btn cf-assistant-header-action cf-assistant-coding-helper" hidden aria-label="编程小助手" title="编程小助手（启发式提示）">
+              <i class="fas fa-lightbulb" aria-hidden="true"></i>
             </button>
             <button type="button" class="cf-assistant-icon-btn cf-assistant-header-action cf-assistant-close" aria-label="关闭面板" title="关闭">
               <i class="fas fa-xmark" aria-hidden="true"></i>
@@ -248,6 +260,23 @@ export class AssistantShell {
     this.deepthinkBtn = this.root.querySelector('.cf-assistant-deepthink') as HTMLButtonElement;
     this.headerCodeLangEl = this.root.querySelector('.cf-assistant-code-lang--header') as HTMLElement;
     this.addSelectionBtn = this.root.querySelector('.cf-assistant-add-selection') as HTMLButtonElement;
+    this.codingHelperBtn = this.root.querySelector('.cf-assistant-coding-helper') as HTMLButtonElement;
+    const showCodingHelper = this.config.features?.codingHelperButton === true
+      && UiContext.learning?.tutorEnabled === true;
+    if (this.codingHelperBtn) {
+      if (showCodingHelper) {
+        this.codingHelperBtn.hidden = false;
+        this.codingHelperBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          document.dispatchEvent(new CustomEvent(PROBLEM_IDE_TUTOR_OPEN, {
+            detail: { requestHint: true },
+          }));
+        });
+      } else {
+        this.codingHelperBtn.style.display = 'none';
+      }
+    }
     this.headerLangDropdown = new AssistantWelcomeLanguageDropdown(this.headerCodeLangEl, {
       value: this.codeLanguage,
       onChange: (lang) => this.setCodeLanguage(lang),
@@ -664,9 +693,11 @@ export class AssistantShell {
     } catch {
       /* ignore */
     }
-    if (!saved) return;
-    this.dismissed = true;
-    this.applyDismissed();
+    if (saved) {
+      this.dismissed = true;
+      this.applyDismissed();
+    }
+    dispatchAssistantDismissedChange({ scene: this.config.scene, dismissed: this.dismissed });
   }
 
   private setDismissed(next: boolean) {

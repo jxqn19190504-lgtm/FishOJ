@@ -19,6 +19,7 @@ import { initGutter, restoreIdeSplit } from './splitLayout';
 import { injectStatementHeading } from './statementHeading';
 import { initStatementToc } from './statementToc';
 import { initProblemTabs } from './tabs';
+import { initAssistantSettingsToggle } from './assistantSettings';
 import { initTimer } from './timer';
 
 declare const UiContext: {
@@ -95,6 +96,7 @@ addPage(new NamedPage(['problem_ide'], async () => {
     setupIdePsetDrawer();
     setupIdeSectionSwitcher();
     initTimer();
+    initAssistantSettingsToggle();
     initExpMode(rootEl);
     revealStatement();
     const monacoPromise = loadMonacoEditor();

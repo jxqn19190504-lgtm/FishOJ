@@ -39,6 +39,8 @@ export interface AIAssistantFeatureConfig {
   dismissible?: boolean;
   /** 关闭后是否显示小圆点恢复按钮；false 时依赖宿主页面入口（如设置面板开关）恢复 */
   restoreButton?: boolean;
+  /** IDE：在 AI 助教内提供「编程小助手」（AiTutor 启发式提示）入口 */
+  codingHelperButton?: boolean;
   /** 是否允许调整面板窗口大小（桌面端） */
   resizable?: boolean;
 }

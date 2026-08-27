@@ -13,10 +13,11 @@ export const acmAssistantConfig: AIAssistantConfig = {
 
   ...noteAssistantSharedUi,
 
-  /** IDE 场景关闭胶囊后由右上角设置面板开关恢复，不显示小圆点 */
+  /** FishOJ IDE：关闭后在右上角 ⚙ 设置中重新开启 */
   features: {
     ...noteAssistantSharedUi.features,
     restoreButton: false,
+    codingHelperButton: true,
   },
 
   selection: {

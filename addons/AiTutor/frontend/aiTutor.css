@@ -76,3 +76,23 @@
 }
 .theme--dark .fish-tutor-offer { background: #1e1e1e; color: #e8e8e8; }
 .fish-tutor-offer[hidden] { display: none !important; }
+
+/** AI 助教已启用时隐藏右下角机器人，改由助教面板内灯泡按钮打开 */
+.fish-tutor--fab-hidden .fish-tutor__fab {
+  display: none !important;
+}
+.fish-tutor--fab-hidden {
+  right: auto;
+  left: 24px;
+  bottom: 24px;
+}
+.fish-tutor--fab-hidden .fish-tutor__panel {
+  left: 0;
+  right: auto;
+  bottom: 0;
+}
+.fish-tutor--fab-hidden .fish-tutor-offer {
+  left: 0;
+  right: auto;
+  bottom: 0;
+}

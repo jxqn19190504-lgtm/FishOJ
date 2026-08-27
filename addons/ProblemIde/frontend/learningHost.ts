@@ -13,6 +13,8 @@ export const PROBLEM_IDE_EVENTS = {
     APPLY_CODE_BLOCKED: 'problem-ide-apply-code-blocked',
     RUN_REQUEST: 'problem-ide-run-request',
     HINT_REQUEST: 'problem-ide-hint-request',
+    /** 打开编程小助手（AiTutor）面板；detail: { requestHint?: boolean } */
+    TUTOR_OPEN: 'problem-ide-tutor-open',
     SCAFFOLD_REQUEST: 'problem-ide-scaffold-request',
     READY: 'problem-ide-ready',
 } as const;

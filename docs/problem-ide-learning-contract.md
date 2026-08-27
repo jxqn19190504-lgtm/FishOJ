@@ -37,6 +37,9 @@ window.FishOJProblemIde.hasMeaningfulCode()
 | `problem-ide-apply-code` | 任意 → IDE | 写入编辑器；有学生代码且 `force` 不为 true 则拒绝 |
 | `problem-ide-apply-code-blocked` | IDE → | 拒绝静默覆盖 |
 | `problem-ide-hint-request` | 任意 → Tutor | 请求提示 |
+| `problem-ide-tutor-open` | 任意 → Tutor | 打开编程小助手面板；`detail: { requestHint?: boolean }` |
+| `cf-assistant-set-dismissed` | 宿主 → AiAssistant | 显示/隐藏 AI 助教入口；`detail: { scene, dismissed }` |
+| `cf-assistant-dismissed-change` | AiAssistant → 宿主 | dismissed 变化时同步设置开关；`detail: { scene, dismissed }` |
 | `problem-ide-scaffold-request` | 任意 → Scaffold | 打开学习方式 / 指定 mode |
 | `problem-ide-ai-analysis-open` | 任意 → AiAnalysis | 打开 AI 分析面板；`detail: { rid, rdoc? }` |
 

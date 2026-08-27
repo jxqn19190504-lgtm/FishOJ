@@ -280,6 +280,12 @@
       <div id="problemIdeSettingsPanel" class="problem-ide-settings problem-ide-settings--hidden">
         <label>字号 <input type="number" id="problemIdeFontSize" min="10" max="28" value="14" /></label>
         <label>主题 <select id="problemIdeThemeSelect" class="problem-ide-settings__select"></select></label>
+        {% if aiAssistant and aiAssistant.enabled %}
+        <div class="problem-ide-settings__divider" role="separator"></div>
+        <label class="problem-ide-settings__toggle" title="关闭后可在本面板重新开启">
+          <input type="checkbox" id="problemIdeAssistantToggle" checked /> AI 助教
+        </label>
+        {% endif %}
       </div>
     </div>
     <div class="problem-ide-editor-wrap">

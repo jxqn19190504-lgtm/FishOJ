@@ -5,6 +5,9 @@ declare const UiContext: {
         tutorEnabled?: boolean;
         tutor?: { hintUrl?: string; pid?: string };
     };
+    aiAssistant?: {
+        enabled?: boolean;
+    };
 };
 
 declare global {
@@ -75,6 +78,11 @@ export function initAiTutor() {
       <button type="button" class="fish-tutor__fab" id="fishTutorFab" data-state="idle" title="编程小助手">🤖</button>
     `;
     document.body.appendChild(root);
+
+    const embedInAssistant = UiContext.aiAssistant?.enabled === true;
+    if (embedInAssistant) {
+        root.classList.add('fish-tutor--fab-hidden');
+    }
 
     const panel = document.getElementById('fishTutorPanel');
     const body = document.getElementById('fishTutorBody');
@@ -171,6 +179,12 @@ export function initAiTutor() {
     });
 
     document.addEventListener('problem-ide-hint-request', () => void askHint('user_help'));
+
+    document.addEventListener('problem-ide-tutor-open', ((ev: Event) => {
+        const d = (ev as CustomEvent<{ requestHint?: boolean }>).detail || {};
+        open();
+        if (d.requestHint !== false) void askHint('user_help');
+    }) as EventListener);
 
     document.addEventListener('problem-ide-run-result', ((ev: Event) => {
         const d = (ev as CustomEvent<{ status?: string; stdout?: string }>).detail || {};
