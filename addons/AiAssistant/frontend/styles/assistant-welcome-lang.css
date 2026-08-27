@@ -1,0 +1,286 @@
+/* AI 助教 — 代码语言自定义下拉（作用域：.cf-assistant-welcome-lang） */
+
+.cf-assistant-welcome-lang {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0;
+}
+
+.cf-assistant-code-lang--header .cf-assistant-welcome-lang {
+  align-items: flex-start;
+  margin-top: 0;
+}
+
+/* 紧凑胶囊：header / 原 footer 共用 */
+
+.cf-assistant-welcome-lang-label {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #667085;
+  text-align: center;
+}
+
+.cf-assistant-welcome-lang-control {
+  position: relative;
+  width: 148px;
+}
+
+.cf-assistant-welcome-lang-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #d8e2f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2937;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.07);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.cf-assistant-welcome-lang-trigger-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cf-assistant-welcome-lang-icon {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #1677ff;
+  opacity: 0.85;
+}
+
+.cf-assistant-welcome-lang-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cf-assistant-welcome-lang-chevron {
+  flex-shrink: 0;
+  margin-left: 6px;
+  font-size: 10px;
+  color: #667085;
+  transition: transform 160ms ease;
+}
+
+.cf-assistant-welcome-lang-trigger:hover {
+  border-color: #8ab8f8;
+  background: #f8fbff;
+  box-shadow: 0 4px 12px rgba(22, 119, 255, 0.1);
+}
+
+.cf-assistant-welcome-lang-trigger:focus-visible,
+.cf-assistant-welcome-lang--open .cf-assistant-welcome-lang-trigger {
+  outline: none;
+  border-color: #1677ff;
+  box-shadow:
+    0 2px 8px rgba(22, 119, 255, 0.07),
+    0 0 0 3px rgba(22, 119, 255, 0.12);
+}
+
+.cf-assistant-welcome-lang--open .cf-assistant-welcome-lang-chevron {
+  transform: rotate(180deg);
+}
+
+.cf-assistant-welcome-lang-menu {
+  position: fixed;
+  z-index: 12100;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(31, 41, 55, 0.14);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+  pointer-events: none;
+}
+
+.cf-assistant-welcome-lang-menu--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.cf-assistant-welcome-lang-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #344054;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.cf-assistant-welcome-lang-option:hover {
+  background: #f0f6ff;
+  color: #1677ff;
+}
+
+.cf-assistant-welcome-lang-option--selected {
+  background: #eaf3ff;
+  color: #1677ff;
+  font-weight: 600;
+}
+
+.cf-assistant-welcome-lang-option-check {
+  flex-shrink: 0;
+  margin-left: 6px;
+  font-size: 11px;
+  color: #1677ff;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.cf-assistant-welcome-lang-option--selected .cf-assistant-welcome-lang-option-check {
+  opacity: 1;
+}
+
+.theme--dark .cf-assistant-welcome-lang-label,
+[data-theme='dark'] .cf-assistant-welcome-lang-label {
+  color: #9198a1;
+}
+
+.theme--dark .cf-assistant-welcome-lang-trigger,
+[data-theme='dark'] .cf-assistant-welcome-lang-trigger {
+  background: #161b22;
+  border-color: #30363d;
+  color: #e6edf3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+.theme--dark .cf-assistant-welcome-lang-trigger:hover,
+[data-theme='dark'] .cf-assistant-welcome-lang-trigger:hover {
+  background: #1c2330;
+  border-color: #4493f8;
+}
+
+.theme--dark .cf-assistant-welcome-lang-menu,
+[data-theme='dark'] .cf-assistant-welcome-lang-menu {
+  background: #161b22;
+  border-color: #30363d;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
+}
+
+.theme--dark .cf-assistant-welcome-lang-option,
+[data-theme='dark'] .cf-assistant-welcome-lang-option {
+  color: #c9d1d9;
+}
+
+.theme--dark .cf-assistant-welcome-lang-option:hover,
+[data-theme='dark'] .cf-assistant-welcome-lang-option:hover {
+  background: rgba(68, 147, 248, 0.12);
+  color: #4493f8;
+}
+
+.theme--dark .cf-assistant-welcome-lang-option--selected,
+[data-theme='dark'] .cf-assistant-welcome-lang-option--selected {
+  background: rgba(68, 147, 248, 0.18);
+  color: #4493f8;
+}
+
+/* header 紧凑胶囊：与「深度思考」同尺寸 */
+.cf-assistant-welcome-lang--compact {
+  align-items: flex-start;
+  margin-top: 0;
+}
+
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-control {
+  width: auto;
+}
+
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-menu {
+  min-width: 120px;
+}
+
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger {
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--assistant-text-tertiary, #6e7781);
+}
+
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-icon {
+  display: none;
+}
+
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger-inner {
+  gap: 4px;
+}
+
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-chevron {
+  margin-left: 2px;
+  font-size: 9px;
+  color: inherit;
+}
+
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger:hover {
+  color: var(--assistant-accent, #1677ff);
+  border-color: rgba(9, 105, 218, 0.2);
+  background: rgba(9, 105, 218, 0.06);
+  box-shadow: none;
+}
+
+.cf-assistant-welcome-lang--compact.cf-assistant-welcome-lang--open .cf-assistant-welcome-lang-trigger,
+.cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger:focus-visible {
+  color: var(--assistant-accent, #1677ff);
+  border-color: rgba(9, 105, 218, 0.35);
+  background: rgba(9, 105, 218, 0.1);
+  box-shadow: none;
+}
+
+.theme--dark .cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger,
+[data-theme='dark'] .cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--assistant-text-tertiary, #7d8590);
+}
+
+.theme--dark .cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger:hover,
+[data-theme='dark'] .cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger:hover {
+  background: rgba(68, 147, 248, 0.08);
+  border-color: rgba(68, 147, 248, 0.2);
+}
+
+.theme--dark .cf-assistant-welcome-lang--compact.cf-assistant-welcome-lang--open .cf-assistant-welcome-lang-trigger,
+.theme--dark .cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger:focus-visible,
+[data-theme='dark'] .cf-assistant-welcome-lang--compact.cf-assistant-welcome-lang--open .cf-assistant-welcome-lang-trigger,
+[data-theme='dark'] .cf-assistant-welcome-lang--compact .cf-assistant-welcome-lang-trigger:focus-visible {
+  background: rgba(68, 147, 248, 0.12);
+  border-color: rgba(68, 147, 248, 0.35);
+}

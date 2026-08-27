@@ -1,0 +1,14 @@
+{
+  "name": "fishoj-ai-assistant",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "ts-node --transpile-only backend/AssistantLocalRelevanceGuard.test.ts && ts-node --transpile-only backend/assistant-text-utils.test.ts && ts-node --transpile-only backend/AssistantOutputFormatPolicy.test.ts && ts-node --transpile-only shared/assistant-history.test.ts && ts-node --transpile-only shared/assistant-code-language.test.ts && ts-node --transpile-only backend/assistant-stream-content.test.ts && ts-node --transpile-only frontend/registry/assistant-route-matcher.test.ts && ts-node --transpile-only backend/AcmAssistantPromptBuilder.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

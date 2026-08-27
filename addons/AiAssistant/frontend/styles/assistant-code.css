@@ -1,0 +1,456 @@
+/* AI 助教代码块：与 CodeNote IDE（code-switcher / simple-code-block）保持一致
+ * 样式源：MarkdownBody/code-switcher.css + codenote_textsol.css 相关段
+ * 作用域：.cf-assistant-root
+ */
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre {
+  background: #282828;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 14px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre code {
+  background: #282828;
+  padding: 16px;
+  display: block;
+  overflow-x: auto;
+  color: #e5e7eb !important;
+  font-size: 14px;
+  line-height: 1.5;
+  border-radius: 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre.line-numbers {
+  padding-left: 0;
+  position: relative;
+  counter-reset: linenumber;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre.line-numbers code {
+  padding-left: 3.8em;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md .line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  left: 0;
+  width: 3em;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  letter-spacing: -1px;
+  border-right: 1px solid #3a3a3a;
+  user-select: none;
+  background: #282828;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md .line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+  color: #858585;
+  padding-right: 0.8em;
+  text-align: right;
+  height: auto;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md .line-numbers-rows > span:before {
+  content: counter(linenumber);
+}
+
+/* 仅未包进 code-switcher 的裸 pre 才用浅蓝样例样式（与 Hot100 simple-code-block 一致） */
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre:not([class*="language-"]):not(.code-panel) {
+  background: #e3f2fd;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre:not([class*="language-"]):not(.code-panel) code {
+  background: #e3f2fd;
+  color: #1565c0 !important;
+  padding: 12px 16px !important;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre[class*="language-"]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #999;
+  background: #2d2d2d;
+  border-bottom-left-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre[class*="language-python"]::before {
+  content: "Python";
+  color: #3776ab;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre[class*="language-javascript"]::before {
+  content: "JavaScript";
+  color: #f7df1e;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre[class*="language-typescript"]::before {
+  content: "TypeScript";
+  color: #3178c6;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre[class*="language-java"]::before {
+  content: "Java";
+  color: #f89820;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre[class*="language-cpp"]::before {
+  content: "C++";
+  color: #00599c;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre[class*="language-c"]::before {
+  content: "C";
+  color: #555;
+}
+
+/* code-switcher 已有语言 Tab，隐藏右上角语言角标 */
+.cf-assistant-root .code-switcher pre[class*="language-"]::before {
+  display: none !important;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre code::-webkit-scrollbar {
+  height: 8px;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre code::-webkit-scrollbar-track {
+  background: #2d2d2d;
+  border-radius: 4px;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre:not([class*="language-"]) code::-webkit-scrollbar-track {
+  background: #bbdefb;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre code::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.cf-assistant-root .cf-assistant-msg-body.cf-assistant-md pre:not([class*="language-"]) code::-webkit-scrollbar-thumb {
+  background: #1976d2;
+}
+
+.cf-assistant-root .code-toolbar .toolbar {
+  display: none !important;
+}
+
+/* ===== code-switcher（多语言 / 带语言标签的 IDE 块） ===== */
+
+.cf-assistant-root .code-switcher {
+  background: transparent;
+  margin: 16px 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cf-assistant-root .code-switcher-tabs-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 8px;
+  height: 32px;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  margin-bottom: -1px;
+}
+
+.cf-assistant-root .code-switcher-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  height: 100%;
+  margin-left: -8px;
+  background: linear-gradient(180deg, #2d2d30 0%, #252526 100%);
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #3a3a3a;
+  border-bottom: none;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.cf-assistant-root .code-switcher-tab {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  margin: 0;
+  border-radius: 6px 6px 0 0;
+  color: #969696;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.cf-assistant-root .code-switcher-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+}
+
+.cf-assistant-root .code-switcher-tab.active {
+  background: #1e1e1e;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.cf-assistant-root .code-switcher-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffa116, transparent);
+  border-radius: 2px;
+}
+
+.cf-assistant-root .code-switcher .code-panel {
+  display: none;
+  margin: 0;
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.cf-assistant-root .code-switcher .code-panel.is-active {
+  display: block;
+}
+
+/* 助教里每个代码块各自包一层 code-switcher（单 panel）：即使偶发丢了 is-active 也要显示 */
+.cf-assistant-root .code-switcher:not(:has(pre.code-panel ~ pre.code-panel)) > pre.code-panel {
+  display: block;
+}
+
+.cf-assistant-root .code-switcher .code-panel code {
+  display: block;
+  overflow-x: auto;
+  color: #e5e7eb;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.cf-assistant-root .code-switcher pre {
+  margin: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-radius: 0 0 8px 8px !important;
+  background: #1e1e1e !important;
+  border: 1px solid #3a3a3a !important;
+  border-top: none !important;
+  box-shadow: none !important;
+}
+
+.cf-assistant-root .code-switcher pre code {
+  background: #1e1e1e !important;
+  color: #e5e7eb !important;
+}
+
+.cf-assistant-root .code-switcher .line-numbers .line-numbers-rows {
+  background: #1e1e1e;
+}
+
+.cf-assistant-root .code-switcher-tab.disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.cf-assistant-root .code-switcher-tab.disabled:hover {
+  background: transparent;
+}
+
+.cf-assistant-root .code-switcher-tab.disabled.active {
+  background: #282828;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ===== 复制按钮（CodeNote code-copy-btn） ===== */
+
+.cf-assistant-root .code-copy-btn {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  padding: 6px 12px;
+  background: #3a3a3a;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  color: #d4d4d4;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.cf-assistant-root .simple-code-block {
+  position: relative;
+  margin: 14px 0;
+}
+
+.cf-assistant-root .simple-code-block pre {
+  margin: 0 !important;
+}
+
+.cf-assistant-root .simple-code-block .code-copy-btn {
+  top: 8px;
+  right: 8px;
+  background: #1976d2 !important;
+  border-color: #1565c0 !important;
+  color: #ffffff;
+}
+
+.cf-assistant-root .simple-code-block .code-copy-btn:hover {
+  background: #1565c0;
+  border-color: #0d47a1;
+}
+
+.cf-assistant-root .code-copy-btn:hover {
+  background: #4a4a4a;
+  border-color: #5a5a5a;
+  color: #ffffff;
+}
+
+.cf-assistant-root .code-copy-btn:active {
+  transform: scale(0.95);
+}
+
+.cf-assistant-root .code-copy-btn.copied {
+  background: #4caf50;
+  border-color: #45a049;
+  color: #ffffff;
+}
+
+.cf-assistant-root .code-copy-btn::before {
+  content: "📋";
+  font-size: 14px;
+}
+
+.cf-assistant-root .code-copy-btn.copied::before {
+  content: "✓";
+}
+
+/* ===== Prism Tomorrow token（scoped） ===== */
+
+.cf-assistant-root code[class*="language-"],
+.cf-assistant-root pre[class*="language-"] {
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+.cf-assistant-root .token.block-comment,
+.cf-assistant-root .token.cdata,
+.cf-assistant-root .token.comment,
+.cf-assistant-root .token.doctype,
+.cf-assistant-root .token.prolog {
+  color: #999;
+}
+
+.cf-assistant-root .token.punctuation {
+  color: #ccc;
+}
+
+.cf-assistant-root .token.attr-name,
+.cf-assistant-root .token.deleted,
+.cf-assistant-root .token.namespace,
+.cf-assistant-root .token.tag {
+  color: #e2777a;
+}
+
+.cf-assistant-root .token.function-name {
+  color: #6196cc;
+}
+
+.cf-assistant-root .token.boolean,
+.cf-assistant-root .token.function,
+.cf-assistant-root .token.number {
+  color: #f08d49;
+}
+
+.cf-assistant-root .token.class-name,
+.cf-assistant-root .token.constant,
+.cf-assistant-root .token.property,
+.cf-assistant-root .token.symbol {
+  color: #f8c555;
+}
+
+.cf-assistant-root .token.atrule,
+.cf-assistant-root .token.builtin,
+.cf-assistant-root .token.important,
+.cf-assistant-root .token.keyword,
+.cf-assistant-root .token.selector {
+  color: #cc99cd;
+}
+
+.cf-assistant-root .token.attr-value,
+.cf-assistant-root .token.char,
+.cf-assistant-root .token.regex,
+.cf-assistant-root .token.string,
+.cf-assistant-root .token.variable {
+  color: #7ec699;
+}
+
+.cf-assistant-root .token.entity,
+.cf-assistant-root .token.operator,
+.cf-assistant-root .token.url {
+  color: #67cdcc;
+}
+
+.cf-assistant-root .token.bold,
+.cf-assistant-root .token.important {
+  font-weight: 700;
+}
+
+.cf-assistant-root .token.italic {
+  font-style: italic;
+}
+
+.cf-assistant-root .token.entity {
+  cursor: help;
+}
+
+.cf-assistant-root .token.inserted {
+  color: green;
+}

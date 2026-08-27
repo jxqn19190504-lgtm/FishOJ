@@ -1,0 +1,14 @@
+{# 可选：由 hooks 注入 UiContext 后前端保证面板已在 problem_ide.html；本 partial 供其它页复用 #}
+<div class="problem-ide-ai-panel">
+  <div id="problemIdeAiSubmitMeta" class="problem-ide-ai-panel__meta">
+    <span class="problem-ide-ai-panel__meta-empty">请从「运行结果」或「历史提交」选择一条记录</span>
+  </div>
+  <div id="aiAnalysisQuotaBar" class="ai-analysis-quota-bar" hidden></div>
+  <div class="problem-ide-ai-panel__actions">
+    <button type="button" id="problemIdeAiSettingsToggle" class="problem-ide-ai-panel__settings-btn">设置</button>
+    <button type="button" id="problemIdeAiStartBtn" class="problem-ide-ai-panel__start-btn" disabled>开始AI分析</button>
+  </div>
+  <div id="problemIdeAiStreamRoot" class="record-ai-stream-panel record-ai-stream-panel--await-start">
+    <div class="record-ai-await-start"><span>选择提交后开始分析</span></div>
+  </div>
+</div>
