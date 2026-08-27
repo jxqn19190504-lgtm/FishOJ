@@ -132,15 +132,18 @@ function tryMatchRoute(
     const result = matchPathPattern(runtime.pathname, config.match.path);
     matched = result.matched;
     params = result.params;
-  } else if (config.match.pattern) {
+  }
+  if (!matched && config.match.pattern) {
     const result = matchRegexPattern(runtime.pathname, config.match.pattern);
     matched = result.matched;
     params = result.params;
-  } else if (config.match.routeName) {
+  }
+  if (!matched && config.match.routeName) {
     const pageName = readPageName();
     matched = pageName === config.match.routeName;
     params = { ...runtime.routeParams } as Record<string, string>;
-  } else {
+  }
+  if (!config.match.path && !config.match.pattern && !config.match.routeName) {
     return null;
   }
 

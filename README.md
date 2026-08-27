@@ -36,7 +36,7 @@ FishOJ 是基于开源项目 [Hydro](https://hydro.js.org/) 二次开发的在�
 ├── README.md              # 本文件（项目交接文档）
 ├── docs/系统介绍.md       # 给脚手架 / 项目计划书用的完整系统说明
 ├── docs/                  # 学习笔记 / 架构 / 风格
-├── addons/                # 自研 Hydro 插件（ProblemIde、VipIntroPage、LearningScaffold、AiTutor）
+├── addons/                # 自研 Hydro 插件（ProblemIde、VipIntroPage、LearningScaffold、AiTutor、AiAnalysis、AiAssistant）
 ├── server-config/         # Caddy / Mongo 配置样例（无真实密码）
 └── 题库/                  # Hydro 格式题包（gitignore，不进仓库）
 ```
@@ -66,7 +66,7 @@ hydrooj cli user setSuperAdmin <uid>   # 设置超级管理员
 1. **高内聚、低耦合。** 一个插件只负责自己的功能；插件之间不要互相引用、不要把状态散落到别的插件里。需要跨插件协作时，用 Hydro 钩子、页面字段或约定好的接口，而不是直接 import 对方内部实现。
 2. **按功能拆文件。** 不要把多种职责堆进同一个 `index.ts`、`*.page.ts` 或超大 CSS。入口文件只做注册与组装；handler、hook、lib、前端模块、模板 partial 按功能分文件，避免单文件里堆大量互不相关的代码。
 
-参考现有拆分：`addons/VipIntroPage`、`addons/ProblemIde`、`addons/LearningScaffold`、`addons/AiTutor`。跨插件协议见 `docs/problem-ide-learning-contract.md`。
+参考现有拆分：`addons/VipIntroPage`、`addons/ProblemIde`、`addons/LearningScaffold`、`addons/AiTutor`、`addons/AiAnalysis`、`addons/AiAssistant`。跨插件协议见 `docs/problem-ide-learning-contract.md`。
 
 ## 📦 关键决策记录
 

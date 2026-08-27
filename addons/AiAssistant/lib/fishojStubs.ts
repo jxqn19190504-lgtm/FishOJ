@@ -19,6 +19,14 @@ export async function getTextSolution(_domainId: string, _docId: number): Promis
 
 export const CodeNoteValidator = {
     assertValid() { /* no-op */ },
+    async validateAll(_domainId: string, _abbreviation: string, _pid: string) {
+        return {
+            psid: '',
+            ps: null,
+            pdoc: null,
+            isIntroPage: false,
+        };
+    },
 };
 
 export async function getCodenoteVisibilityForProblem() {

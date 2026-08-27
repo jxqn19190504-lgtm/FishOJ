@@ -13,6 +13,7 @@ export const acmProblemAssistantRoute: AIAssistantRouteConfig = {
 
   match: {
     pattern: /^\/ide\/(?<problemId>[^/?#]+)$/,
+    routeName: 'problem_ide',
   },
 
   scene: 'acm-problem',

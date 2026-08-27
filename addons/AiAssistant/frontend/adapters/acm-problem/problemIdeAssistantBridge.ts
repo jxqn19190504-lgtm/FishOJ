@@ -50,6 +50,9 @@ declare const UiContext: {
   learning?: {
     assistantEnabled?: boolean;
   };
+  aiAssistant?: {
+    enabled?: boolean;
+  };
   tdoc?: { docId?: number | string };
 };
 
@@ -263,6 +266,7 @@ export function buildAcmClientSnapshot(problemId: string): ACMAssistantClientSna
 
 export function isAcmAssistantEligibleOnPage(): boolean {
   try {
+    if (UiContext.aiAssistant?.enabled === false) return false;
     if (UiContext.learning?.assistantEnabled === false) return false;
   } catch {
     /* ignore */

@@ -79,9 +79,10 @@
 {{ set(UiContext, 'problemIdeCanSubmit', problemIdeCanSubmit) }}
 {{ set(UiContext, 'ideShortCooldown', ideShortCooldown|default(false)) }}
 {{ set(UiContext, 'pdoc', pdoc) }}
-{{ set(UiContext, 'learning', learning|default({ scaffoldEnabled: false, tutorEnabled: false })) }}
+{{ set(UiContext, 'learning', learning|default({ scaffoldEnabled: false, tutorEnabled: false, assistantEnabled: false })) }}
 {{ set(UiContext, 'problemIdeHost', problemIdeHost) }}
 {{ set(UiContext, 'aiAnalysis', aiAnalysis|default({ enabled: false })) }}
+{{ set(UiContext, 'aiAssistant', aiAssistant|default({ enabled: false })) }}
 {% if tdoc and problemIdeCanSubmit %}
   {{ set(UiContext, 'postSubmitUrl', url('problem_submit', pid=pdoc.docId, query={tid:tdoc.docId})) }}
 {% elif not tdoc and problemIdeCanSubmit %}

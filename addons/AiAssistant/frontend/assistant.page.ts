@@ -2,12 +2,16 @@ import { addPage, NamedPage } from '@hydrooj/ui-default';
 import { ensureAssistantHostStarted, ensureAssistantHostStopped } from './bootstrapAssistantHost';
 
 declare const UiContext: {
+  aiAssistant?: {
+    enabled?: boolean;
+  };
   learning?: {
     assistantEnabled?: boolean;
   };
 };
 
 addPage(new NamedPage(['problem_ide'], async () => {
+  if (UiContext.aiAssistant?.enabled === false) return;
   if (UiContext.learning?.assistantEnabled === false) return;
 
   const stop = ensureAssistantHostStarted();
