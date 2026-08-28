@@ -1,0 +1,107 @@
+{% import "components/form.html" as form with context %}
+{% import "components/sidemenu.html" as sidemenu with context %}
+{% import "components/paginator.html" as paginator with context %}
+{% import "components/nothing.html" as nothing with context %}
+{% import "components/noscript_note.html" as noscript_note with context %}
+{% import "components/user.html" as user with context %}
+<!DOCTYPE html>
+{% set theme = (handler.user|default({})).theme|default('default') %}
+<html data-page="{{ page_name }}" data-layout="{{ layout_name }}" class="layout--{{ layout_name }} page--{{ page_name }} theme--{{ theme }} nojs" data-mantine-color-scheme="{{ 'dark' if theme.includes('dark') else 'light' }}" lang="{{ UserContext.viewLang }}" data-app="Hydro">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ UiContext.cdn_prefix }}apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="{{ UiContext.cdn_prefix }}favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="{{ UiContext.cdn_prefix }}android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="{{ UiContext.cdn_prefix }}favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="{{ UiContext.cdn_prefix }}favicon-16x16.png" sizes="16x16">
+  {% if handler.context.request.url %}<link rel="canonical" href="{{ model.system.get('server.url') }}{{ handler.context.request.url.substring(1) }}">{% endif %}
+  <meta name="theme-color" content="#56758f">
+  {% block ogp_site %}
+  <meta property="og:site_name" content="{{ (handler.domain|default({ui:[]})).ui.name|default(model.system.get('server.name')) }}" />
+  <meta property="og:url" content="{{ model.system.get('server.url') }}{{ handler.request.path.slice(1) }}" />
+  <meta property="og:image" content="{{ UiContext.cdn_prefix }}favicon-96x96.png" />
+  {% endblock %}
+  {% block ogp %}
+  <meta property="og:title" content="{{ handler.renderTitle(page_name) }}" />
+  {% endblock %}
+  <title>{{ handler.renderTitle(page_name) }}</title>
+  <style>
+    body {
+      --font-family: "{{ UserContext.fontFamily }}", "Open Sans", "Seravek", "Segoe UI", "Verdana", "PingFang SC", "Hiragino Sans GB", "Lantinghei SC", "Microsoft Yahei", "WenQuanYi Micro Hei", "sans";
+      --code-font-family: "{{ UserContext.codeFontFamily }}", "monaco", "Source Code Pro", "Consolas", "Lucida Console", "monospace";
+      --font-ligatures: {{ "normal" if UserContext.codeFontLigatures else "none" }} !important;
+    }
+    /* FishOJ 深海鎏金：在 theme-*.css 之前注入关键色，防止无样式内容闪烁(FOUC) */
+    :root {
+      --mantine-color-blue-0: #eef3ff !important;
+      --mantine-color-blue-1: #d9e4ff !important;
+      --mantine-color-blue-2: #b9d0ff !important;
+      --mantine-color-blue-3: #8fb4ff !important;
+      --mantine-color-blue-4: #5e8dff !important;
+      --mantine-color-blue-5: #3f74ff !important;
+      --mantine-color-blue-6: #2f6bff !important;
+      --mantine-color-blue-7: #1f57e6 !important;
+      --mantine-color-blue-8: #1746c2 !important;
+      --mantine-color-blue-9: #0b2447 !important;
+      --mantine-primary-color-0: var(--mantine-color-blue-0) !important;
+      --mantine-primary-color-1: var(--mantine-color-blue-1) !important;
+      --mantine-primary-color-2: var(--mantine-color-blue-2) !important;
+      --mantine-primary-color-3: var(--mantine-color-blue-3) !important;
+      --mantine-primary-color-4: var(--mantine-color-blue-4) !important;
+      --mantine-primary-color-5: var(--mantine-color-blue-5) !important;
+      --mantine-primary-color-6: var(--mantine-color-blue-6) !important;
+      --mantine-primary-color-7: var(--mantine-color-blue-7) !important;
+      --mantine-primary-color-8: var(--mantine-color-blue-8) !important;
+      --mantine-primary-color-9: var(--mantine-color-blue-9) !important;
+      --mantine-primary-color-filled: var(--mantine-color-blue-6) !important;
+      --mantine-primary-color-filled-hover: var(--mantine-color-blue-7) !important;
+      --mantine-primary-color-light: var(--mantine-color-blue-0) !important;
+      --mantine-primary-color-light-hover: var(--mantine-color-blue-1) !important;
+      --mantine-primary-color-light-color: var(--mantine-color-blue-7) !important;
+      --fishoj-gold: #ffc45e;
+      --fishoj-gold-deep: #f97316;
+      --fishoj-navy: #0b2447;
+      --fishoj-navy-2: #19376d;
+      --fishoj-blue: #2f6bff;
+    }
+    {% if not isIE(handler.request.headers['user-agent']) and not handler.session.legacy %}
+      #panel { display: flex; flex-direction: column; }
+    {% endif %}
+  </style>
+  {% if process.env.DEV %}
+    <script src="/default.theme.js?version={{ global.Hydro.version['ui-default'] }}"></script>
+    <link rel="stylesheet" media="all" href="/theme-{{ global.Hydro.version['ui-default'] }}.css">
+  {% else %}
+    <link rel="stylesheet" media="all" href="{{ UiContext.cdn_prefix }}theme-{{ global.Hydro.version['ui-default'] }}.css">
+  {% endif %}
+  {% if not isIE(handler.request.headers['user-agent']) and not handler.session.legacy %}
+    <script>
+      var _htmlNode = document.documentElement;
+      _htmlNode.className = _htmlNode.className.replace(' nojs', ' hasjs');
+      window.UiContext = '{{ UiContext|json|jsesc|safe }}';
+      window.UserContext = '{{ UserContext|json|jsesc|safe }}';
+    </script>
+  {% endif %}
+  {% set UiContext = Object.create(UiContext) %}
+  {% set UserContext = Object.create(UserContext) %}
+</head>
+<body>
+  {% if not isIE(handler.request.headers['user-agent']) and not handler.session.legacy %}
+    <script type="text/javascript" src="{{ UiContext.cdn_prefix if UiContext.cdn_dynamic else '/' }}resource/{{ UiContext.constantVersion }}/entry.js"></script>
+    <script type="text/javascript" src="{{ UiContext.cdn_prefix }}resource/{{ global.Hydro.version['ui-default'] }}/lang-{{ _('__id') }}.js"></script>
+    <script type="text/javascript" src="{{ UiContext.cdn_prefix }}hydro-{{ global.Hydro.version['ui-default'] }}.js{% if process.env.DEV %}?version=dev{% endif %}"></script>
+  {% endif %}
+  {% block body %}{% endblock %}
+  {% block script %}{% endblock %}
+  {% if not isIE(handler.request.headers['user-agent']) and not handler.session.legacy %}
+    <script>
+      window.UiContextNew = '{{ UiContext|json|jsesc|safe }}';
+      window.UserContextNew = '{{ UiContext|json|jsesc|safe }}';
+    </script>
+  {% endif %}
+</body>
+</html>
