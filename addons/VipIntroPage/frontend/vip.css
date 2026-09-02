@@ -484,7 +484,20 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  table-layout: fixed;
   background: #fff;
+}
+
+.table col.vip-col-member {
+  width: 110px;
+}
+
+.vip-th-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .table thead th {
