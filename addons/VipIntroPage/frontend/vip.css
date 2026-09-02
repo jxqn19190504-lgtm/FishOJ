@@ -18,6 +18,13 @@
   --vip-border: #e5e7eb;
   --vip-bg: #f6f7fb;
   --vip-card: #ffffff;
+  /* 特权卡 SVG 图标渐变变量（partials 中 url(#vipGrad*) 引用） */
+  --vip-ico-spark-a: #ffc45e;
+  --vip-ico-spark-b: #f97316;
+  --vip-ico-crown-a: #ffc45e;
+  --vip-ico-crown-b: #f97316;
+  --vip-ico-user-a: #2f6bff;
+  --vip-ico-user-b: #19376d;
 }
 
 /* 页面容器 */
