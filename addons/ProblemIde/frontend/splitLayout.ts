@@ -39,10 +39,8 @@ export function restoreIdeSplit(
     root: HTMLElement, layoutCb: () => void,
 ) {
     const totalW = root.getBoundingClientRect().width;
-    if (localStorage.getItem(EDITOR_HIDDEN_BY_SPLIT_KEY) === '1') {
-        applyIdeSplit(left, gutter, right, root, getHideAtLeftWidth(totalW), layoutCb);
-        return;
-    }
+    // 恢复时始终按双栏显示：不再读取历史隐藏标记 problem_ide_editor_hidden_v1，
+    // 避免刷新后右侧编辑器被永久隐藏。当前会话内拖到最左仍会隐藏（由 applyIdeSplit 负责）。
     let targetW = totalW * 0.5;
     const saved = localStorage.getItem(SPLIT_KEY);
     if (saved) {
