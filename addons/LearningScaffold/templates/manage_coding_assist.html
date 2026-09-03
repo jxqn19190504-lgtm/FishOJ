@@ -1,28 +1,28 @@
 {% extends "manage_base.html" %}
 {% block manage_content %}
-<div class="section">
+<div class="section fishoj-manage">
   <div class="section__header">
     <h1 class="section__title">{{ _('manage_coding_assist') }}</h1>
   </div>
-  <div class="section__body">
-    <p>配置做题页的学习方式脚手架（自己挑战 / 给一点框架 / 陪我一步一步做）。先输入题号进入题目配置。</p>
-    <form method="post">
+  <div class="section__body fishoj-manage__body">
+    <p class="fishoj-manage__intro">为每道题配置分层学习模式，让学生可以选择“自己挑战”“给点框架”或“陪我做”。</p>
+    <form method="post" class="fishoj-manage__toolbar">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
-      <label>题号
+      <label class="fishoj-manage__field">题目编号
         <input type="text" name="pid" required placeholder="例如 P1001">
       </label>
-      <button type="submit" name="operation" value="open" class="rounded primary button">编辑该题</button>
+      <button type="submit" name="operation" value="open" class="rounded primary button">进入配置</button>
     </form>
-    <h2>已配置的题目</h2>
+    <h2 class="fishoj-manage__subtitle">已配置题目</h2>
     {% if items.length %}
     <table class="data-table">
       <thead>
         <tr>
-          <th>题号</th>
+          <th>题目编号</th>
           <th>标题</th>
-          <th>教学模式</th>
-          <th>AI Tutor</th>
-          <th></th>
+          <th>分层学习</th>
+          <th>AI 编程导师</th>
+          <th>操作</th>
         </tr>
       </thead>
       <tbody>
@@ -30,15 +30,15 @@
         <tr>
           <td>{{ it.pid }}</td>
           <td>{{ it.title }}</td>
-          <td>{% if it.enabled %}开{% else %}关{% endif %}</td>
-          <td>{% if it.tutorEnabled %}开{% else %}关{% endif %}</td>
-          <td><a href="{{ url('manage_coding_assist_problem', pid=it.pid) }}">编辑</a></td>
+          <td><span class="fishoj-manage__status{% if it.enabled %} is-on{% endif %}">{% if it.enabled %}已开启{% else %}未开启{% endif %}</span></td>
+          <td><span class="fishoj-manage__status{% if it.tutorEnabled %} is-on{% endif %}">{% if it.tutorEnabled %}已开启{% else %}未开启{% endif %}</span></td>
+          <td><a class="fishoj-manage__link" href="{{ url('manage_coding_assist_problem', pid=it.pid) }}">配置</a></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
     {% else %}
-    <p>还没有配置过任何题目。输入题号后保存即可。</p>
+    <div class="fishoj-manage__empty">暂未配置题目，请输入题目编号开始配置。</div>
     {% endif %}
   </div>
 </div>

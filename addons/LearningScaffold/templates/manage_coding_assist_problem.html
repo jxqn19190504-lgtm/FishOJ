@@ -1,51 +1,55 @@
 {% extends "manage_base.html" %}
 {% block manage_content %}
-<div class="section">
+<div class="section fishoj-manage">
   <div class="section__header">
-    <h1 class="section__title">辅助编码：{{ pid }} {{ pdoc.title if pdoc else '' }}</h1>
+    <h1 class="section__title">题目学习配置 · {{ pid }} {{ pdoc.title if pdoc else '' }}</h1>
   </div>
-  <div class="section__body">
-    <p>
-      <a href="{{ url('manage_coding_assist') }}">返回辅助编码管理</a>
+  <div class="section__body fishoj-manage__body">
+    <nav class="fishoj-manage__breadcrumb" aria-label="页面导航">
+      <a href="{{ url('manage_coding_assist') }}">返回题目列表</a>
       ·
       <a href="/ide/{{ pid }}">打开做题页</a>
-    </p>
-    <form method="post">
+    </nav>
+    <form method="post" class="fishoj-manage__demo">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
-      <button type="submit" name="operation" value="fill_demo" class="rounded primary button">填入「三数最大值」示例</button>
+      <div><strong>快速开始</strong><span>可先载入示例，再按当前题目调整配置。</span></div>
+      <button type="submit" name="operation" value="fill_demo" class="rounded button">载入“三数最大值”示例</button>
     </form>
-    <form method="post">
+    <form method="post" class="fishoj-manage__form fishoj-manage__editor">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
       {% set m = meta or {} %}
-      <label><input type="checkbox" name="enabled" value="on"{% if m.enabled %} checked{% endif %}> 开启教学模式</label>
-      <label><input type="checkbox" name="tutorEnabled" value="on"{% if m.tutorEnabled != false %} checked{% endif %}> 开启 AI Tutor</label>
-      <p>教学目标（每行一条）</p>
+      <div class="fishoj-manage__switches">
+        <label><input type="checkbox" name="enabled" value="on"{% if m.enabled %} checked{% endif %}> 开启分层学习</label>
+        <label><input type="checkbox" name="tutorEnabled" value="on"{% if m.tutorEnabled != false %} checked{% endif %}> 开启 AI 编程导师</label>
+      </div>
+      <h2 class="fishoj-manage__subtitle">教学内容</h2>
+      <p>教学目标 <small>每行一条</small></p>
       <textarea name="objectives" rows="3">{{ (m.objectives or [])|join('\n') }}</textarea>
-      <p>知识点（每行一条）</p>
+      <p>知识点 <small>每行一条</small></p>
       <textarea name="concepts" rows="3">{{ (m.concepts or [])|join('\n') }}</textarea>
-      <p>解题阶段（格式：id|标题）</p>
+      <p>解题阶段 <small>格式：阶段编号|标题</small></p>
       <textarea name="stages" rows="6">{% for s in m.stages or [] %}{{ s.id }}|{{ s.title }}
 {% endfor %}</textarea>
-      <p>核心阶段 id（无论脚手架多高都不直接写出答案）</p>
+      <p>受保护的阶段编号 <small>在任何学习模式下都不直接给出答案</small></p>
       <textarea name="protectedStages" rows="3">{{ (m.protectedStages or [])|join('\n') }}</textarea>
-      <p>常见错误（每行一条）</p>
+      <p>常见错误 <small>每行一条</small></p>
       <textarea name="commonMistakes" rows="4">{{ (m.commonMistakes or [])|join('\n') }}</textarea>
-      <h2>Python 脚手架 S0 / S1 / S3</h2>
-      <p>S0 自己挑战</p>
+      <h2 class="fishoj-manage__subtitle">Python 代码框架</h2>
+      <p>自己挑战 <small>S0</small></p>
       <textarea name="py0" rows="6">{{ py[0] | default('') }}</textarea>
-      <p>S1 给点框架</p>
+      <p>给点框架 <small>S1</small></p>
       <textarea name="py1" rows="8">{{ py[1] | default('') }}</textarea>
-      <p>S3 陪我做</p>
+      <p>陪我做 <small>S3</small></p>
       <textarea name="py3" rows="12">{{ py[3] | default('') }}</textarea>
-      <h2>C++ 脚手架 S0 / S1 / S3</h2>
-      <p>S0</p>
+      <h2 class="fishoj-manage__subtitle">C++ 代码框架</h2>
+      <p>自己挑战 <small>S0</small></p>
       <textarea name="cpp0" rows="8">{{ cpp[0] | default('') }}</textarea>
-      <p>S1</p>
+      <p>给点框架 <small>S1</small></p>
       <textarea name="cpp1" rows="10">{{ cpp[1] | default('') }}</textarea>
-      <p>S3</p>
+      <p>陪我做 <small>S3</small></p>
       <textarea name="cpp3" rows="14">{{ cpp[3] | default('') }}</textarea>
       <p>
-        <button type="submit" name="operation" value="save" class="rounded primary button">保存</button>
+        <button type="submit" name="operation" value="save" class="rounded primary button">保存题目配置</button>
       </p>
     </form>
   </div>
