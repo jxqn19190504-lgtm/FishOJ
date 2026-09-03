@@ -498,6 +498,7 @@
   justify-content: center;
   gap: 6px;
   white-space: nowrap;
+  transform: translateX(-12px);
 }
 
 .table thead th {
