@@ -21,9 +21,7 @@
 </blockquote>
 {% endif %}
 {% include "partials/problem_ide_statement_h1.html" %}
-{% if not renderredContent %}
-{% set preferredLang = handler.request.query.lang or handler.user.viewLang or handler.session.viewLang %}
+{% set preferredLang = lang or handler.request.query.lang or handler.user.viewLang or handler.session.viewLang %}
 {% set renderredContent = pdoc.content|content(preferredLang, pdoc.html) %}
-{% endif %}
 {{ renderredContent|safe }}
 </div>
