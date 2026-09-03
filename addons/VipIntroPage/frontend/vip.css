@@ -521,7 +521,13 @@
 .table thead th:nth-child(2),
 .table thead th:nth-child(3) {
   text-align: center;
-  padding-left: 0;
+  padding-left: 26px;
+}
+
+.table tbody td:nth-child(2),
+.table tbody td:nth-child(3) {
+  text-align: center;
+  padding-left: 26px;
 }
 
 .table tbody td {
