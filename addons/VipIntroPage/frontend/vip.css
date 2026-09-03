@@ -512,20 +512,26 @@
 
 .table thead th:nth-child(2),
 .table thead th:nth-child(3) {
-  text-align: left;
-  padding-left: 6px;
+  text-align: center;
+  padding-left: 0;
 }
 
 .table tbody td {
   padding: 14px 12px;
   border-bottom: 1px solid #f1f3f7;
   text-align: center;
+  vertical-align: middle;
   font-size: 14px;
 }
 
 .table tbody td:first-child {
   text-align: left;
   color: #374151;
+}
+
+.table tbody td:nth-child(2),
+.table tbody td:nth-child(3) {
+  text-align: center;
 }
 
 .table tbody tr:nth-child(odd) td {
@@ -537,15 +543,22 @@
 }
 
 .tick,
-.cross {
+.cross,
+.vip-cell-text {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 24px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.tick,
+.cross {
   width: 24px;
   height: 24px;
   border-radius: 8px;
   font-weight: 800;
-  font-size: 13px;
 }
 
 .tick {
