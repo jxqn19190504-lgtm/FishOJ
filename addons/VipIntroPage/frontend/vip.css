@@ -488,6 +488,10 @@
   background: #fff;
 }
 
+.table col.vip-col-privilege {
+  width: auto;
+}
+
 .table col.vip-col-member {
   width: 110px;
 }
@@ -546,7 +550,8 @@
 .table tbody td:first-child {
   text-align: center;
   color: #374151;
-  padding-left: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .table tbody td:nth-child(2),
