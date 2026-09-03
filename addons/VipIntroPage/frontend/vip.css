@@ -515,7 +515,12 @@
   font-weight: 700;
   color: #7c4a03;
   font-size: 14px;
-  text-align: left;
+  text-align: center;
+}
+
+.table thead th:first-child {
+  text-align: center;
+  padding-left: 12px;
 }
 
 .table thead th:nth-child(2),
@@ -539,8 +544,9 @@
 }
 
 .table tbody td:first-child {
-  text-align: left;
+  text-align: center;
   color: #374151;
+  padding-left: 12px;
 }
 
 .table tbody td:nth-child(2),
@@ -589,7 +595,7 @@
 
 /* FAQ */
 .faq-card {
-  margin-top: 28px;
+  margin-top: 48px;
   background: #ffffff;
   border: 1px solid rgba(23, 42, 84, .07);
   border-radius: 20px;
