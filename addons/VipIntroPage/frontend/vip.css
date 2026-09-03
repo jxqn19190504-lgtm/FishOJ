@@ -498,12 +498,12 @@
   gap: 6px;
   white-space: nowrap;
   position: relative;
-  padding-left: 26px;
 }
 
 .vip-th-label .vip-ico-wrap {
   position: absolute;
-  left: 0;
+  right: 100%;
+  margin-right: 6px;
   top: 50%;
   transform: translateY(-50%);
 }
