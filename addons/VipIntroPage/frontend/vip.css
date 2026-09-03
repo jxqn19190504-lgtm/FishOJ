@@ -495,10 +495,17 @@
 .vip-th-label {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
   white-space: nowrap;
-  transform: translateX(-12px);
+  position: relative;
+  padding-left: 26px;
+}
+
+.vip-th-label .vip-ico-wrap {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .table thead th {
