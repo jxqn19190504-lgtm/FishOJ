@@ -606,20 +606,24 @@
   border: 1px solid rgba(23, 42, 84, .07);
   border-radius: 20px;
   box-shadow: 0 14px 34px -16px rgba(23, 42, 84, .14);
-  padding: 28px 32px;
+  padding: 18px 24px;
 }
 
 .faq-title {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #111827;
 }
 
 .faq-item {
   border-bottom: 1px solid #e5e7eb;
-  padding: 16px 0;
+  padding: 9px 0;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
 }
 
 .faq-question {
@@ -628,7 +632,7 @@
   align-items: center;
   font-weight: 600;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   color: #1f2937;
   list-style: none;
 }
