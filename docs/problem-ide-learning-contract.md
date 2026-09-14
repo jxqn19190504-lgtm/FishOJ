@@ -64,6 +64,8 @@ UiContext.aiAnalysis = {
 
 Judge 与编辑器不等待 AI。AI 失败不得影响提交。
 
+控制面板：`/manage/ai-analysis`（全站开关、日限额、清空缓存）、`/manage/ai-analysis/logs`（调用日志，对齐 CodeFun `RecordAiAnalysisLogManage`）。
+
 ## AiAssistant（`addons/AiAssistant`）
 
 多轮 LLM 聊天助教（浮层），与 `AiTutor`（启发式 `/ai-tutor/hint`）职责不同。
@@ -84,6 +86,14 @@ UiContext.learning.assistantEnabled = boolean // 与 aiAssistant.enabled 同步
 
 前端通过 `problemIdeAssistantBridge` 读取 `window.FishOJProblemIde.getSnapshot()`，监听 `problem-ide-*` 事件；挂载路由匹配 `/ide/:pid` 或 `page_name=problem_ide`。
 
+控制面板：`/manage/ai-assistant`（全站开关、Key 状态、限频说明）。按题开关在「辅助编码管理」`/manage/coding-assist`。
+
+## LearningScaffold / AiTutor 控制面板
+
+| 功能 | 控制面板入口 |
+|------|----------------|
+| 脚手架 + 按题开关（小助手/助教/分析） | `/manage/coding-assist` |
+| AI 小助手 LLM | `/manage/ai-tutor` |
 ## OfficialSolution（`addons/OfficialSolution`）
 
 官方文字题解读写，移植自 CodeFun `ProblemSolutionUtils` + `MarkdownEdit`。

@@ -1,3 +1,10 @@
+# 换机导出产物（含库与密钥）
+server-config/migrate/out/
+server-config/migrate/secrets.env
+fishoj-migrate*/
+fishoj-full-migrate*.tar.gz
+*.mongodump
+
 # 敏感文件 - 绝不提交
 *.pem
 *.key
@@ -16,8 +23,13 @@ Thumbs.db
 .vscode/
 *.log
 
-# Node
+# Node / 本地大目录
 node_modules/
 dist/
 题库/
-题库/
+docs/答辩/可安装软件/_out/
+
+# 体积大、且与 addons/ 重复的答辩打包
+addons.zip
+docs/答辩/*.zip
+docs/答辩/全部源程序代码/

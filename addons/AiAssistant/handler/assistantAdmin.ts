@@ -9,12 +9,23 @@ export class AiAssistantAdminHandler extends Handler {
 
     async get() {
         const stored = getStoredAssistantSettings();
+        let conversationCount = 0;
+        try {
+            conversationCount = await this.ctx.db.collection('note_assistant_conversation').countDocuments({});
+        } catch {
+            conversationCount = 0;
+        }
+        const llmConfigured = Boolean(
+            String(process.env.DEEPSEEK_API_KEY || process.env.BUILTIN_API_KEY || '').trim(),
+        );
         this.response.template = 'manage_ai_assistant.html';
         this.response.body = {
             page_name: 'manage_ai_assistant',
             stored,
             rateLimit: ASSISTANT_RATE_LIMIT,
-            llmNote: 'AiAssistant 使用环境变量 DEEPSEEK_API_KEY / BUILTIN_API_KEY 或 OpenAI 兼容接口；与 AiTutor 共用时可配置相同密钥。',
+            conversationCount,
+            llmConfigured,
+            llmNote: '对齐 CodeFun AiQuota「大模型 API」环境变量回退：DEEPSEEK_API_KEY / BUILTIN_API_KEY。FishOJ 暂无点数钱包，助教侧仅全站开关 + 内存限频。',
         };
     }
 

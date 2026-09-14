@@ -1,0 +1,103 @@
+{% extends "manage_base.html" %}
+{% block manage_content %}
+<style>
+  .fish-ai-log .filter-form {
+    display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin: 6px 0 14px;
+  }
+  .fish-ai-log .filter-form label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+  .fish-ai-log .filter-form input,
+  .fish-ai-log .filter-form select {
+    padding: 6px 8px; border: 1px solid #ddd; border-radius: 8px; min-width: 160px;
+  }
+  .fish-ai-log .data-table { width: 100%; table-layout: fixed; }
+  .fish-ai-log .data-table th,
+  .fish-ai-log .data-table td {
+    text-align: left; padding: 6px 8px; font-size: 12px; word-break: break-all; vertical-align: top;
+  }
+  .fish-ai-log .ok { color: #389e0d; }
+  .fish-ai-log .bad { color: #cf1322; }
+  .fish-ai-log .pagination { margin-top: 1.5rem; text-align: center; }
+  .fish-ai-log .pagination a,
+  .fish-ai-log .pagination span { margin: 0 4px; display: inline-block; padding: 2px 8px; }
+  .fish-ai-log .pagination .current { font-weight: 700; }
+</style>
+<div class="section fish-ai-log">
+  <div class="section__header">
+    <h1 class="section__title">{{ _('manage_ai_analysis_logs') }}</h1>
+  </div>
+  <div class="section__body">
+    <p>
+      <a href="{{ url('manage_ai_analysis') }}">← 返回 AI 分析管理</a>
+      · 参考 CodeFun「AI分析调用日志」，不落 API Key。
+    </p>
+    <form method="GET" action="{{ url('manage_ai_analysis_logs') }}" class="filter-form">
+      <label>
+        用户（UID 或用户名）
+        <input type="text" name="user" value="{{ userQ }}" placeholder="例如 12345 或 uname" autocomplete="off" />
+      </label>
+      <label>
+        提交 rid（可选）
+        <input type="text" name="rid" value="{{ ridQ }}" placeholder="提交记录 ObjectId" autocomplete="off" />
+      </label>
+      <label>
+        结果
+        <select name="success">
+          <option value=""{% if not successQ %} selected{% endif %}>全部</option>
+          <option value="1"{% if successQ == '1' %} selected{% endif %}>成功</option>
+          <option value="0"{% if successQ == '0' %} selected{% endif %}>失败</option>
+        </select>
+      </label>
+      <button type="submit" class="rounded primary button">筛选</button>
+    </form>
+    {% if resolvedLabel %}
+    <p>当前用户筛选：{{ resolvedLabel }}</p>
+    {% endif %}
+    <p>共 {{ total }} 条</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>时间</th>
+          <th>UID</th>
+          <th>用户</th>
+          <th>rid</th>
+          <th>题号</th>
+          <th>模型</th>
+          <th>缓存</th>
+          <th>扣次</th>
+          <th>结果</th>
+          <th>错误</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td>{{ row.timeStr }}</td>
+          <td>{{ row.uid }}</td>
+          <td>{{ row.uname }}</td>
+          <td>{{ row.rid }}</td>
+          <td>{{ row.problemPid }}</td>
+          <td>{{ row.provider }}/{{ row.model }}{% if row.useCustomApiKey %} (BYOK){% endif %}</td>
+          <td>{% if row.fromCache %}是{% else %}否{% endif %}</td>
+          <td>{% if row.quotaConsumed %}是{% else %}否{% endif %}</td>
+          <td class="{% if row.success %}ok{% else %}bad{% endif %}">{% if row.success %}成功{% else %}失败{% endif %}</td>
+          <td>{{ row.error }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="10">暂无日志</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if pages > 1 %}
+    <div class="pagination">
+      {% for p in pageNumbers %}
+        {% if p == page %}
+        <span class="current">{{ p }}</span>
+        {% else %}
+        <a href="{{ url('manage_ai_analysis_logs') }}?page={{ p }}{{ querySuffix }}">{{ p }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

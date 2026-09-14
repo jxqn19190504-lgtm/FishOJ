@@ -9,6 +9,8 @@ import {
 } from 'hydrooj';
 import { getTextSolution } from '../../OfficialSolution/lib/ProblemSolutionUtils';
 import { aiChatClient, type ChatRequest } from '../lib/api';
+import { isAnalysisEnabledFromSettings } from '../lib/analysisSettings';
+import { logAiAnalysisCall } from '../lib/analysisLog';
 import { getAiAnalysisCacheIfValid, setAiAnalysisCache } from '../lib/cache';
 import { formatRecordJudgeResultPromptText } from '../lib/judgeResultPrompt';
 import { renderMdSafe } from '../lib/markdown';
@@ -133,6 +135,10 @@ export class AiAnalysisStreamHandler extends Handler {
             this.response.body = { error: '缺少提交记录 id' };
             return;
         }
+        if (!isAnalysisEnabledFromSettings()) {
+            this.response.body = { error: 'AI 分析功能暂未开放', code: 'DISABLED' };
+            return;
+        }
         const uid = Number(this.user._id);
         if (!uid) {
             this.response.body = { error: '请先登录后再使用 AI 分析' };
@@ -172,7 +178,33 @@ export class AiAnalysisStreamHandler extends Handler {
             return;
         }
 
+        try {
+            const pidKey = String(pdoc.pid || pdoc.docId);
+            const meta = await this.ctx.db.collection('fish_learning_problem').findOne({
+                domainId: rdoc.domainId,
+                pid: pidKey,
+            });
+            if (meta && meta.analysisEnabled === false) {
+                this.response.body = { error: '本题未开启 AI 分析', code: 'DISABLED' };
+                return;
+            }
+        } catch {
+            /* 元数据读取失败时不阻断分析 */
+        }
+
         const codeAiQuota = resolveAiAnalysisQuota(this.user as any);
+        const logBase = () => ({
+            uid,
+            uname: String((this.user as any)?.uname || ''),
+            rid,
+            domainId: String(rdoc.domainId || ''),
+            problemDocId: Number(pdoc.docId) || undefined,
+            problemPid: pdoc.pid ?? pdoc.docId,
+            provider: resolvedModel.provider,
+            model: resolvedModel.model,
+            useCustomApiKey,
+            disableCache,
+        });
         const canCustomize = (() => {
             if (this.user.hasPriv(PRIV.PRIV_EDIT_SYSTEM)) return true;
             const role = String((this.user as any)?.role || '').toLowerCase();
@@ -235,6 +267,12 @@ export class AiAnalysisStreamHandler extends Handler {
                         };
                     }
                     sseWrite(stream, donePayload);
+                    await logAiAnalysisCall(this.ctx, {
+                        ...logBase(),
+                        fromCache: true,
+                        quotaConsumed: false,
+                        success: true,
+                    });
                 } catch (e: any) {
                     try {
                         sseWrite(stream, {
@@ -242,6 +280,13 @@ export class AiAnalysisStreamHandler extends Handler {
                             error: e?.message ? `读取缓存失败：${e.message}` : '读取缓存失败，请稍后重试',
                         });
                     } catch { /* client closed */ }
+                    await logAiAnalysisCall(this.ctx, {
+                        ...logBase(),
+                        fromCache: true,
+                        quotaConsumed: false,
+                        success: false,
+                        error: e?.message || 'cache_read_failed',
+                    });
                 } finally {
                     stream.end();
                 }
@@ -368,6 +413,12 @@ export class AiAnalysisStreamHandler extends Handler {
                     };
                 }
                 sseWrite(stream, donePayload);
+                await logAiAnalysisCall(this.ctx, {
+                    ...logBase(),
+                    fromCache: false,
+                    quotaConsumed: didConsumeQuota,
+                    success: true,
+                });
             } catch (e: any) {
                 if (didConsumeQuota && shouldRollbackAfterOfficialStreamFailure(e)) {
                     try {
@@ -380,6 +431,13 @@ export class AiAnalysisStreamHandler extends Handler {
                         error: e?.message ? `AI 分析失败：${e.message}` : 'AI 分析失败，请稍后重试',
                     });
                 } catch { /* client closed */ }
+                await logAiAnalysisCall(this.ctx, {
+                    ...logBase(),
+                    fromCache: false,
+                    quotaConsumed: false,
+                    success: false,
+                    error: e?.message || 'stream_failed',
+                });
             } finally {
                 stream.end();
             }

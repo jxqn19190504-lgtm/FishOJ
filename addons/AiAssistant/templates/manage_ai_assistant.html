@@ -5,7 +5,11 @@
     <h1 class="section__title">{{ _('manage_ai_assistant') }}</h1>
   </div>
   <div class="section__body">
-    <p>配置全站 <strong>AI 助教</strong>（右侧浮层多轮聊天）。按题开关请到「<a href="{{ url('manage_coding_assist') }}">辅助编码管理</a>」。</p>
+    <p>
+      配置全站 <strong>AI 助教</strong>（右侧浮层多轮聊天）。参考 CodeFun <code>AiQuota</code> 管理页中的「启用 / API 回退 / 限频」能力；
+      FishOJ 无钱包充值，故仅提供开关与运行状态。
+    </p>
+    <p>按题开关请到「<a href="{{ url('manage_coding_assist') }}">辅助编码管理</a>」。</p>
     <form method="post">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
       <label>
@@ -14,13 +18,19 @@
       </label>
       <p><button type="submit" class="rounded primary button">保存</button></p>
     </form>
+    <h2>运行概况</h2>
+    <ul>
+      <li>平台 LLM Key：{% if llmConfigured %}<span style="color:#389e0d">已配置</span>{% else %}<span style="color:#cf1322">未检测到 DEEPSEEK_API_KEY / BUILTIN_API_KEY</span>{% endif %}</li>
+      <li>历史对话文档数：{{ conversationCount }}</li>
+    </ul>
     <h2>LLM 与限频</h2>
     <p>{{ llmNote }}</p>
-    <p>编程小助手（启发式提示）的模型配置见「<a href="{{ url('manage_ai_tutor') }}">AI Tutor 管理</a>」。</p>
+    <p>编程小助手（启发式提示）的模型配置见「<a href="{{ url('manage_ai_tutor') }}">AI 小助手管理</a>」。</p>
     <ul>
       <li>单用户每分钟：{{ rateLimit.uidPerMinute }} 次</li>
       <li>单 IP 每分钟：{{ rateLimit.ipPerMinute }} 次</li>
       <li>同时生成中：每用户 {{ rateLimit.maxConcurrentPerUid }} 个</li>
+      <li>无关问题冷却：{{ rateLimit.unrelatedHitsBeforeCooldown }} 次 / {{ rateLimit.unrelatedCooldownMs / 1000 }} 秒</li>
     </ul>
   </div>
 </div>

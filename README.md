@@ -13,7 +13,7 @@
 | 主站 | http://8.163.87.247 |
 | 编程题 IDE | `/ide/:pid`（编程题默认入口，由 ProblemIde 提供） |
 
-> 阿里云试用机公网 IP 可能在停机/重启后变更，无法访问时请核对控制台最新 IP。
+> 阿里云试用机公网 IP 可能在停机/重启后变更；**换机时以控制台最新 IP 为准**。完整步骤见 [`docs/换机迁移.md`](docs/换机迁移.md)。
 
 ---
 
@@ -81,7 +81,10 @@ FishOJ/
 │   └── VipIntroPage/                  # 会员介绍
 ├── server-config/
 │   ├── Caddyfile                      # 反向代理样例（含 SSE 长连接超时）
-│   └── config.example.json            # Mongo URI 占位，勿提交真实密码
+│   ├── config.example.json            # Mongo URI 占位，勿提交真实密码
+│   ├── addon.json                     # 试用机插件清单快照
+│   ├── addon.json.example             # 新机建议清单
+│   └── migrate/                       # 换机导出/导入脚本
 └── 题库/                              # Hydro 题包（gitignore，本地/服务器另存）
 ```
 
@@ -148,6 +151,8 @@ npm test
 
 ## 部署到服务器
 
+**换新机器（导出 Mongo / `.hydro` / 密钥、新机安装与冒烟）** 见 [`docs/换机迁移.md`](docs/换机迁移.md)，脚本在 `server-config/migrate/`。
+
 当前线上插件目录：`/root/.hydro/addons/`，清单：`/root/.hydro/addon.json`。
 
 **典型发布流程**（改插件代码后）：
@@ -174,7 +179,7 @@ pm2 restart hydrooj
 
 改 `frontend/*.page.ts` / CSS 必须重启 `hydrooj` 触发 UI 重建；只改 Nunjucks 模板有时刷新即可。
 
-线上已注册插件（参考）：`ui-default`、`hydrojudge`、`fps-importer`、`a11y`、`hydroac-client`，以及本仓库的 ProblemIde、LearningScaffold、AiTutor、AiAssistant、AiAnalysis。
+线上已注册插件（参考）：`ui-default`、`hydrojudge`、`fps-importer`、`a11y`、`hydroac-client`，以及本仓库的 ProblemIde、LearningScaffold、AiTutor、AiAssistant、AiAnalysis、OfficialSolution、HomePage。新机目标清单见 `server-config/addon.json.example`（含 VipIntroPage、FishOjTheme）。
 
 ---
 
@@ -241,7 +246,7 @@ hydrooj addon add <绝对路径>
 
 | 文档 | 用途 |
 |------|------|
-| [`docs/项目定位.md`](docs/项目定位.md) | **总纲**：产品定位、插件边界、新功能决策、与 CodeFun 关系 |
+| [`docs/换机迁移.md`](docs/换机迁移.md) | **换服务器**：导出/导入、密钥、冒烟、切流量 |
 | [`docs/系统介绍.md`](docs/系统介绍.md) | 各插件实现细节、文件级说明 |
 | [`docs/problem-ide-learning-contract.md`](docs/problem-ide-learning-contract.md) | ProblemIde 与 AI 插件的事件与 UiContext 协议 |
 | [`docs/problem-restyle.md`](docs/problem-restyle.md) | 题面改写工作流 |
