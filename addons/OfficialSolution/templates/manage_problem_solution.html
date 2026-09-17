@@ -1,0 +1,20 @@
+{% extends "manage_base.html" %}
+{% block manage_content %}
+<div class="section">
+  <div class="section__header">
+    <h1 class="section__title">{{ _('manage_problem_solution') }}</h1>
+  </div>
+  <div class="section__body">
+    <p>编辑题目的<strong>官方文字题解</strong>（存 Mongo <code>document</code>，类型 <code>TYPE_PROBLEM_SOLUTION</code>）。AI 分析、IDE 题解 Tab 均读取此处内容。</p>
+    <form method="post">
+      <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
+      <label>题号
+        <input type="text" name="pid" required placeholder="例如 P1001">
+      </label>
+      <button type="submit" class="rounded primary button">编辑题解</button>
+    </form>
+    <p>兼容 CodeFun 脚本：<code>/markdown_edit?pid=题号</code></p>
+    <p>当前官方题解发布者 UID：<code>{{ publisherUids|join(', ') }}</code>（可在编辑页修改）</p>
+  </div>
+</div>
+{% endblock %}

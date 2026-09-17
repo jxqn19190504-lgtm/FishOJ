@@ -44,6 +44,7 @@ export function bindProblemIdeRoute(ctx: Context) {
                     scaffoldEnabled: false,
                     tutorEnabled: false,
                 };
+                self.response.body.aiAnalysis = { enabled: false };
                 self.response.body.problemIdeHost = {
                     pid: pdoc.pid || pdoc.docId,
                     docId: pdoc.docId,

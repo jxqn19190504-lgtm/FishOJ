@@ -13,7 +13,7 @@ export function bindScaffoldOnProblemIde(ctx: Context) {
             const domainId = that.args?.domainId;
             if (!pid || !domainId) return;
             const meta = await getLearningProblem(ctx, domainId, pid);
-            if (meta && meta.enabled === false) return;
+            if (!meta || meta.enabled !== true) return;
             const uid = that.user?._id || 0;
             const choice = uid ? await getChoice(ctx, uid, domainId, pid) : null;
             body.learning.scaffoldEnabled = true;

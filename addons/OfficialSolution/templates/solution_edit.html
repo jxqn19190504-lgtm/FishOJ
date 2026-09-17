@@ -1,0 +1,25 @@
+{% extends "manage_base.html" %}
+{% block manage_content %}
+<div class="section">
+  <div class="section__header">
+    <h1 class="section__title">题解：{{ pid }} {{ pdoc.title if pdoc else '' }}</h1>
+  </div>
+  <div class="section__body">
+    <p>
+      <a href="{{ url('manage_problem_solution') }}">返回题解管理</a>
+      ·
+      <a href="/ide/{{ pid }}">打开做题页</a>
+      ·
+      <a href="{{ url('manage_coding_assist_problem', pid=pid) }}">辅助编码配置</a>
+    </p>
+    <form method="post">
+      <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
+      <p>官方题解发布者 UID（每行一个，新建题解时使用第一个 UID 作为 owner）</p>
+      <textarea name="publisher_uids" rows="2">{{ publisherUids|join('\n') }}</textarea>
+      <p>题解 Markdown</p>
+      <textarea name="solContent" rows="28" style="width:100%;font-family:monospace">{{ solContent }}</textarea>
+      <p><button type="submit" class="rounded primary button">保存题解</button></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

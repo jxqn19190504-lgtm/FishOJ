@@ -1561,6 +1561,18 @@ html.page--problem_ide body { overflow: hidden !important; height: 100%; margin:
 .problem-ide-settings label {
   display: flex; align-items: center; gap: 8px; cursor: pointer;
 }
+.problem-ide-settings__divider {
+  height: 1px;
+  margin: 2px 0;
+  background: #eef0f3;
+}
+.problem-ide-settings__toggle input[type='checkbox'] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #1890ff;
+}
 .problem-ide-settings input[type='number'] {
   width: 56px; height: 26px; padding: 0 6px;
   border: 1px solid #d9d9d9; border-radius: 4px;
@@ -2309,6 +2321,7 @@ html.page--problem_ide body { overflow: hidden !important; height: 100%; margin:
   background-color: #1e1e1e; border-color: #555; color: #eee;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
 }
+.theme--dark .problem-ide-settings__divider { background: #444; }
 
 .theme--dark .problem-ide-drawer { border-top-color: #3c3c3c; }
 .theme--dark .problem-ide-drawer__bar { background: #252526; border-bottom-color: #3c3c3c; }
@@ -2377,9 +2390,44 @@ html.page--problem_ide body { overflow: hidden !important; height: 100%; margin:
 .theme--dark .history-end { color: #666; }
 
 /* ===================== 题面内嵌 AI 分析面板 ===================== */
+.problem-ide-left__scroll--ai {
+  display: flex;
+  flex-direction: column;
+}
+.problem-ide-left__scroll--ai > .problem-content-container,
+.problem-ide-left__scroll--ai .problem-content,
+.problem-ide-left__scroll--ai .section__body.show-hide-box-parent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
 #content-aiAnalysis.problem_content {
   margin-top: 0 !important;
   padding-top: 0 !important;
+}
+.problem-ide-left__scroll--ai #content-aiAnalysis.problem_content {
+  flex: 1;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+/* AI 分析 Tab：隐藏题面警告条等，只留分析面板（与 CodeFun 一致） */
+.problem-ide-root--ai-analysis-tab [data-fragment-id="problem-description"] > :not(#content-aiAnalysis) {
+  display: none !important;
+}
+.problem-ide-root--ai-analysis-tab #content-aiAnalysis.problem_content {
+  display: flex !important;
+  flex-direction: column;
+}
+/* AI Tab 内不展示题目标题/限时限内存 meta（防 injectStatementHeading 误注入） */
+.problem-ide-root--ai-analysis-tab #content-aiAnalysis .problem-ide-statement-title,
+.problem-ide-root--ai-analysis-tab #content-aiAnalysis .problem-ide-content-meta {
+  display: none !important;
 }
 .problem-ide-ai-panel {
   display: flex;
@@ -2858,6 +2906,15 @@ label.problem-ide-pset-progress__tags input[type="checkbox"] {
   color: #94a3b8;
   border-top: 1px solid #f1f5f9;
 }
+.problem-ide-ai-panel__toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
 .problem-ide-ai-panel__meta {
   display: flex;
   flex-wrap: wrap;
@@ -2868,6 +2925,27 @@ label.problem-ide-pset-progress__tags input[type="checkbox"] {
   background: #f8fafc;
   font-size: 12px;
   color: #475569;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.problem-ide-ai-panel__toolbar-right {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  max-width: min(56%, 420px);
+  min-width: 0;
+  align-self: stretch;
+}
+.problem-ide-ai-panel__rerun-btn {
+  flex-shrink: 0;
+}
+.problem-ide-ai-panel__rerun-btn[hidden] {
+  display: none !important;
 }
 .problem-ide-ai-panel__meta-empty {
   color: #94a3b8;
@@ -2876,49 +2954,39 @@ label.problem-ide-pset-progress__tags input[type="checkbox"] {
   white-space: nowrap;
   font-size: 12px;
 }
-.problem-ide-ai-panel__actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.problem-ide-ai-panel__settings-btn,
-.problem-ide-ai-panel__start-btn {
-  width: fit-content;
-  height: 30px;
-  padding: 0 12px;
-  border-radius: 6px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
-  color: #334155;
+.problem-ide-ai-panel__toolbar .problem-ide-ai-panel__quota.ai-analysis-quota-bar,
+.problem-ide-ai-panel .ai-analysis-quota-bar.problem-ide-ai-panel__quota {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+  box-shadow: none;
+  text-align: right;
   font-size: 12px;
-  cursor: pointer;
+  line-height: 1.4;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
 }
-.problem-ide-ai-panel__settings-btn:hover {
-  border-color: #1890ff;
-  color: #1890ff;
+.problem-ide-ai-panel .ai-analysis-quota-bar.problem-ide-ai-panel__quota.ai-analysis-quota-bar--low {
+  border-color: #fecaca;
+  background: #fef2f2;
 }
-.problem-ide-ai-panel__start-btn {
-  background: linear-gradient(135deg, #ffa116, #ff8800);
-  color: #fff;
+.problem-ide-ai-panel .ai-analysis-quota-bar.problem-ide-ai-panel__quota .ai-quota-meta,
+.problem-ide-ai-panel .ai-analysis-quota-bar.problem-ide-ai-panel__quota .ai-analysis-quota-bar__inner {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
   border: none;
-}
-.problem-ide-ai-panel__start-btn:disabled {
-  opacity: .55;
-  cursor: not-allowed;
-}
-/* 流式输出中：作为「终止分析」入口，与主色区分 */
-.problem-ide-ai-panel__start-btn.problem-ide-ai-panel__start-btn--abort {
-  background: #64748b;
-  color: #fff;
-}
-.problem-ide-ai-panel__start-btn.problem-ide-ai-panel__start-btn--abort:hover {
-  background: #475569;
-}
-.theme--dark .problem-ide-ai-panel__start-btn.problem-ide-ai-panel__start-btn--abort {
-  background: #475569;
-}
-.theme--dark .problem-ide-ai-panel__start-btn.problem-ide-ai-panel__start-btn--abort:hover {
-  background: #334155;
+  background: transparent;
 }
 .problem-ide-ai-panel__label {
   font-size: 12px;

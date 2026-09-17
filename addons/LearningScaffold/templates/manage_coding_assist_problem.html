@@ -1,55 +1,55 @@
 {% extends "manage_base.html" %}
 {% block manage_content %}
-<div class="section fishoj-manage">
+<div class="section">
   <div class="section__header">
-    <h1 class="section__title">题目学习配置 · {{ pid }} {{ pdoc.title if pdoc else '' }}</h1>
+    <h1 class="section__title">辅助编码：{{ pid }} {{ pdoc.title if pdoc else '' }}</h1>
   </div>
-  <div class="section__body fishoj-manage__body">
-    <nav class="fishoj-manage__breadcrumb" aria-label="页面导航">
-      <a href="{{ url('manage_coding_assist') }}">返回题目列表</a>
+  <div class="section__body">
+    <p>
+      <a href="{{ url('manage_coding_assist') }}">返回辅助编码管理</a>
       ·
       <a href="/ide/{{ pid }}">打开做题页</a>
-    </nav>
-    <form method="post" class="fishoj-manage__demo">
+      ·
+      <a href="{{ url('manage_problem_solution_edit', pid=pid) }}">编辑题解</a>
+    </p>
+    <form method="post">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
-      <div><strong>快速开始</strong><span>可先载入示例，再按当前题目调整配置。</span></div>
-      <button type="submit" name="operation" value="fill_demo" class="rounded button">载入“三数最大值”示例</button>
+      <button type="submit" name="operation" value="fill_demo" class="rounded primary button">填入「三数最大值」示例</button>
     </form>
-    <form method="post" class="fishoj-manage__form fishoj-manage__editor">
+    <form method="post">
       <input type="hidden" name="csrfToken" value="{{ handler.csrfToken }}">
       {% set m = meta or {} %}
-      <div class="fishoj-manage__switches">
-        <label><input type="checkbox" name="enabled" value="on"{% if m.enabled %} checked{% endif %}> 开启分层学习</label>
-        <label><input type="checkbox" name="tutorEnabled" value="on"{% if m.tutorEnabled != false %} checked{% endif %}> 开启 AI 编程导师</label>
-      </div>
-      <h2 class="fishoj-manage__subtitle">教学内容</h2>
-      <p>教学目标 <small>每行一条</small></p>
+      <label><input type="checkbox" name="enabled" value="on"{% if m.enabled %} checked{% endif %}> 开启教学模式（学习方式脚手架）</label>
+      <label><input type="checkbox" name="tutorEnabled" value="on"{% if m.tutorEnabled != false %} checked{% endif %}> 开启编程小助手（AiTutor）</label>
+      <label><input type="checkbox" name="assistantEnabled" value="on"{% if m.assistantEnabled != false %} checked{% endif %}> 开启 AI 助教（AiAssistant）</label>
+      <label><input type="checkbox" name="analysisEnabled" value="on"{% if m.analysisEnabled != false %} checked{% endif %}> 开启 AI 分析（AiAnalysis）</label>
+      <p>教学目标（每行一条）</p>
       <textarea name="objectives" rows="3">{{ (m.objectives or [])|join('\n') }}</textarea>
-      <p>知识点 <small>每行一条</small></p>
+      <p>知识点（每行一条）</p>
       <textarea name="concepts" rows="3">{{ (m.concepts or [])|join('\n') }}</textarea>
-      <p>解题阶段 <small>格式：阶段编号|标题</small></p>
+      <p>解题阶段（格式：id|标题）</p>
       <textarea name="stages" rows="6">{% for s in m.stages or [] %}{{ s.id }}|{{ s.title }}
 {% endfor %}</textarea>
-      <p>受保护的阶段编号 <small>在任何学习模式下都不直接给出答案</small></p>
+      <p>核心阶段 id（无论脚手架多高都不直接写出答案）</p>
       <textarea name="protectedStages" rows="3">{{ (m.protectedStages or [])|join('\n') }}</textarea>
-      <p>常见错误 <small>每行一条</small></p>
+      <p>常见错误（每行一条）</p>
       <textarea name="commonMistakes" rows="4">{{ (m.commonMistakes or [])|join('\n') }}</textarea>
-      <h2 class="fishoj-manage__subtitle">Python 代码框架</h2>
-      <p>自己挑战 <small>S0</small></p>
+      <h2>Python 脚手架 S0 / S1 / S3</h2>
+      <p>S0 自己挑战</p>
       <textarea name="py0" rows="6">{{ py[0] | default('') }}</textarea>
-      <p>给点框架 <small>S1</small></p>
+      <p>S1 给点框架</p>
       <textarea name="py1" rows="8">{{ py[1] | default('') }}</textarea>
-      <p>陪我做 <small>S3</small></p>
+      <p>S3 陪我做</p>
       <textarea name="py3" rows="12">{{ py[3] | default('') }}</textarea>
-      <h2 class="fishoj-manage__subtitle">C++ 代码框架</h2>
-      <p>自己挑战 <small>S0</small></p>
+      <h2>C++ 脚手架 S0 / S1 / S3</h2>
+      <p>S0</p>
       <textarea name="cpp0" rows="8">{{ cpp[0] | default('') }}</textarea>
-      <p>给点框架 <small>S1</small></p>
+      <p>S1</p>
       <textarea name="cpp1" rows="10">{{ cpp[1] | default('') }}</textarea>
-      <p>陪我做 <small>S3</small></p>
+      <p>S3</p>
       <textarea name="cpp3" rows="14">{{ cpp[3] | default('') }}</textarea>
       <p>
-        <button type="submit" name="operation" value="save" class="rounded primary button">保存题目配置</button>
+        <button type="submit" name="operation" value="save" class="rounded primary button">保存</button>
       </p>
     </form>
   </div>

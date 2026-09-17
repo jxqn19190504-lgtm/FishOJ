@@ -1,6 +1,13 @@
 import type { TutorContext, TutorResponse } from '../types';
 import { fallbackTutor } from './fallbackTutor';
-import { looksLikeCodeLeak, teachingSystemPrompt, wrapUntrusted } from './sanitizer';
+import {
+    looksLikeCodeLeak,
+    polishProgressSummary,
+    polishTutorMessage,
+    stripCodeBlocks,
+    teachingSystemPrompt,
+    wrapUntrusted,
+} from './sanitizer';
 import { getEffectiveTutorSettings } from './tutorSettings';
 
 const TIMEOUT_MS = 15000;
@@ -42,7 +49,7 @@ export async function generateTutorHint(ctx: TutorContext, hintLevel: number): P
         wrapUntrusted('editor', JSON.stringify(ctx.editor)),
         wrapUntrusted('last_run', JSON.stringify(ctx.run || {})),
         wrapUntrusted('history', JSON.stringify(ctx.history)),
-        `请按 hintLevel=${hintLevel} 给出启发式提示。`,
+        `请按 hintLevel=${hintLevel} 给一条简短提示。message 用口语中文，最多两句话、不超过 70 字，只问一个问题。`,
     ].join('\n');
 
     const ctrl = new AbortController();
@@ -56,7 +63,7 @@ export async function generateTutorHint(ctx: TutorContext, hintLevel: number): P
             },
             body: JSON.stringify({
                 model,
-                temperature: 0.3,
+                temperature: 0.15,
                 response_format: { type: 'json_object' },
                 messages: [
                     { role: 'system', content: teachingSystemPrompt(hintLevel) },
@@ -72,7 +79,14 @@ export async function generateTutorHint(ctx: TutorContext, hintLevel: number): P
         if (!parsed) return fallback();
         parsed.hintLevel = hintLevel;
         if (hintLevel < 4) parsed.shouldShowCode = false;
-        if (looksLikeCodeLeak(parsed.message, hintLevel)) return fallback();
+        if (looksLikeCodeLeak(parsed.message, hintLevel)) {
+            const stripped = stripCodeBlocks(parsed.message);
+            if (stripped.length >= 6) parsed.message = stripped;
+            else return fallback();
+        }
+        parsed.message = polishTutorMessage(parsed.message, hintLevel);
+        parsed.progressSummary = polishProgressSummary(parsed.progressSummary, parsed.message);
+        if (!parsed.message) return fallback();
         return parsed;
     } catch {
         return fallback();

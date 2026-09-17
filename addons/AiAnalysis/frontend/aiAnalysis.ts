@@ -80,8 +80,11 @@ function showProblemTab(type: string) {
     });
     const panel = document.getElementById(`content-${type}`);
     if (panel) panel.style.display = '';
+    const isAi = type === 'aiAnalysis';
     document.getElementById('problemIdeRoot')
-        ?.classList.toggle('problem-ide-root--ai-analysis-tab', type === 'aiAnalysis');
+        ?.classList.toggle('problem-ide-root--ai-analysis-tab', isAi);
+    document.querySelector('.problem-ide-left__scroll')
+        ?.classList.toggle('problem-ide-left__scroll--ai', isAi);
     try {
         window.dispatchEvent(new CustomEvent('problem-ide:tab-changed', { detail: { type } }));
     } catch { /* ignore */ }

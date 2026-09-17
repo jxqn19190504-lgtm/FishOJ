@@ -15,6 +15,8 @@ export type LearningProblemDoc = {
     commonMistakes: string[];
     maxHintLevel?: number;
     tutorEnabled?: boolean;
+    assistantEnabled?: boolean;
+    analysisEnabled?: boolean;
     createdAt: Date;
     updatedAt: Date;
 };

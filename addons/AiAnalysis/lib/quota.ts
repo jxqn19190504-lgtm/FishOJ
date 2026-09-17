@@ -1,7 +1,9 @@
 import { Context, PRIV } from 'hydrooj';
+import { configuredDailyAnalysisLimit } from './analysisSettings';
 
-/** 登录用户每日官方 Key 分析次数；PRIV_EDIT_SYSTEM 不限 */
-export const AI_ANALYSIS_DAILY_LIMIT = 20;
+export const AI_ANALYSIS_DAILY_LIMIT_DEFAULT = 20;
+/** @deprecated 使用 configuredDailyAnalysisLimit() */
+export const AI_ANALYSIS_DAILY_LIMIT = AI_ANALYSIS_DAILY_LIMIT_DEFAULT;
 
 const COLL = 'fish_ai_analysis_daily';
 
@@ -22,8 +24,9 @@ function coll(ctx: Context) {
     return ctx.db.collection(COLL);
 }
 
-export function formatAiAnalysisQuotaForbiddenMessage(dailyLimit = AI_ANALYSIS_DAILY_LIMIT): string {
-    return `今日 AI 分析次数已用完（每日 ${dailyLimit} 次），明日刷新。`;
+export function formatAiAnalysisQuotaForbiddenMessage(dailyLimit?: number): string {
+    const lim = dailyLimit ?? configuredDailyAnalysisLimit();
+    return `今日 AI 分析次数已用完（每日 ${lim} 次），明日刷新。`;
 }
 
 export function resolveAiAnalysisQuota(user: {
@@ -31,11 +34,12 @@ export function resolveAiAnalysisQuota(user: {
     hasPriv?: (p: unknown) => boolean;
 }): { applyQuota: boolean; dailyLimit: number; unlimited: boolean } {
     const uid = Number(user?._id);
+    const dailyLimit = configuredDailyAnalysisLimit();
     if (!uid) return { applyQuota: false, dailyLimit: 0, unlimited: false };
     if (typeof user.hasPriv === 'function' && user.hasPriv(PRIV.PRIV_EDIT_SYSTEM)) {
         return { applyQuota: false, dailyLimit: 0, unlimited: true };
     }
-    return { applyQuota: true, dailyLimit: AI_ANALYSIS_DAILY_LIMIT, unlimited: false };
+    return { applyQuota: true, dailyLimit, unlimited: false };
 }
 
 export async function ensureAiAnalysisQuotaIndexes(ctx: Context) {
