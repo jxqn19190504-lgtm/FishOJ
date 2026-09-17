@@ -72,6 +72,31 @@
       #panel { display: flex; flex-direction: column; }
     {% endif %}
   </style>
+
+  <!-- FishOJ FOUC guard: 在 JS 注入深海鎏金样式前先隐藏 body，防止刷新时无样式内容闪烁 -->
+  <style>
+    html.is-loading body {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+    html.is-loaded body {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transition: opacity 0.15s ease-out;
+    }
+  </style>
+  <script>
+    document.documentElement.classList.add('is-loading');
+    // 兜底：若 3 秒后主题仍未注入，强制显示页面，避免白屏卡死
+    setTimeout(function () {
+      if (document.documentElement.classList.contains('is-loading')) {
+        document.documentElement.classList.remove('is-loading');
+        document.documentElement.classList.add('is-loaded');
+      }
+    }, 3000);
+  </script>
+  <!-- /FishOJ FOUC guard -->
+
   {% if process.env.DEV %}
     <script src="/default.theme.js?version={{ global.Hydro.version['ui-default'] }}"></script>
     <link rel="stylesheet" media="all" href="/theme-{{ global.Hydro.version['ui-default'] }}.css">

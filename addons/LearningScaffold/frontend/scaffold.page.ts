@@ -1,4 +1,11 @@
 import './scaffold.css';
+
+// 学习脚手架样式已注入，移除 FOUC 防护
+if (typeof document !== 'undefined') {
+    document.documentElement.classList.remove('is-loading');
+    document.documentElement.classList.add('is-loaded');
+}
+
 import { initLearningScaffold } from './scaffold';
 
 function tryInit() {
