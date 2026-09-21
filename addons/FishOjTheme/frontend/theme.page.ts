@@ -3,6 +3,7 @@
 // 首屏关键色已在 layout/html5.html 内联，这里补齐其余规则，不再用隐藏 body 防 FOUC。
 import './theme.css';
 import './tags_sidebar.css';
+import './pages_gilded.css';
 import { initFishDock } from './dock';
 // 题库标签三维分组（来源/赛事/知识点）自注册到 problem_main / problem_category
 import './tags_sidebar';

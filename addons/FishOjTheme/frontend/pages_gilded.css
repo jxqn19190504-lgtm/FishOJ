@@ -1,0 +1,118 @@
+/* ============================================================
+   FishOJ 页面级 · 深海鎏金 补齐样式（低风险三页）
+   目标页面：① 题库页  ④ 作业页  ⑤ 比赛详情页
+   原则：仅覆盖 Hydro 稳定语义类（.card/.paper/.button/.data-table
+         /.message/.menu 等），不改 DOM、不改内核；
+         状态色只“柔化”不“替换”，保留语义；
+         全部 !important 覆盖，最坏回退为原生样式。
+   ============================================================ */
+
+/* —— ① 题库页 / ④ 作业页：列表行 hover 鎏金高亮 —— */
+.data-table tbody tr {
+  transition: background-color var(--fishoj-duration-fast) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-fast) var(--fishoj-ease);
+}
+.data-table tbody tr:hover {
+  background-color: var(--fishoj-gold-soft) !important;
+  box-shadow: inset 3px 0 0 var(--fishoj-gold) !important;
+}
+
+/* —— ① 题库页：过滤/搜索区轻微鎏金描边（仅视觉，不改布局） —— */
+.section--filter,
+.filter,
+.section__body > .row,
+.problem-list__filter {
+  border: 1px solid var(--fishoj-border-strong) !important;
+  border-radius: var(--fishoj-radius-md) !important;
+  background: var(--fishoj-surface) !important;
+}
+
+/* —— ① 题库页：主操作按钮（创建/添加题目）鎏金悬浮光晕 —— */
+.button--primary,
+.button.button--primary {
+  box-shadow: 0 6px 18px -8px rgba(47, 107, 255, 0.5) !important;
+}
+.button--primary:hover,
+.button.button--primary:hover {
+  box-shadow: 0 8px 22px -6px rgba(255, 196, 94, 0.55) !important;
+  transform: translateY(-1px);
+}
+/* 聚焦态：淡金描边（搜索框 / 过滤器） */
+input:focus,
+select:focus,
+.section__body input:focus {
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 0 0 3px rgba(255, 196, 94, 0.18) !important;
+}
+
+/* —— ④ 作业页：作业卡片悬浮鎏金描边（.card/.paper 已有基础，这里强化） —— */
+.card:hover,
+.paper:hover {
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: var(--fishoj-shadow-hover) !important;
+}
+
+/* —— ⑤ 比赛详情页：警示条柔化为暖琥珀（保留警示语义，不再刺眼） —— */
+.message,
+.message--warning,
+.message--error,
+.message--danger,
+[class*="alert"],
+[class*="warning"]:not(button):not(.button):not(.tab):not(.badge),
+[class*="danger"]:not(button):not(.button):not(.badge) {
+  background: var(--fishoj-gold-soft) !important;
+  border: 1px solid var(--fishoj-gold-soft-border) !important;
+  border-left: 4px solid var(--fishoj-gold-deep) !important;
+  border-radius: var(--fishoj-radius-md) !important;
+  color: var(--fishoj-gold-ink) !important;
+}
+
+/* 暗色下警示条：暖琥珀低饱和底 + 鎏金左边框 */
+.theme--dark .message,
+.theme--dark .message--warning,
+.theme--dark .message--error,
+.theme--dark .message--danger,
+.theme--dark [class*="alert"],
+.theme--dark [class*="warning"]:not(button):not(.button):not(.tab):not(.badge),
+.theme--dark [class*="danger"]:not(button):not(.button):not(.badge),
+[data-mantine-color-scheme="dark"] .message,
+[data-mantine-color-scheme="dark"] .message--warning,
+[data-mantine-color-scheme="dark"] .message--error,
+[data-mantine-color-scheme="dark"] .message--danger,
+[data-mantine-color-scheme="dark"] [class*="alert"],
+[data-mantine-color-scheme="dark"] [class*="warning"]:not(button):not(.button):not(.tab):not(.badge),
+[data-mantine-color-scheme="dark"] [class*="danger"]:not(button):not(.button):not(.badge) {
+  background: rgba(255, 196, 94, 0.10) !important;
+  border-color: rgba(255, 196, 94, 0.30) !important;
+  border-left: 4px solid var(--fishoj-gold) !important;
+  color: #ffd98a !important;
+}
+
+/* —— ⑤ 比赛详情页：右侧管理菜单（.side / .menu）鎏金激活态 —— */
+.side .menu__item--active > .menu__link,
+.menu .menu__item--active > .menu__link,
+.nav--vertical .nav__item--active,
+.side a.active,
+.menu a.active {
+  color: var(--fishoj-gold-deep) !important;
+  box-shadow: inset 3px 0 0 var(--fishoj-gold) !important;
+  background: var(--fishoj-gold-soft) !important;
+}
+.side .menu__link:hover,
+.menu .menu__link:hover {
+  color: var(--fishoj-gold-deep) !important;
+  background: var(--fishoj-gold-soft) !important;
+}
+
+/* —— 暗色下右侧菜单激活态 —— */
+.theme--dark .side .menu__item--active > .menu__link,
+.theme--dark .menu .menu__item--active > .menu__link,
+.theme--dark .side a.active,
+.theme--dark .menu a.active,
+[data-mantine-color-scheme="dark"] .side .menu__item--active > .menu__link,
+[data-mantine-color-scheme="dark"] .menu .menu__item--active > .menu__link,
+[data-mantine-color-scheme="dark"] .side a.active,
+[data-mantine-color-scheme="dark"] .menu a.active {
+  background: rgba(255, 196, 94, 0.10) !important;
+  color: #ffd98a !important;
+}
