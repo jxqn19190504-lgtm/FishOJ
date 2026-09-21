@@ -116,3 +116,135 @@ select:focus,
   background: rgba(255, 196, 94, 0.10) !important;
   color: #ffd98a !important;
 }
+
+/* ============================================================
+   ② 训练页 补齐
+   ============================================================ */
+
+/* —— 训练卡片：鎏金描边 + 悬浮微抬升 —— */
+.training,
+.training-card,
+.training__card,
+.section--training .card,
+.section--training .paper {
+  border: 1px solid var(--fishoj-border) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+.training:hover,
+.training-card:hover,
+.training__card:hover,
+.section--training .card:hover,
+.section--training .paper:hover {
+  transform: translateY(-2px);
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: var(--fishoj-shadow-hover) !important;
+}
+
+/* —— 进度条：鎏金渐变（兼容 <progress> 与原生 div 进度条）—— */
+progress,
+.progress,
+.progress-bar,
+.progress-meter,
+.bp3-progress-meter,
+[class*="progress"] {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 8px !important;
+  border: 0 !important;
+  border-radius: var(--fishoj-radius-pill) !important;
+  background: var(--fishoj-surface-3) !important;
+  overflow: hidden !important;
+}
+progress::-webkit-progress-bar {
+  background: var(--fishoj-surface-3) !important;
+  border-radius: var(--fishoj-radius-pill);
+}
+progress::-webkit-progress-value,
+progress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+  border-radius: var(--fishoj-radius-pill);
+}
+.progress > *,
+.progress-bar,
+.progress-meter,
+.bp3-progress-meter,
+[class*="progress"] > * {
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+  border-radius: var(--fishoj-radius-pill) !important;
+}
+
+/* —— 空状态：居中收窄 + 鎏金虚线引导（纯 CSS，不插 JS）—— */
+.section--training .nothing,
+.section--training .empty-line,
+.training .nothing,
+.training .empty-line {
+  margin: 0 auto !important;
+  max-width: 420px !important;
+  text-align: center !important;
+  border: 1px dashed var(--fishoj-gold-soft-border) !important;
+  background: var(--fishoj-gold-soft) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  color: var(--fishoj-gold-ink) !important;
+}
+
+/* ============================================================
+   ③ 比赛页 补齐
+   ============================================================ */
+
+/* —— 比赛卡片：鎏金描边 + hover 微抬升 —— */
+.contest,
+.contest-card,
+.contest__card,
+.section--contest .card,
+.section--contest .paper {
+  border: 1px solid var(--fishoj-border) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+.contest:hover,
+.contest-card:hover,
+.contest__card:hover,
+.section--contest .card:hover,
+.section--contest .paper:hover {
+  transform: translateY(-2px);
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: var(--fishoj-shadow-hover) !important;
+}
+
+/* —— 状态徽标柔化：仅把红（进行中/警示）改为暖琥珀，保留语义；绿/蓝不动 —— */
+.badge--red,
+.label--red,
+.tag--red,
+.chip--red,
+[class*="badge"][class*="red"],
+[class*="label"][class*="red"],
+[class*="tag"][class*="red"] {
+  background: var(--fishoj-gold-soft) !important;
+  color: var(--fishoj-gold-ink) !important;
+  border: 1px solid var(--fishoj-gold-soft-border) !important;
+}
+
+/* 暗色下状态徽标 */
+.theme--dark .badge--red,
+.theme--dark .label--red,
+.theme--dark .tag--red,
+.theme--dark [class*="badge"][class*="red"],
+.theme--dark [class*="label"][class*="red"],
+.theme--dark [class*="tag"][class*="red"],
+[data-mantine-color-scheme="dark"] .badge--red,
+[data-mantine-color-scheme="dark"] .label--red,
+[data-mantine-color-scheme="dark"] .tag--red,
+[data-mantine-color-scheme="dark"] [class*="badge"][class*="red"],
+[data-mantine-color-scheme="dark"] [class*="label"][class*="red"],
+[data-mantine-color-scheme="dark"] [class*="tag"][class*="red"] {
+  background: rgba(255, 196, 94, 0.14) !important;
+  color: #ffd98a !important;
+  border-color: rgba(255, 196, 94, 0.34) !important;
+}
