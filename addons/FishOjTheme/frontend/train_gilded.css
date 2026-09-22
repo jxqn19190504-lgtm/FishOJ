@@ -1,0 +1,116 @@
+/* ============================================================
+   FishOJ · 深海鎏金 · 训练页专属覆盖层（train_gilded.css）
+   页面：训练列表 / 训练详情
+   手法：卡片方块化（大圆角 + 顶部鎏金条 + 居中封面块）、
+        明显 hover 抬升、进度条鎏金渐变、空状态引导。
+   边界：仅覆盖稳定语义类，不动 DOM / 内核。
+   ============================================================ */
+
+/* —— 训练卡片：方块化 + 顶部鎏金条 + 明显 hover 抬升 —— */
+.training,
+.training-card,
+.training__card,
+.section--training .card,
+.section--training .paper {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--fishoj-border) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  padding: 24px !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+/* 顶部鎏金条（页面辨识度最强的一笔） */
+.training::before,
+.training-card::before,
+.training__card::before,
+.section--training .card::before,
+.section--training .paper::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+}
+.training:hover,
+.training-card:hover,
+.training__card:hover,
+.section--training .card:hover,
+.section--training .paper:hover {
+  transform: translateY(-6px) scale(1.012);
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 22px 44px -18px rgba(23, 42, 84, 0.34),
+              0 0 0 1px rgba(255, 196, 94, 0.35) !important;
+}
+
+/* —— 训练卡片封面/图标块：居中大方块（替代原细长条） —— */
+.training .training__cover,
+.training-card .cover,
+.section--training .card .media,
+.section--training .card .cover {
+  width: 100% !important;
+  aspect-ratio: 16 / 7 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, var(--fishoj-navy-700), var(--fishoj-navy-800)) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: var(--fishoj-gold) !important;
+  font-size: 30px !important;
+  margin-bottom: 14px !important;
+}
+
+/* —— 进度条：鎏金渐变（仅训练范围内，不影响其他页） —— */
+.section--training progress,
+.section--training .progress,
+.section--training .progress-bar,
+.section--training .progress-meter,
+.section--training [class*="progress"],
+.training progress,
+.training .progress,
+.training .progress-bar,
+.training [class*="progress"] {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 9px !important;
+  border: 0 !important;
+  border-radius: var(--fishoj-radius-pill) !important;
+  background: var(--fishoj-surface-3) !important;
+  overflow: hidden !important;
+}
+.section--training progress::-webkit-progress-bar,
+.training progress::-webkit-progress-bar {
+  background: var(--fishoj-surface-3) !important;
+  border-radius: var(--fishoj-radius-pill);
+}
+.section--training progress::-webkit-progress-value,
+.section--training progress::-moz-progress-bar,
+.training progress::-webkit-progress-value,
+.training progress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+  border-radius: var(--fishoj-radius-pill);
+}
+.section--training .progress > *,
+.section--training [class*="progress"] > *,
+.training .progress > *,
+.training [class*="progress"] > * {
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+  border-radius: var(--fishoj-radius-pill) !important;
+}
+
+/* —— 空状态：居中收窄 + 鎏金虚线引导 —— */
+.section--training .nothing,
+.section--training .empty-line,
+.training .nothing,
+.training .empty-line {
+  margin: 0 auto !important;
+  max-width: 440px !important;
+  text-align: center !important;
+  border: 1px dashed var(--fishoj-gold-soft-border) !important;
+  background: var(--fishoj-gold-soft) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  color: var(--fishoj-gold-ink) !important;
+  padding: 28px !important;
+}

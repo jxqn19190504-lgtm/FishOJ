@@ -1,0 +1,74 @@
+/* ============================================================
+   FishOJ · 深海鎏金 · 比赛页专属覆盖层（contest_gilded.css）
+   页面：比赛列表 / 比赛详情
+   手法：比赛卡片方块化（大圆角 + 顶部鎏金条 + 明显 hover 抬升）、
+        状态徽标柔化（红→暖琥珀，保留语义）。
+   边界：仅覆盖稳定语义类，不动 DOM / 内核。
+   ============================================================ */
+
+/* —— 比赛卡片：方块化 + 顶部鎏金条 + 明显 hover 抬升 —— */
+.contest,
+.contest-card,
+.contest__card,
+.section--contest .card,
+.section--contest .paper {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--fishoj-border) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  padding: 24px !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+.contest::before,
+.contest-card::before,
+.contest__card::before,
+.section--contest .card::before,
+.section--contest .paper::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+}
+.contest:hover,
+.contest-card:hover,
+.contest__card:hover,
+.section--contest .card:hover,
+.section--contest .paper:hover {
+  transform: translateY(-6px) scale(1.012);
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 22px 44px -18px rgba(23, 42, 84, 0.34),
+              0 0 0 1px rgba(255, 196, 94, 0.35) !important;
+}
+
+/* —— 状态徽标柔化：仅把红（进行中/警示）改为暖琥珀，保留语义；绿/蓝不动 —— */
+.badge--red,
+.label--red,
+.tag--red,
+.chip--red,
+[class*="badge"][class*="red"],
+[class*="label"][class*="red"],
+[class*="tag"][class*="red"] {
+  background: var(--fishoj-gold-soft) !important;
+  color: var(--fishoj-gold-ink) !important;
+  border: 1px solid var(--fishoj-gold-soft-border) !important;
+}
+.theme--dark .badge--red,
+.theme--dark .label--red,
+.theme--dark .tag--red,
+.theme--dark [class*="badge"][class*="red"],
+.theme--dark [class*="label"][class*="red"],
+.theme--dark [class*="tag"][class*="red"],
+[data-mantine-color-scheme="dark"] .badge--red,
+[data-mantine-color-scheme="dark"] .label--red,
+[data-mantine-color-scheme="dark"] .tag--red,
+[data-mantine-color-scheme="dark"] [class*="badge"][class*="red"],
+[data-mantine-color-scheme="dark"] [class*="label"][class*="red"],
+[data-mantine-color-scheme="dark"] [class*="tag"][class*="red"] {
+  background: rgba(255, 196, 94, 0.14) !important;
+  color: #ffd98a !important;
+  border-color: rgba(255, 196, 94, 0.34) !important;
+}

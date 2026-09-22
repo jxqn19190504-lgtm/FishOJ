@@ -4,6 +4,10 @@
 import './theme.css';
 import './tags_sidebar.css';
 import './pages_gilded.css';
+import './train_gilded.css';
+import './contest_gilded.css';
+import './homework_gilded.css';
+import './discussion_gilded.css';
 import './manage_gilded.css';
 import { initFishDock } from './dock';
 // 题库标签三维分组（来源/赛事/知识点）自注册到 problem_main / problem_category

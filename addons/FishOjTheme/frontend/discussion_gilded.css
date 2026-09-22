@@ -1,0 +1,77 @@
+/* ============================================================
+   FishOJ · 深海鎏金 · 讨论页专属覆盖层（discussion_gilded.css）
+   页面：讨论节点列表 / 帖子列表 / 帖子详情
+   手法：讨论节点方块磁贴（大圆角 + 左侧鎏金条）、帖子列表 hover 金边、
+        空状态（无节点）居中鎏金虚线引导。
+   边界：仅覆盖稳定语义类，不动 DOM / 内核。
+   说明：讨论节点需管理员在 /manage 创建；本样式只负责“壳”，
+        节点数据为空时也会给出友好引导，不影响功能。
+   ============================================================ */
+
+/* —— 讨论节点：方块磁贴 + 左侧鎏金条 —— */
+.node,
+.node-card,
+.discussion-node,
+.section--discuss .card,
+.section--discuss .paper {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--fishoj-border) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  padding: 20px !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+.node::before,
+.node-card::before,
+.discussion-node::before,
+.section--discuss .card::before,
+.section--discuss .paper::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+}
+.node:hover,
+.node-card:hover,
+.discussion-node:hover,
+.section--discuss .card:hover,
+.section--discuss .paper:hover {
+  transform: translateY(-4px);
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 18px 38px -16px rgba(23, 42, 84, 0.30),
+              0 0 0 1px rgba(255, 196, 94, 0.30) !important;
+}
+
+/* —— 帖子列表项 hover 鎏金左条 —— */
+.section--discuss .data-table tbody tr:hover,
+.discussion-thread:hover,
+.thread-list__item:hover {
+  background-color: var(--fishoj-gold-soft) !important;
+  box-shadow: inset 3px 0 0 var(--fishoj-gold) !important;
+}
+
+/* —— 空状态（无节点 / 暂无讨论）：居中鎏金虚线引导 —— */
+.section--discuss .nothing,
+.section--discuss .empty-line,
+.discussion .nothing,
+.discussion .empty-line {
+  margin: 0 auto !important;
+  max-width: 480px !important;
+  text-align: center !important;
+  border: 1px dashed var(--fishoj-gold-soft-border) !important;
+  background: var(--fishoj-gold-soft) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  color: var(--fishoj-gold-ink) !important;
+  padding: 32px !important;
+}
+
+/* —— 回复/编辑器区：圆角 + 聚焦金边 —— */
+.section--discuss textarea:focus,
+.discussion-editor textarea:focus {
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 0 0 3px rgba(255, 196, 94, 0.18) !important;
+}

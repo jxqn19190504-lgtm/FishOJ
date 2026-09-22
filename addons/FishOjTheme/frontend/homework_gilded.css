@@ -1,0 +1,61 @@
+/* ============================================================
+   FishOJ · 深海鎏金 · 作业页专属覆盖层（homework_gilded.css）
+   页面：作业列表 / 作业详情
+   手法：作业卡片方块化（大圆角 + 顶部鎏金条 + 明显 hover 抬升）、
+        顶部过滤条圆角 + 鎏金描边。
+   边界：仅覆盖稳定语义类，不动 DOM / 内核。
+   ============================================================ */
+
+/* —— 作业卡片：方块化 + 顶部鎏金条 + 明显 hover 抬升 —— */
+.homework,
+.homework-card,
+.homework__card,
+.section--homework .card,
+.section--homework .paper,
+.homework-list .card,
+.homework-list .paper {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--fishoj-border) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  padding: 24px !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+.homework::before,
+.homework-card::before,
+.homework__card::before,
+.section--homework .card::before,
+.section--homework .paper::before,
+.homework-list .card::before,
+.homework-list .paper::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+}
+.homework:hover,
+.homework-card:hover,
+.homework__card:hover,
+.section--homework .card:hover,
+.section--homework .paper:hover,
+.homework-list .card:hover,
+.homework-list .paper:hover {
+  transform: translateY(-6px) scale(1.012);
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 22px 44px -18px rgba(23, 42, 84, 0.34),
+              0 0 0 1px rgba(255, 196, 94, 0.35) !important;
+}
+
+/* —— 顶部过滤条：圆角 + 鎏金描边（仅视觉，不改布局） —— */
+.section--homework .section--filter,
+.section--homework .filter,
+.homework-list .section--filter,
+.homework-list .filter {
+  border: 1px solid var(--fishoj-border-strong) !important;
+  border-radius: var(--fishoj-radius-md) !important;
+  background: var(--fishoj-surface) !important;
+}

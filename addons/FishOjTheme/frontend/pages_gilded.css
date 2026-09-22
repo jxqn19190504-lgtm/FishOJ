@@ -1,13 +1,13 @@
 /* ============================================================
-   FishOJ 页面级 · 深海鎏金 补齐样式（低风险三页）
-   目标页面：① 题库页  ④ 作业页  ⑤ 比赛详情页
-   原则：仅覆盖 Hydro 稳定语义类（.card/.paper/.button/.data-table
-         /.message/.menu 等），不改 DOM、不改内核；
-         状态色只“柔化”不“替换”，保留语义；
-         全部 !important 覆盖，最坏回退为原生样式。
+   FishOJ · 深海鎏金 · 通用共享覆盖层（pages_gilded.css）
+   作用：全站公共壳组件（表格 / 输入框 / 警示条 / 侧栏菜单激活态）
+   边界：题库列表页(problem_main) 由 yujun 负责，此处不覆盖它的
+        专属样式；卡片形状变化放到各页专属 *_gilded.css 中。
+   原则：仅覆盖 Hydro 稳定语义类，不改 DOM、不改内核；
+         全部 !important，最坏回退为原生样式。
    ============================================================ */
 
-/* —— ① 题库页 / ④ 作业页：列表行 hover 鎏金高亮 —— */
+/* —— 表格行 hover 鎏金高亮（通用） —— */
 .data-table tbody tr {
   transition: background-color var(--fishoj-duration-fast) var(--fishoj-ease),
               box-shadow var(--fishoj-duration-fast) var(--fishoj-ease);
@@ -17,81 +17,42 @@
   box-shadow: inset 3px 0 0 var(--fishoj-gold) !important;
 }
 
-/* —— ① 题库页：过滤/搜索区轻微鎏金描边（仅视觉，不改布局） —— */
-.section--filter,
-.filter,
-.section__body > .row,
-.problem-list__filter {
-  border: 1px solid var(--fishoj-border-strong) !important;
-  border-radius: var(--fishoj-radius-md) !important;
-  background: var(--fishoj-surface) !important;
-}
-
-/* —— ① 题库页：主操作按钮（创建/添加题目）鎏金悬浮光晕 —— */
-.button--primary,
-.button.button--primary {
-  box-shadow: 0 6px 18px -8px rgba(47, 107, 255, 0.5) !important;
-}
-.button--primary:hover,
-.button.button--primary:hover {
-  box-shadow: 0 8px 22px -6px rgba(255, 196, 94, 0.55) !important;
-  transform: translateY(-1px);
-}
-/* 聚焦态：淡金描边（搜索框 / 过滤器） */
+/* —— 输入框 / 下拉 / 文本域 聚焦淡金描边（通用） —— */
 input:focus,
 select:focus,
-.section__body input:focus {
+textarea:focus {
   border-color: var(--fishoj-gold) !important;
   box-shadow: 0 0 0 3px rgba(255, 196, 94, 0.18) !important;
 }
 
-/* —— ④ 作业页：作业卡片悬浮鎏金描边（.card/.paper 已有基础，这里强化） —— */
-.card:hover,
-.paper:hover {
-  border-color: var(--fishoj-gold) !important;
-  box-shadow: var(--fishoj-shadow-hover) !important;
-}
-
-/* —— ⑤ 比赛详情页：警示条柔化为暖琥珀（保留警示语义，不再刺眼） —— */
-.message,
+/* —— 警示条柔化为暖琥珀（保留警示语义，不再刺眼） —— */
 .message--warning,
 .message--error,
 .message--danger,
-[class*="alert"],
-[class*="warning"]:not(button):not(.button):not(.tab):not(.badge),
-[class*="danger"]:not(button):not(.button):not(.badge) {
+[class*="alert"]:not(button):not(.badge) {
   background: var(--fishoj-gold-soft) !important;
   border: 1px solid var(--fishoj-gold-soft-border) !important;
   border-left: 4px solid var(--fishoj-gold-deep) !important;
   border-radius: var(--fishoj-radius-md) !important;
   color: var(--fishoj-gold-ink) !important;
 }
-
-/* 暗色下警示条：暖琥珀低饱和底 + 鎏金左边框 */
-.theme--dark .message,
 .theme--dark .message--warning,
 .theme--dark .message--error,
 .theme--dark .message--danger,
-.theme--dark [class*="alert"],
-.theme--dark [class*="warning"]:not(button):not(.button):not(.tab):not(.badge),
-.theme--dark [class*="danger"]:not(button):not(.button):not(.badge),
-[data-mantine-color-scheme="dark"] .message,
+.theme--dark [class*="alert"]:not(button):not(.badge),
 [data-mantine-color-scheme="dark"] .message--warning,
 [data-mantine-color-scheme="dark"] .message--error,
 [data-mantine-color-scheme="dark"] .message--danger,
-[data-mantine-color-scheme="dark"] [class*="alert"],
-[data-mantine-color-scheme="dark"] [class*="warning"]:not(button):not(.button):not(.tab):not(.badge),
-[data-mantine-color-scheme="dark"] [class*="danger"]:not(button):not(.button):not(.badge) {
+[data-mantine-color-scheme="dark"] [class*="alert"]:not(button):not(.badge) {
   background: rgba(255, 196, 94, 0.10) !important;
   border-color: rgba(255, 196, 94, 0.30) !important;
   border-left: 4px solid var(--fishoj-gold) !important;
   color: #ffd98a !important;
 }
 
-/* —— ⑤ 比赛详情页：右侧管理菜单（.side / .menu）鎏金激活态 —— */
+/* —— 侧栏菜单激活态（详情页通用） —— */
 .side .menu__item--active > .menu__link,
 .menu .menu__item--active > .menu__link,
-.nav--vertical .nav__item--active,
 .side a.active,
 .menu a.active {
   color: var(--fishoj-gold-deep) !important;
@@ -103,8 +64,6 @@ select:focus,
   color: var(--fishoj-gold-deep) !important;
   background: var(--fishoj-gold-soft) !important;
 }
-
-/* —— 暗色下右侧菜单激活态 —— */
 .theme--dark .side .menu__item--active > .menu__link,
 .theme--dark .menu .menu__item--active > .menu__link,
 .theme--dark .side a.active,
@@ -115,136 +74,4 @@ select:focus,
 [data-mantine-color-scheme="dark"] .menu a.active {
   background: rgba(255, 196, 94, 0.10) !important;
   color: #ffd98a !important;
-}
-
-/* ============================================================
-   ② 训练页 补齐
-   ============================================================ */
-
-/* —— 训练卡片：鎏金描边 + 悬浮微抬升 —— */
-.training,
-.training-card,
-.training__card,
-.section--training .card,
-.section--training .paper {
-  border: 1px solid var(--fishoj-border) !important;
-  border-radius: var(--fishoj-radius-lg) !important;
-  box-shadow: var(--fishoj-shadow-card) !important;
-  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
-              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
-              border-color var(--fishoj-duration-base) var(--fishoj-ease);
-}
-.training:hover,
-.training-card:hover,
-.training__card:hover,
-.section--training .card:hover,
-.section--training .paper:hover {
-  transform: translateY(-2px);
-  border-color: var(--fishoj-gold) !important;
-  box-shadow: var(--fishoj-shadow-hover) !important;
-}
-
-/* —— 进度条：鎏金渐变（兼容 <progress> 与原生 div 进度条）—— */
-progress,
-.progress,
-.progress-bar,
-.progress-meter,
-.bp3-progress-meter,
-[class*="progress"] {
-  appearance: none;
-  -webkit-appearance: none;
-  height: 8px !important;
-  border: 0 !important;
-  border-radius: var(--fishoj-radius-pill) !important;
-  background: var(--fishoj-surface-3) !important;
-  overflow: hidden !important;
-}
-progress::-webkit-progress-bar {
-  background: var(--fishoj-surface-3) !important;
-  border-radius: var(--fishoj-radius-pill);
-}
-progress::-webkit-progress-value,
-progress::-moz-progress-bar {
-  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
-  border-radius: var(--fishoj-radius-pill);
-}
-.progress > *,
-.progress-bar,
-.progress-meter,
-.bp3-progress-meter,
-[class*="progress"] > * {
-  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
-  border-radius: var(--fishoj-radius-pill) !important;
-}
-
-/* —— 空状态：居中收窄 + 鎏金虚线引导（纯 CSS，不插 JS）—— */
-.section--training .nothing,
-.section--training .empty-line,
-.training .nothing,
-.training .empty-line {
-  margin: 0 auto !important;
-  max-width: 420px !important;
-  text-align: center !important;
-  border: 1px dashed var(--fishoj-gold-soft-border) !important;
-  background: var(--fishoj-gold-soft) !important;
-  border-radius: var(--fishoj-radius-lg) !important;
-  color: var(--fishoj-gold-ink) !important;
-}
-
-/* ============================================================
-   ③ 比赛页 补齐
-   ============================================================ */
-
-/* —— 比赛卡片：鎏金描边 + hover 微抬升 —— */
-.contest,
-.contest-card,
-.contest__card,
-.section--contest .card,
-.section--contest .paper {
-  border: 1px solid var(--fishoj-border) !important;
-  border-radius: var(--fishoj-radius-lg) !important;
-  box-shadow: var(--fishoj-shadow-card) !important;
-  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
-              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
-              border-color var(--fishoj-duration-base) var(--fishoj-ease);
-}
-.contest:hover,
-.contest-card:hover,
-.contest__card:hover,
-.section--contest .card:hover,
-.section--contest .paper:hover {
-  transform: translateY(-2px);
-  border-color: var(--fishoj-gold) !important;
-  box-shadow: var(--fishoj-shadow-hover) !important;
-}
-
-/* —— 状态徽标柔化：仅把红（进行中/警示）改为暖琥珀，保留语义；绿/蓝不动 —— */
-.badge--red,
-.label--red,
-.tag--red,
-.chip--red,
-[class*="badge"][class*="red"],
-[class*="label"][class*="red"],
-[class*="tag"][class*="red"] {
-  background: var(--fishoj-gold-soft) !important;
-  color: var(--fishoj-gold-ink) !important;
-  border: 1px solid var(--fishoj-gold-soft-border) !important;
-}
-
-/* 暗色下状态徽标 */
-.theme--dark .badge--red,
-.theme--dark .label--red,
-.theme--dark .tag--red,
-.theme--dark [class*="badge"][class*="red"],
-.theme--dark [class*="label"][class*="red"],
-.theme--dark [class*="tag"][class*="red"],
-[data-mantine-color-scheme="dark"] .badge--red,
-[data-mantine-color-scheme="dark"] .label--red,
-[data-mantine-color-scheme="dark"] .tag--red,
-[data-mantine-color-scheme="dark"] [class*="badge"][class*="red"],
-[data-mantine-color-scheme="dark"] [class*="label"][class*="red"],
-[data-mantine-color-scheme="dark"] [class*="tag"][class*="red"] {
-  background: rgba(255, 196, 94, 0.14) !important;
-  color: #ffd98a !important;
-  border-color: rgba(255, 196, 94, 0.34) !important;
 }
