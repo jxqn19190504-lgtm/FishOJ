@@ -233,6 +233,56 @@ body.page--discussion_main .empty-line {
   margin-top: 8px !important;
 }
 
+/* —— 讨论页两列网格恢复 —— */
+/* Hydro 模板本是 .row > .medium-9.columns（主内容）+ .medium-3.columns（右栏），
+   但 FishOJ 主题下这套网格未生效，右栏被堆到主内容下方（卡片掉到底部）。
+   这里恢复成「主内容左 + 右栏右上」，两块顶部水平对齐。 */
+body.fish-discuss-grid .row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  gap: 18px !important;
+}
+body.fish-discuss-grid .row > .columns {
+  width: auto !important;
+  float: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+}
+body.fish-discuss-grid .row > .columns:first-child {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+}
+body.fish-discuss-grid .row > .columns:last-child {
+  flex: 0 0 300px !important;
+  max-width: 300px !important;
+}
+@media (max-width: 900px) {
+  body.fish-discuss-grid .row { flex-direction: column !important; }
+  body.fish-discuss-grid .row > .columns:last-child {
+    flex: 1 1 auto !important;
+    max-width: none !important;
+  }
+}
+
+/* 右栏「创建讨论」的按钮鎏金化（与全站主题一致） */
+body.fish-discuss-grid .fish-side-gold .button {
+  display: block !important;
+  text-align: center !important;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+  border: 0 !important;
+  color: #3a2a05 !important;
+  font-weight: 800 !important;
+  border-radius: var(--fishoj-radius-pill) !important;
+  padding: 9px 16px !important;
+  text-decoration: none !important;
+}
+body.fish-discuss-grid .fish-side-gold .section__title {
+  color: #fff !important;
+  border-bottom: 0 !important;
+}
+
 /* —— ② 右侧栏鎏金「创建讨论」卡 —— */
 .fish-create-card {
   background: linear-gradient(160deg, var(--fishoj-navy), var(--fishoj-navy-2, #1d3468)) !important;

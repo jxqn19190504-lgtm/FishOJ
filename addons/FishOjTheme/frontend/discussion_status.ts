@@ -87,14 +87,35 @@ function enhanceEmptyState(): void {
 }
 
 /** ② 右侧栏鎏金创建卡
- *  优先级：① 页面真实的右栏（同一 row 下的窄列 / 已有 .section.side）
- *          ② 自建「左主内容 + 右卡片」双栏（顶部对齐）
- *          ③ 都没有 → 不注入悬浮卡，避免和 AI 浮窗打架 */
+ *  Hydro 模板结构：.row > .medium-9.columns（主内容） + .medium-3.columns（右栏）
+ *  但 FishOJ 主题下这套网格未生效，右栏被堆到主内容下方（卡片掉到底部）。
+ *  因此：① 先给 body 打上 fish-discuss-grid，由 CSS 恢复两列网格（右栏回到右上）；
+ *        ② 右栏存在 → 直接给它上鎏金样式，不再自建卡片（避免重复）；
+ *        ③ 完全没有两列结构时才自建「左主内容 + 右卡片」双栏兜底。 */
 function enhanceCreateCard(): void {
-    if (document.querySelector('.fish-create-card')) return;
+    // 标记：让 CSS 恢复讨论页的两列网格（主内容左、右栏右上，顶部水平对齐）
+    document.body.classList.add('fish-discuss-grid');
 
+    // 主内容锚点：引导卡（空状态）或列表（有内容时）
+    const anchor = document.querySelector<HTMLElement>(
+        '.fish-discuss-guide, body.page--discussion_main .section__list, .section__list',
+    );
+    const row = anchor?.closest('.row') || document.querySelector<HTMLElement>('.row');
+    const cols = row ? Array.from(row.querySelectorAll<HTMLElement>(':scope > .columns')) : [];
+
+    if (cols.length >= 2) {
+        // ① 页面自带右栏：直接鎏金化，不再注入自己的卡片
+        cols[cols.length - 1].classList.add('fish-side-gold');
+        return;
+    }
+    if (document.querySelector('.fish-create-card') || document.querySelector('.fish-discuss-layout')) return;
+
+    // ② 兜底：没有两列结构 → 自建双栏（主内容左 / 卡片右上）
     const nodeMatch2 = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
     const createUrl2 = nodeMatch2 ? `/discuss/node/${nodeMatch2[1]}/create` : '/discuss/create';
+    const host = anchor?.closest('.section') || anchor;
+    if (!host || !host.parentElement) return;
+
     const card = document.createElement('div');
     card.className = 'fish-create-card';
     card.innerHTML = `
@@ -103,45 +124,17 @@ function enhanceCreateCard(): void {
         <a class="fish-create-card__btn" href="${createUrl2}">开始创建 →</a>
     `;
 
-    // 主内容锚点：引导卡（空状态）或列表（有内容时）
-    const anchor = document.querySelector<HTMLElement>(
-        '.fish-discuss-guide, body.page--discussion_main .section__list, .section__list',
-    );
-
-    // ① 真实右栏：同一 row 下的最后一列，且不是主内容所在列
-    const row = anchor?.closest('.row') || document.querySelector('.row');
-    if (row) {
-        const cols = Array.from(row.querySelectorAll<HTMLElement>(':scope > .columns'));
-        if (cols.length >= 2) {
-            const mainCol = anchor?.closest('.columns') || null;
-            const sideCol = cols[cols.length - 1];
-            if (sideCol && sideCol !== mainCol) {
-                sideCol.insertAdjacentElement('afterbegin', card);
-                return;
-            }
-        }
-    }
-    const realSide = document.querySelector<HTMLElement>('.section.side');
-    if (realSide) {
-        realSide.insertAdjacentElement('afterbegin', card);
-        return;
-    }
-
-    // ② 没有右栏：自建双栏，主内容在左、卡片在右上，顶部对齐
-    if (anchor && anchor.parentElement) {
-        if (document.querySelector('.fish-discuss-layout')) return;
-        const wrap = document.createElement('div');
-        wrap.className = 'fish-discuss-layout';
-        const mainCol = document.createElement('div');
-        mainCol.className = 'fish-discuss-layout__main';
-        const sideCol = document.createElement('div');
-        sideCol.className = 'fish-discuss-layout__side';
-        anchor.parentElement.insertBefore(wrap, anchor);
-        wrap.appendChild(mainCol);
-        wrap.appendChild(sideCol);
-        mainCol.appendChild(anchor);
-        sideCol.appendChild(card);
-    }
+    const wrap = document.createElement('div');
+    wrap.className = 'fish-discuss-layout';
+    const mainCol = document.createElement('div');
+    mainCol.className = 'fish-discuss-layout__main';
+    const sideCol = document.createElement('div');
+    sideCol.className = 'fish-discuss-layout__side';
+    host.parentElement.insertBefore(wrap, host);
+    wrap.appendChild(mainCol);
+    wrap.appendChild(sideCol);
+    mainCol.appendChild(host);
+    sideCol.appendChild(card);
 }
 
 /** ③ 节点磁贴加彩色图标 + 计数徽标 */
