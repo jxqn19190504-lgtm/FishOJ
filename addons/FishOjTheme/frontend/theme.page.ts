@@ -10,6 +10,8 @@ import './homework_gilded.css';
 import './discussion_gilded.css';
 import './manage_gilded.css';
 import { initFishDock } from './dock';
+// 比赛列表页状态增强（三态徽标/倒计时/赛制分色/RATED火焰/人数热门）
+import { initContestStatus } from './contest_status';
 // 题库标签三维分组（来源/赛事/知识点）自注册到 problem_main / problem_category
 import './tags_sidebar';
 
@@ -26,4 +28,13 @@ if (typeof document !== 'undefined') {
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountFishDock);
     else mountFishDock();
+}
+
+// 比赛列表页状态增强（倒计时 / LIVE 进度条 / 赛制分色等），全站注入后自动对 .contest__item 生效
+if (typeof document !== 'undefined') {
+    const mountContestStatus = () => {
+        try { initContestStatus(); } catch { /* 比赛状态增强异常不影响整站渲染 */ }
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountContestStatus);
+    else mountContestStatus();
 }
