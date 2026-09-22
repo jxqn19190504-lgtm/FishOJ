@@ -86,22 +86,28 @@ function enhanceEmptyState(): void {
     empty.classList.add('fish-empty-replaced');
 }
 
-/** ② 左右两栏：主内容在左，「创建讨论 + 讨论节点」在右上，顶部水平对齐
- *  FishOJ 主题下 Hydro 的 .medium-9/.medium-3 网格不生效（右栏会被堆到主内容下方），
- *  所以这里不再依赖 Hydro 网格，直接自建两栏容器：
- *    · 左列：主内容 section（讨论列表 / 空状态引导卡）
- *    · 右列：把 Hydro 自带右栏的内容整块搬进来（创建讨论卡 + 讨论节点组件）；
- *            若页面没有右栏，则注入自带的鎏金「创建讨论」卡。 */
+/** ② 右栏卡片鎏金化 + 两栏布局兜底
+ *  首选：CSS 用 :has() 直接把页面的 .row 变成两栏 grid（不改 DOM，最稳），
+ *        此时这里只负责给右栏卡片上鎏金样式。
+ *  兜底：若浏览器不支持 :has()（row 不是 grid），才动手搬 DOM 自建两栏。 */
 function enhanceCreateCard(): void {
+    // 右栏里带按钮的那张卡（创建讨论）→ 鎏金化
+    Array.from(document.querySelectorAll<HTMLElement>('.section.side')).forEach((s) => {
+        if (s.querySelector('.button')) s.classList.add('fish-side-gold');
+    });
+
     if (document.querySelector('.fish-discuss-layout')) return;
 
     const anchor = document.querySelector<HTMLElement>('.fish-discuss-guide, .section__list');
     const mainSection = (anchor?.closest('.section') as HTMLElement | null) || null;
     if (!mainSection || !mainSection.parentElement) return;
 
-    // 找 Hydro 自带的右栏内容（同一 .row 下的另一列）
-    const row = mainSection.closest('.row');
+    const row = mainSection.closest('.row') as HTMLElement | null;
     const mainColumn = mainSection.closest('.columns');
+
+    // CSS 已经把 row 变成两栏 grid → 不需要动 DOM
+    if (row && getComputedStyle(row).display === 'grid') return;
+
     let sourceColumn: HTMLElement | null = null;
     if (row) {
         const cols = Array.from(row.querySelectorAll<HTMLElement>(':scope > .columns'));
@@ -127,8 +133,6 @@ function enhanceCreateCard(): void {
         // 把页面的右栏内容搬进我们的右列（避免重复造卡），并隐藏原列
         for (const child of Array.from(sourceColumn.children)) sideBox.appendChild(child);
         sourceColumn.style.display = 'none';
-        Array.from(sideBox.querySelectorAll<HTMLElement>('.section.side'))
-            .forEach((s) => s.classList.add('fish-side-gold'));
         return;
     }
 

@@ -351,3 +351,51 @@ body.page--discussion_main .section__list__item a {
 [data-mantine-color-scheme="dark"] .fish-node-cnt {
   color: var(--fishoj-text-2, #9aa7c2) !important;
 }
+
+/* ============================================================
+   讨论页两列布局 —— 纯 CSS 方案（不依赖 JS 搬 DOM）
+   站点 <html> 带 data-page="discussion_*"，row 内是
+   .medium-9.columns（主内容）+ .medium-3.columns（右栏）。
+   用 :has() 精确命中「含主内容列的那个 row」，避免误伤 footer 的 .row，
+   把它变成 grid 两栏：左 1fr 主内容、右 300px 卡片，顶部对齐。
+   ============================================================ */
+html[data-page^="discussion"] .row:has(> .medium-9.columns) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 300px !important;
+  gap: 18px !important;
+  align-items: start !important;
+}
+html[data-page^="discussion"] .row:has(> .medium-9.columns) > .columns {
+  width: auto !important;
+  max-width: none !important;
+  float: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+}
+/* 右栏里两个 .section 之间的间距收紧一点，视觉是一叠小卡 */
+html[data-page^="discussion"] .row:has(> .medium-9.columns) > .columns:last-child > .section {
+  margin-bottom: 14px !important;
+}
+@media (max-width: 760px) {
+  html[data-page^="discussion"] .row:has(> .medium-9.columns) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* 右栏「创建讨论」按钮 → 鎏金 CTA（不受 body 类限制，只要卡片被打了 fish-side-gold） */
+html[data-page^="discussion"] .fish-side-gold .button {
+  display: block !important;
+  text-align: center !important;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+  border: 0 !important;
+  color: #3a2a05 !important;
+  font-weight: 800 !important;
+  border-radius: var(--fishoj-radius-pill) !important;
+  padding: 9px 16px !important;
+  text-decoration: none !important;
+}
+html[data-page^="discussion"] .fish-side-gold .section__title {
+  color: #fff !important;
+  border-bottom: 0 !important;
+}
