@@ -45,6 +45,10 @@ function enhanceEmptyState(): void {
     const empty = findEmptyState();
     if (!empty) return;
 
+    // 在节点页（/discuss/node/xxx）时，创建链接直接指向该节点，而不是通用的 /discuss/create
+    const nodeMatch = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
+    const createUrl = nodeMatch ? `/discuss/node/${nodeMatch[1]}/create` : '/discuss/create';
+
     const guide = document.createElement('div');
     guide.className = 'fish-discuss-guide';
     guide.innerHTML = `
@@ -64,7 +68,7 @@ function enhanceEmptyState(): void {
                 <div class="fish-step-ic">✍️</div>
                 <b class="fish-step-title">点击「创建讨论」</b>
                 <span class="fish-step-desc">选一个节点，写好标题和内容，支持 Markdown</span>
-                <a class="fish-step-go" href="/discuss/create">前往 /discuss/create →</a>
+                <a class="fish-step-go" href="${createUrl}">前往创建 →</a>
             </div>
             <div class="fish-step">
                 <span class="fish-step-n">3</span>
@@ -74,7 +78,7 @@ function enhanceEmptyState(): void {
                 <span class="fish-step-go fish-step-go--muted">把链接甩进班级群即可 🚀</span>
             </div>
         </div>
-        <a class="fish-guide-btn" href="/discuss/create">✍️ 立即创建第一条讨论</a>
+        <a class="fish-guide-btn" href="${createUrl}">✍️ 立即创建第一条讨论</a>
         <p class="fish-guide-hint">不是管理员？先 @ 一下管理员建好节点，再来发帖～</p>
     `;
     empty.insertAdjacentElement('afterend', guide);
@@ -93,12 +97,14 @@ function enhanceCreateCard(): void {
         const sections = document.querySelectorAll<HTMLElement>('body.page--discussion_main .section');
         container = sections[sections.length - 1] || side;
     }
+    const nodeMatch2 = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
+    const createUrl2 = nodeMatch2 ? `/discuss/node/${nodeMatch2[1]}/create` : '/discuss/create';
     const card = document.createElement('div');
     card.className = 'fish-create-card';
     card.innerHTML = `
         <h4 class="fish-create-card__title">✍️ 创建讨论</h4>
         <p class="fish-create-card__desc">有问题？有题解想分享？选一个节点开始发言。</p>
-        <a class="fish-create-card__btn" href="/discuss/create">开始创建 →</a>
+        <a class="fish-create-card__btn" href="${createUrl2}">开始创建 →</a>
     `;
     container!.insertAdjacentElement('afterbegin', card);
 }
