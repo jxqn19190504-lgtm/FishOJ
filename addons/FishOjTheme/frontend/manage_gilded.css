@@ -1,0 +1,100 @@
+/* ============================================================
+   FishOJ 控制面板 /manage 鎏金覆盖层
+   ------------------------------------------------------------
+   目标：Hydro 原生管理后台（/manage）。
+   作用域钩子：.side 仅出现在后台侧栏，配合 body:has(.side)
+   锁定“后台页”，避免污染做题/比赛等前台页面。
+   原则：纯 CSS 覆盖层，Hydro 内核零改动；
+         全部 !important，最坏回退为原生样式。
+   ============================================================ */
+
+/* —— 左侧导航栏：深海渐变 + 鎏金右描边 —— */
+.side,
+.layout__sidebar,
+[class*="sidebar"] {
+  background: linear-gradient(180deg, #0b2447 0%, #123058 58%, #19376d 100%) !important;
+  border-right: 1px solid rgba(255, 196, 94, 0.30) !important;
+}
+.side { padding-top: 6px; }
+
+/* 后台分组标题：鎏金弱文案 */
+body:has(.side) .side .section__title,
+.side .section__title {
+  color: rgba(255, 196, 94, 0.82) !important;
+  border-bottom: 1px solid rgba(255, 196, 94, 0.16) !important;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 14px 16px 8px;
+}
+
+/* 后台菜单项：圆角悬浮 + 鎏金激活态 */
+body:has(.side) .side .menu__link,
+.side .menu__link {
+  color: #dbe6ff !important;
+  border-radius: 10px;
+  margin: 2px 10px;
+  padding: 10px 12px;
+  transition: background var(--fishoj-duration-base) var(--fishoj-ease),
+              color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+body:has(.side) .side .menu__link:hover,
+.side .menu__link:hover {
+  background: rgba(255, 196, 94, 0.12) !important;
+  color: var(--fishoj-gold) !important;
+}
+body:has(.side) .side .menu__item--active > .menu__link,
+body:has(.side) .side a.active,
+.side .menu__item--active > .menu__link,
+.side a.active {
+  color: var(--fishoj-gold) !important;
+  background: rgba(255, 196, 94, 0.16) !important;
+  box-shadow: inset 3px 0 0 var(--fishoj-gold) !important;
+  font-weight: 600;
+}
+
+/* —— 模块卡片方块化（/manage 首页的模块入口）—— */
+body:has(.side) .card,
+body:has(.side) .paper {
+  border-radius: var(--fishoj-radius-lg) !important;
+  border: 1px solid var(--fishoj-border) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+body:has(.side) .card:hover,
+body:has(.side) .paper:hover {
+  transform: translateY(-3px);
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: var(--fishoj-shadow-hover) !important;
+}
+
+/* —— 后台表格：表头鎏金底、隔行、hover 金 —— */
+body:has(.side) .data-table th {
+  background: var(--fishoj-surface-2) !important;
+  color: var(--fishoj-text-strong) !important;
+}
+body:has(.side) .data-table tbody tr:hover {
+  background-color: var(--fishoj-gold-soft) !important;
+}
+
+/* —— 后台表单：聚焦金边 —— */
+body:has(.side) .form__label,
+body:has(.side) label {
+  color: var(--fishoj-text-strong) !important;
+  font-weight: 600;
+}
+
+/* —— 后台主操作按钮：鎏金光晕 —— */
+body:has(.side) .button--primary,
+body:has(.side) .button.button--primary {
+  box-shadow: 0 6px 18px -8px rgba(255, 196, 94, 0.55) !important;
+}
+
+/* —— 暗色：侧栏保持深蓝，激活态提亮 —— */
+.theme--dark .side,
+.theme--dark [class*="sidebar"],
+[data-mantine-color-scheme="dark"] .side {
+  background: linear-gradient(180deg, #07111f 0%, #0d1f38 60%, #102a4a 100%) !important;
+}

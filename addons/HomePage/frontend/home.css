@@ -158,10 +158,25 @@
   letter-spacing: 0.5px;
   margin: 0;
   border: 0;
+  padding-left: 16px;
+  position: relative;
   background: linear-gradient(120deg, var(--fh-navy-800) 30%, var(--fh-navy-700));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+/* 鎏金方块前缀：统一全站区块标题的“品牌标点” */
+.fishoj-home .fh-section-head h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+  box-shadow: 0 2px 8px -2px rgba(255, 159, 10, 0.5);
 }
 
 /* ============ 双 AI 卡片 ============ */
@@ -197,13 +212,13 @@
   background: linear-gradient(90deg, var(--fh-gold-400), var(--fishoj-gold-deep));
 }
 .fishoj-home .fh-ai-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 17px;
+  width: 66px;
+  height: 66px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 27px;
+  font-size: 32px;
   margin-bottom: 18px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 22px -8px rgba(23, 42, 84, 0.3);
 }
@@ -311,36 +326,68 @@
   border: 1px solid rgba(245, 158, 11, 0.35);
 }
 
-/* ============ 快捷入口 ============ */
+/* ============ 快捷入口（V2：方块磁贴，明显区别于原生长条） ============ */
 .fishoj-home .fh-quick-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  gap: 20px;
 }
 .fishoj-home .fh-quick-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
   background: #fff;
-  border-radius: 17px;
-  padding: 22px;
+  border-radius: 22px;
+  padding: 30px 18px;
+  min-height: 158px;
   border: 1px solid var(--fh-card-border);
   box-shadow: var(--fh-card-shadow);
   text-decoration: none;
   color: var(--fh-ink);
-  transition: transform 0.22s, box-shadow 0.22s;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.24s var(--fishoj-ease, ease),
+              box-shadow 0.24s var(--fishoj-ease, ease),
+              border-color 0.24s var(--fishoj-ease, ease);
+}
+/* 顶部鎏金进度条：hover 时从左展开 */
+.fishoj-home .fh-quick-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.26s var(--fishoj-ease, ease);
 }
 .fishoj-home .fh-quick-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 36px -16px rgba(23, 42, 84, 0.26);
+  transform: translateY(-5px);
+  border-color: var(--fishoj-gold);
+  box-shadow: 0 22px 44px -18px rgba(255, 159, 10, 0.32);
   color: var(--fh-ink);
 }
+.fishoj-home .fh-quick-card:hover::before { transform: scaleX(1); }
+/* 大圆角方块图标：把“文字行”升级为“图标方块”，观感立刻不同 */
 .fishoj-home .fh-q-icon {
-  font-size: 26px;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  background: linear-gradient(135deg, var(--fishoj-gold-soft), #ffffff);
+  border: 1px solid var(--fishoj-gold-soft-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 8px 18px -8px rgba(255, 159, 10, 0.38);
 }
 .fishoj-home .fh-quick-card b {
-  font-size: 16px;
+  font-size: 17px;
+  letter-spacing: 0.3px;
 }
 .fishoj-home .fh-quick-card span {
   font-size: 13px;
