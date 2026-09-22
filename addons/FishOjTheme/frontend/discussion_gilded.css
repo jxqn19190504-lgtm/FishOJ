@@ -198,28 +198,31 @@ body.page--discussion_main .empty-line {
 
 /* —— 双栏布局：主内容在左，「创建讨论」卡在右上，顶部水平对齐 —— */
 .fish-discuss-layout {
-  display: flex !important;
+  /* 用 grid 而非 flex：不受主题里任何 flex/浮动/宽度继承影响，两栏更硬 */
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 300px !important;
   gap: 18px !important;
-  align-items: flex-start !important;
+  align-items: start !important;
   width: 100% !important;
+  max-width: 100% !important;
   box-sizing: border-box !important;
   margin-top: 22px !important;
 }
 .fish-discuss-layout__main {
-  flex: 1 1 auto !important;
   min-width: 0 !important;
 }
 .fish-discuss-layout__side {
-  flex: 0 0 300px !important;
-  max-width: 300px !important;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: none !important;
 }
 .fish-discuss-layout__main > .fish-discuss-guide,
 .fish-discuss-layout__main > .section__list {
   margin-top: 0 !important;
 }
-@media (max-width: 900px) {
-  .fish-discuss-layout { flex-direction: column !important; }
-  .fish-discuss-layout__side { flex: 1 1 auto !important; max-width: none !important; width: 100% !important; }
+/* 断点降到 760px：浏览器侧边栏占宽时（<=900px）不再误判为窄屏而塌成上下 */
+@media (max-width: 760px) {
+  .fish-discuss-layout { grid-template-columns: minmax(0, 1fr) !important; }
 }
 
 /* 步骤卡内图标/链接垂直排布，避免图标与文字重叠 */
