@@ -96,9 +96,8 @@ body.page--discussion_main .empty-line {
   width: 100% !important;
   box-sizing: border-box !important;
   float: none !important;
-  margin: 22px 0 0 !important;
-  max-width: none !important;
-  width: 100% !important;
+  margin: 22px auto 0 !important;
+  max-width: 760px !important;
   background: var(--fishoj-surface) !important;
   border: 2px dashed var(--fishoj-gold-soft-border) !important;
   border-radius: var(--fishoj-radius-lg) !important;
@@ -196,69 +195,6 @@ body.page--discussion_main .empty-line {
   display: none !important;
 }
 
-/* —— 双栏布局：主内容在左，「创建讨论」卡在右上，顶部水平对齐 —— */
-.fish-discuss-layout {
-  /* 用 grid 而非 flex：不受主题里任何 flex/浮动/宽度继承影响，两栏更硬 */
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 300px !important;
-  gap: 18px !important;
-  align-items: start !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  margin-top: 22px !important;
-}
-.fish-discuss-layout__main {
-  min-width: 0 !important;
-}
-.fish-discuss-layout__side {
-  min-width: 0 !important;
-  width: auto !important;
-  max-width: none !important;
-}
-.fish-discuss-layout__main > .fish-discuss-guide,
-.fish-discuss-layout__main > .section__list {
-  margin-top: 0 !important;
-}
-/* 断点降到 760px：浏览器侧边栏占宽时（<=900px）不再误判为窄屏而塌成上下 */
-@media (max-width: 760px) {
-  .fish-discuss-layout { grid-template-columns: minmax(0, 1fr) !important; }
-}
-
-/* 步骤卡内图标/链接垂直排布，避免图标与文字重叠 */
-.fish-step-ic {
-  display: block !important;
-  line-height: 1.2 !important;
-  margin: 0 0 8px !important;
-}
-.fish-step-go {
-  display: block !important;
-  margin-top: 8px !important;
-}
-
-/* —— 讨论页两列布局 —— */
-/* 说明：FishOJ 主题下 Hydro 的 .medium-9/.medium-3 网格不生效，右栏会被堆到主内容下方。
-   因此不再依赖 Hydro 网格，改由 JS 用 .fish-discuss-layout 自建两栏：
-   左侧主内容（讨论列表 / 引导卡），右侧放 Hydro 自带的「创建讨论 + 讨论节点」。
-   两栏 align-items:flex-start → 顶部水平对齐。 */
-
-/* 右栏「创建讨论」的按钮鎏金化（与全站主题一致） */
-body.fish-discuss-grid .fish-side-gold .button {
-  display: block !important;
-  text-align: center !important;
-  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
-  border: 0 !important;
-  color: #3a2a05 !important;
-  font-weight: 800 !important;
-  border-radius: var(--fishoj-radius-pill) !important;
-  padding: 9px 16px !important;
-  text-decoration: none !important;
-}
-body.fish-discuss-grid .fish-side-gold .section__title {
-  color: #fff !important;
-  border-bottom: 0 !important;
-}
-
 /* —— ② 右侧栏鎏金「创建讨论」卡 —— */
 .fish-create-card {
   background: linear-gradient(160deg, var(--fishoj-navy), var(--fishoj-navy-2, #1d3468)) !important;
@@ -350,52 +286,4 @@ body.page--discussion_main .section__list__item a {
 .theme--dark .fish-node-cnt,
 [data-mantine-color-scheme="dark"] .fish-node-cnt {
   color: var(--fishoj-text-2, #9aa7c2) !important;
-}
-
-/* ============================================================
-   讨论页两列布局 —— 纯 CSS 方案（不依赖 JS 搬 DOM）
-   站点 <html> 带 data-page="discussion_*"，row 内是
-   .medium-9.columns（主内容）+ .medium-3.columns（右栏）。
-   用 :has() 精确命中「含主内容列的那个 row」，避免误伤 footer 的 .row，
-   把它变成 grid 两栏：左 1fr 主内容、右 300px 卡片，顶部对齐。
-   ============================================================ */
-html[data-page^="discussion"] .row:has(> .medium-9.columns) {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 300px !important;
-  gap: 18px !important;
-  align-items: start !important;
-}
-html[data-page^="discussion"] .row:has(> .medium-9.columns) > .columns {
-  width: auto !important;
-  max-width: none !important;
-  float: none !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  box-sizing: border-box !important;
-}
-/* 右栏里两个 .section 之间的间距收紧一点，视觉是一叠小卡 */
-html[data-page^="discussion"] .row:has(> .medium-9.columns) > .columns:last-child > .section {
-  margin-bottom: 14px !important;
-}
-@media (max-width: 760px) {
-  html[data-page^="discussion"] .row:has(> .medium-9.columns) {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-}
-
-/* 右栏「创建讨论」按钮 → 鎏金 CTA（不受 body 类限制，只要卡片被打了 fish-side-gold） */
-html[data-page^="discussion"] .fish-side-gold .button {
-  display: block !important;
-  text-align: center !important;
-  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
-  border: 0 !important;
-  color: #3a2a05 !important;
-  font-weight: 800 !important;
-  border-radius: var(--fishoj-radius-pill) !important;
-  padding: 9px 16px !important;
-  text-decoration: none !important;
-}
-html[data-page^="discussion"] .fish-side-gold .section__title {
-  color: #fff !important;
-  border-bottom: 0 !important;
 }

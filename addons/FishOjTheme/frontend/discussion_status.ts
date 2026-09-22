@@ -86,57 +86,17 @@ function enhanceEmptyState(): void {
     empty.classList.add('fish-empty-replaced');
 }
 
-/** ② 右栏卡片鎏金化 + 两栏布局兜底
- *  首选：CSS 用 :has() 直接把页面的 .row 变成两栏 grid（不改 DOM，最稳），
- *        此时这里只负责给右栏卡片上鎏金样式。
- *  兜底：若浏览器不支持 :has()（row 不是 grid），才动手搬 DOM 自建两栏。 */
+/** ② 右侧栏鎏金创建卡（附加 CTA，安全插入） */
 function enhanceCreateCard(): void {
-    // 右栏里带按钮的那张卡（创建讨论）→ 鎏金化
-    Array.from(document.querySelectorAll<HTMLElement>('.section.side')).forEach((s) => {
-        if (s.querySelector('.button')) s.classList.add('fish-side-gold');
-    });
-
-    if (document.querySelector('.fish-discuss-layout')) return;
-
-    const anchor = document.querySelector<HTMLElement>('.fish-discuss-guide, .section__list');
-    const mainSection = (anchor?.closest('.section') as HTMLElement | null) || null;
-    if (!mainSection || !mainSection.parentElement) return;
-
-    const row = mainSection.closest('.row') as HTMLElement | null;
-    const mainColumn = mainSection.closest('.columns');
-
-    // CSS 已经把 row 变成两栏 grid → 不需要动 DOM
-    if (row && getComputedStyle(row).display === 'grid') return;
-
-    let sourceColumn: HTMLElement | null = null;
-    if (row) {
-        const cols = Array.from(row.querySelectorAll<HTMLElement>(':scope > .columns'));
-        sourceColumn = cols.find((c) => c !== mainColumn) || null;
+    if (document.querySelector('.fish-create-card')) return;
+    const side = document.querySelector<HTMLElement>('.side, [class*="side"], body.page--discussion_main .section__body');
+    if (!side) return;
+    // 找到右侧栏容器：优先 .side，否则取讨论页最后一个 section 作为侧栏
+    let container: HTMLElement | null = side;
+    if (!side.classList.contains('side') && !/side/.test(side.className)) {
+        const sections = document.querySelectorAll<HTMLElement>('body.page--discussion_main .section');
+        container = sections[sections.length - 1] || side;
     }
-
-    const wrap = document.createElement('div');
-    wrap.className = 'fish-discuss-layout';
-    const mainBox = document.createElement('div');
-    mainBox.className = 'fish-discuss-layout__main';
-    const sideBox = document.createElement('div');
-    sideBox.className = 'fish-discuss-layout__side';
-
-    // 插到 .row 这一层（绕开各列的宽度约束），并隐藏原来的两列
-    const insertTarget: HTMLElement = row || mainSection.parentElement;
-    insertTarget.insertBefore(wrap, row ? (mainColumn || mainSection) : mainSection);
-    wrap.appendChild(mainBox);
-    wrap.appendChild(sideBox);
-    mainBox.appendChild(mainSection);
-    if (row && mainColumn) mainColumn.style.display = 'none';
-
-    if (sourceColumn && sourceColumn.children.length) {
-        // 把页面的右栏内容搬进我们的右列（避免重复造卡），并隐藏原列
-        for (const child of Array.from(sourceColumn.children)) sideBox.appendChild(child);
-        sourceColumn.style.display = 'none';
-        return;
-    }
-
-    // 页面没有右栏 → 注入自带鎏金创建卡
     const nodeMatch2 = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
     const createUrl2 = nodeMatch2 ? `/discuss/node/${nodeMatch2[1]}/create` : '/discuss/create';
     const card = document.createElement('div');
@@ -146,7 +106,7 @@ function enhanceCreateCard(): void {
         <p class="fish-create-card__desc">有问题？有题解想分享？选一个节点开始发言。</p>
         <a class="fish-create-card__btn" href="${createUrl2}">开始创建 →</a>
     `;
-    sideBox.appendChild(card);
+    container!.insertAdjacentElement('afterbegin', card);
 }
 
 /** ③ 节点磁贴加彩色图标 + 计数徽标 */
