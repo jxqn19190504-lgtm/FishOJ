@@ -1,0 +1,128 @@
+/* ============================================================
+   FishOJ · 深海鎏金 · 训练页专属覆盖层（train_gilded.css）
+   真实 DOM（已对照线上）：
+     <li class="section__list__item training__item">
+       <div class="media">
+         <div class="media__left middle">  <-- 编号 numbox
+         <div class="media__body middle"> <-- title / intro / progress
+   改造点（明显变化）：
+     ① 横向 media 长条 → 竖版鎏金卡片（顶部金条 + 大圆角 + 阴影）
+     ② 编号块从左侧小方块 → 右上角鎏金角标
+     ③ 标题放大加粗、简介留白加大
+     ④ hover 明显上浮 + 金光
+   边界：仅作用于 .training__item（训练页独有），不动内核。
+   ============================================================ */
+
+/* —— 训练卡片：竖版方块化 —— */
+.training__item {
+  position: relative !important;
+  display: block !important;
+  margin: 0 0 18px !important;
+  padding: 22px 22px 18px !important;
+  background: var(--fishoj-surface) !important;
+  border: 1px solid var(--fishoj-border) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  box-shadow: var(--fishoj-shadow-card) !important;
+  overflow: hidden !important;
+  transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
+              box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
+              border-color var(--fishoj-duration-base) var(--fishoj-ease);
+}
+/* 顶部鎏金条（页面辨识度最强的一笔） */
+.training__item::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0; left: 0; right: 0;
+  height: 4px !important;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+}
+/* 横向 media → 纵向堆叠 */
+.training__item .media { display: block !important; }
+.training__item .media__left {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  float: right !important;
+  margin: 0 0 10px 14px !important;
+  padding: 8px 14px !important;
+  border-radius: var(--fishoj-radius-md) !important;
+  background: var(--fishoj-gold-soft) !important;
+  border: 1px solid var(--fishoj-gold-soft-border) !important;
+}
+.training__item .training__participants .numbox__num {
+  color: var(--fishoj-gold-ink) !important;
+  font-weight: 800 !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+}
+.training__item .training__participants .numbox__text {
+  color: var(--fishoj-gold-ink-2) !important;
+  font-size: 11px !important;
+  letter-spacing: .5px;
+}
+.training__item .media__body { display: block !important; }
+.training__item .training__title {
+  font-size: var(--fishoj-font-2xl) !important;
+  line-height: 1.3 !important;
+  margin: 2px 0 10px !important;
+}
+.training__item .training__title a { color: var(--fishoj-navy) !important; }
+.training__item .training__title a:hover { color: var(--fishoj-gold-deep) !important; }
+.training__item .training__intro {
+  color: var(--fishoj-text-muted) !important;
+  font-size: var(--fishoj-font-md) !important;
+  line-height: var(--fishoj-leading) !important;
+}
+.training__item .training__progress {
+  margin-top: 14px !important;
+  color: var(--fishoj-text-faint) !important;
+  font-size: var(--fishoj-font-sm) !important;
+}
+/* hover 明显上浮 + 金光 */
+.training__item:hover {
+  transform: translateY(-5px) !important;
+  border-color: var(--fishoj-gold) !important;
+  box-shadow: 0 20px 42px -18px rgba(255, 196, 94, 0.5) !important;
+}
+
+/* —— 区块标题：鎏金方块前缀 + 放大 —— */
+body.page--training_main .section__title {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  padding-left: 14px !important;
+  position: relative !important;
+  border-bottom: 2px solid var(--fishoj-gold) !important;
+}
+body.page--training_main .section__title::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0; top: 4px; bottom: 6px;
+  width: 5px !important;
+  border-radius: 3px !important;
+  background: linear-gradient(180deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+}
+
+/* —— 空状态：居中鎏金虚线引导 —— */
+body.page--training_main .nothing,
+body.page--training_main .empty-line,
+.training .nothing {
+  margin: 0 auto !important;
+  max-width: 440px !important;
+  text-align: center !important;
+  border: 1px dashed var(--fishoj-gold-soft-border) !important;
+  background: var(--fishoj-gold-soft) !important;
+  border-radius: var(--fishoj-radius-lg) !important;
+  color: var(--fishoj-gold-ink) !important;
+  padding: 30px !important;
+}
+
+/* —— 暗色适配 —— */
+.theme--dark .training__item,
+[data-mantine-color-scheme="dark"] .training__item {
+  background: var(--fishoj-surface) !important;
+  border-color: var(--fishoj-border) !important;
+}
+.theme--dark .training__item .training__title a,
+[data-mantine-color-scheme="dark"] .training__item .training__title a {
+  color: var(--fishoj-text) !important;
+}
