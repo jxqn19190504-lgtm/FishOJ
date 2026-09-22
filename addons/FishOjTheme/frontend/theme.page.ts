@@ -9,6 +9,8 @@ import './contest_gilded.css';
 import './homework_gilded.css';
 import './discussion_gilded.css';
 import './manage_gilded.css';
+// 讨论页状态增强（空状态三步引导/鎏金创建卡/节点磁贴/排序Tab）
+import { initDiscussionStatus } from './discussion_status';
 import { initFishDock } from './dock';
 // 比赛列表页状态增强（三态徽标/倒计时/赛制分色/RATED火焰/人数热门）
 import { initContestStatus } from './contest_status';
@@ -37,4 +39,13 @@ if (typeof document !== 'undefined') {
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountContestStatus);
     else mountContestStatus();
+}
+
+// 讨论页状态增强（空状态引导 / 创建卡 / 节点磁贴 / 排序Tab），全站注入后自动对 /discuss* 生效
+if (typeof document !== 'undefined') {
+    const mountDiscussionStatus = () => {
+        try { initDiscussionStatus(); } catch { /* 讨论状态增强异常不影响整站渲染 */ }
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountDiscussionStatus);
+    else mountDiscussionStatus();
 }
