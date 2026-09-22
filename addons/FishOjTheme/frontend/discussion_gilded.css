@@ -88,7 +88,14 @@ body.page--discussion_main .empty-line {
    ============================================================ */
 
 /* —— ① 空状态三步上手指引 —— */
+/* 防御：父级可能是 flex 横排（Hydro 空状态容器），必须显式声明占满整行，
+   否则引导卡会被挤成窄条导致文字竖排。 */
 .fish-discuss-guide {
+  display: block !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  float: none !important;
   margin: 22px auto 0 !important;
   max-width: 760px !important;
   background: var(--fishoj-surface) !important;
@@ -168,6 +175,24 @@ body.page--discussion_main .empty-line {
 .fish-guide-hint {
   font-size: 12px !important; color: var(--fishoj-text-3, #8d9ab5) !important;
   margin-top: 14px !important;
+}
+
+/* 引导卡内的子元素：禁止被父级 flex 压缩 */
+.fish-guide-title,
+.fish-guide-sub {
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.fish-guide-steps,
+.fish-guide-btn {
+  flex: 0 0 auto !important;
+}
+
+/* 原始空状态（"目前没有讨论…"）被引导卡取代后隐藏，避免两个元素挤在一行 */
+.fish-empty-replaced {
+  display: none !important;
 }
 
 /* —— ② 右侧栏鎏金「创建讨论」卡 —— */

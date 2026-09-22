@@ -56,8 +56,8 @@ function enhanceEmptyState(): void {
                 <span class="fish-step-n">1</span>
                 <div class="fish-step-ic">🏗</div>
                 <b class="fish-step-title">管理员建节点</b>
-                <span class="fish-step-desc">先在控制面板「讨论节点」里建好分类，如：题解分享、求助、灌水</span>
-                <a class="fish-step-go" href="/manage/discuss">前往 /manage/discuss →</a>
+                <span class="fish-step-desc">讨论节点需由管理员在后台创建，分类如：题解分享、求助、公告、灌水</span>
+                <span class="fish-step-go fish-step-go--muted">节点标识建议用英文，如 solutions</span>
             </div>
             <div class="fish-step">
                 <span class="fish-step-n">2</span>
@@ -78,6 +78,8 @@ function enhanceEmptyState(): void {
         <p class="fish-guide-hint">不是管理员？先 @ 一下管理员建好节点，再来发帖～</p>
     `;
     empty.insertAdjacentElement('afterend', guide);
+    // 原始空状态已被引导卡取代：标记隐藏，避免两个元素在 flex 父级里挤成一行
+    empty.classList.add('fish-empty-replaced');
 }
 
 /** ② 右侧栏鎏金创建卡（附加 CTA，安全插入） */
