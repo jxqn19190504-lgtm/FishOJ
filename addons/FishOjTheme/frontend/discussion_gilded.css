@@ -96,8 +96,9 @@ body.page--discussion_main .empty-line {
   width: 100% !important;
   box-sizing: border-box !important;
   float: none !important;
-  margin: 22px auto 0 !important;
-  max-width: 760px !important;
+  margin: 22px 0 0 !important;
+  max-width: none !important;
+  width: 100% !important;
   background: var(--fishoj-surface) !important;
   border: 2px dashed var(--fishoj-gold-soft-border) !important;
   border-radius: var(--fishoj-radius-lg) !important;
@@ -193,6 +194,43 @@ body.page--discussion_main .empty-line {
 /* 原始空状态（"目前没有讨论…"）被引导卡取代后隐藏，避免两个元素挤在一行 */
 .fish-empty-replaced {
   display: none !important;
+}
+
+/* —— 双栏布局：主内容在左，「创建讨论」卡在右上，顶部水平对齐 —— */
+.fish-discuss-layout {
+  display: flex !important;
+  gap: 18px !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 22px !important;
+}
+.fish-discuss-layout__main {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+.fish-discuss-layout__side {
+  flex: 0 0 280px !important;
+  max-width: 280px !important;
+}
+.fish-discuss-layout__main > .fish-discuss-guide,
+.fish-discuss-layout__main > .section__list {
+  margin-top: 0 !important;
+}
+@media (max-width: 900px) {
+  .fish-discuss-layout { flex-direction: column !important; }
+  .fish-discuss-layout__side { flex: 1 1 auto !important; max-width: none !important; width: 100% !important; }
+}
+
+/* 步骤卡内图标/链接垂直排布，避免图标与文字重叠 */
+.fish-step-ic {
+  display: block !important;
+  line-height: 1.2 !important;
+  margin: 0 0 8px !important;
+}
+.fish-step-go {
+  display: block !important;
+  margin-top: 8px !important;
 }
 
 /* —— ② 右侧栏鎏金「创建讨论」卡 —— */

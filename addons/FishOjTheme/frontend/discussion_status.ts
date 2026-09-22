@@ -86,17 +86,13 @@ function enhanceEmptyState(): void {
     empty.classList.add('fish-empty-replaced');
 }
 
-/** ② 右侧栏鎏金创建卡（附加 CTA，安全插入） */
+/** ② 右侧栏鎏金创建卡
+ *  优先级：① 页面真实的右栏（同一 row 下的窄列 / 已有 .section.side）
+ *          ② 自建「左主内容 + 右卡片」双栏（顶部对齐）
+ *          ③ 都没有 → 不注入悬浮卡，避免和 AI 浮窗打架 */
 function enhanceCreateCard(): void {
     if (document.querySelector('.fish-create-card')) return;
-    const side = document.querySelector<HTMLElement>('.side, [class*="side"], body.page--discussion_main .section__body');
-    if (!side) return;
-    // 找到右侧栏容器：优先 .side，否则取讨论页最后一个 section 作为侧栏
-    let container: HTMLElement | null = side;
-    if (!side.classList.contains('side') && !/side/.test(side.className)) {
-        const sections = document.querySelectorAll<HTMLElement>('body.page--discussion_main .section');
-        container = sections[sections.length - 1] || side;
-    }
+
     const nodeMatch2 = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
     const createUrl2 = nodeMatch2 ? `/discuss/node/${nodeMatch2[1]}/create` : '/discuss/create';
     const card = document.createElement('div');
@@ -106,7 +102,46 @@ function enhanceCreateCard(): void {
         <p class="fish-create-card__desc">有问题？有题解想分享？选一个节点开始发言。</p>
         <a class="fish-create-card__btn" href="${createUrl2}">开始创建 →</a>
     `;
-    container!.insertAdjacentElement('afterbegin', card);
+
+    // 主内容锚点：引导卡（空状态）或列表（有内容时）
+    const anchor = document.querySelector<HTMLElement>(
+        '.fish-discuss-guide, body.page--discussion_main .section__list, .section__list',
+    );
+
+    // ① 真实右栏：同一 row 下的最后一列，且不是主内容所在列
+    const row = anchor?.closest('.row') || document.querySelector('.row');
+    if (row) {
+        const cols = Array.from(row.querySelectorAll<HTMLElement>(':scope > .columns'));
+        if (cols.length >= 2) {
+            const mainCol = anchor?.closest('.columns') || null;
+            const sideCol = cols[cols.length - 1];
+            if (sideCol && sideCol !== mainCol) {
+                sideCol.insertAdjacentElement('afterbegin', card);
+                return;
+            }
+        }
+    }
+    const realSide = document.querySelector<HTMLElement>('.section.side');
+    if (realSide) {
+        realSide.insertAdjacentElement('afterbegin', card);
+        return;
+    }
+
+    // ② 没有右栏：自建双栏，主内容在左、卡片在右上，顶部对齐
+    if (anchor && anchor.parentElement) {
+        if (document.querySelector('.fish-discuss-layout')) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'fish-discuss-layout';
+        const mainCol = document.createElement('div');
+        mainCol.className = 'fish-discuss-layout__main';
+        const sideCol = document.createElement('div');
+        sideCol.className = 'fish-discuss-layout__side';
+        anchor.parentElement.insertBefore(wrap, anchor);
+        wrap.appendChild(mainCol);
+        wrap.appendChild(sideCol);
+        mainCol.appendChild(anchor);
+        sideCol.appendChild(card);
+    }
 }
 
 /** ③ 节点磁贴加彩色图标 + 计数徽标 */
