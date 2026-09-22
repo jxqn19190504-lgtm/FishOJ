@@ -14,6 +14,8 @@ import { initDiscussionStatus } from './discussion_status';
 import { initFishDock } from './dock';
 // 比赛列表页状态增强（三态徽标/倒计时/赛制分色/RATED火焰/人数热门）
 import { initContestStatus } from './contest_status';
+// 训练列表页状态增强（元信息徽标/规模分级/三态进度/右栏鎏金/筛选Tab）
+import { initTrainStatus } from './train_status';
 // 题库标签三维分组（来源/赛事/知识点）自注册到 problem_main / problem_category
 import './tags_sidebar';
 
@@ -39,6 +41,15 @@ if (typeof document !== 'undefined') {
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountContestStatus);
     else mountContestStatus();
+}
+
+// 训练列表页状态增强（徽标 / 状态 / 进度条 / 右栏 / 筛选Tab），全站注入后自动对 .training__item 生效
+if (typeof document !== 'undefined') {
+    const mountTrainStatus = () => {
+        try { initTrainStatus(); } catch { /* 训练状态增强异常不影响整站渲染 */ }
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountTrainStatus);
+    else mountTrainStatus();
 }
 
 // 讨论页状态增强（空状态引导 / 创建卡 / 节点磁贴 / 排序Tab），全站注入后自动对 /discuss* 生效
