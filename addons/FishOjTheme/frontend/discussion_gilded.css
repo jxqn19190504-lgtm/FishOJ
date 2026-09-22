@@ -210,8 +210,8 @@ body.page--discussion_main .empty-line {
   min-width: 0 !important;
 }
 .fish-discuss-layout__side {
-  flex: 0 0 280px !important;
-  max-width: 280px !important;
+  flex: 0 0 300px !important;
+  max-width: 300px !important;
 }
 .fish-discuss-layout__main > .fish-discuss-guide,
 .fish-discuss-layout__main > .section__list {
@@ -233,38 +233,11 @@ body.page--discussion_main .empty-line {
   margin-top: 8px !important;
 }
 
-/* —— 讨论页两列网格恢复 —— */
-/* Hydro 模板本是 .row > .medium-9.columns（主内容）+ .medium-3.columns（右栏），
-   但 FishOJ 主题下这套网格未生效，右栏被堆到主内容下方（卡片掉到底部）。
-   这里恢复成「主内容左 + 右栏右上」，两块顶部水平对齐。 */
-body.fish-discuss-grid .row {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: flex-start !important;
-  gap: 18px !important;
-}
-body.fish-discuss-grid .row > .columns {
-  width: auto !important;
-  float: none !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  box-sizing: border-box !important;
-}
-body.fish-discuss-grid .row > .columns:first-child {
-  flex: 1 1 0 !important;
-  min-width: 0 !important;
-}
-body.fish-discuss-grid .row > .columns:last-child {
-  flex: 0 0 300px !important;
-  max-width: 300px !important;
-}
-@media (max-width: 900px) {
-  body.fish-discuss-grid .row { flex-direction: column !important; }
-  body.fish-discuss-grid .row > .columns:last-child {
-    flex: 1 1 auto !important;
-    max-width: none !important;
-  }
-}
+/* —— 讨论页两列布局 —— */
+/* 说明：FishOJ 主题下 Hydro 的 .medium-9/.medium-3 网格不生效，右栏会被堆到主内容下方。
+   因此不再依赖 Hydro 网格，改由 JS 用 .fish-discuss-layout 自建两栏：
+   左侧主内容（讨论列表 / 引导卡），右侧放 Hydro 自带的「创建讨论 + 讨论节点」。
+   两栏 align-items:flex-start → 顶部水平对齐。 */
 
 /* 右栏「创建讨论」的按钮鎏金化（与全站主题一致） */
 body.fish-discuss-grid .fish-side-gold .button {

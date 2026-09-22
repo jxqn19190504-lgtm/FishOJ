@@ -86,36 +86,55 @@ function enhanceEmptyState(): void {
     empty.classList.add('fish-empty-replaced');
 }
 
-/** ② 右侧栏鎏金创建卡
- *  Hydro 模板结构：.row > .medium-9.columns（主内容） + .medium-3.columns（右栏）
- *  但 FishOJ 主题下这套网格未生效，右栏被堆到主内容下方（卡片掉到底部）。
- *  因此：① 先给 body 打上 fish-discuss-grid，由 CSS 恢复两列网格（右栏回到右上）；
- *        ② 右栏存在 → 直接给它上鎏金样式，不再自建卡片（避免重复）；
- *        ③ 完全没有两列结构时才自建「左主内容 + 右卡片」双栏兜底。 */
+/** ② 左右两栏：主内容在左，「创建讨论 + 讨论节点」在右上，顶部水平对齐
+ *  FishOJ 主题下 Hydro 的 .medium-9/.medium-3 网格不生效（右栏会被堆到主内容下方），
+ *  所以这里不再依赖 Hydro 网格，直接自建两栏容器：
+ *    · 左列：主内容 section（讨论列表 / 空状态引导卡）
+ *    · 右列：把 Hydro 自带右栏的内容整块搬进来（创建讨论卡 + 讨论节点组件）；
+ *            若页面没有右栏，则注入自带的鎏金「创建讨论」卡。 */
 function enhanceCreateCard(): void {
-    // 标记：让 CSS 恢复讨论页的两列网格（主内容左、右栏右上，顶部水平对齐）
-    document.body.classList.add('fish-discuss-grid');
+    if (document.querySelector('.fish-discuss-layout')) return;
 
-    // 主内容锚点：引导卡（空状态）或列表（有内容时）
-    const anchor = document.querySelector<HTMLElement>(
-        '.fish-discuss-guide, body.page--discussion_main .section__list, .section__list',
-    );
-    const row = anchor?.closest('.row') || document.querySelector<HTMLElement>('.row');
-    const cols = row ? Array.from(row.querySelectorAll<HTMLElement>(':scope > .columns')) : [];
+    const anchor = document.querySelector<HTMLElement>('.fish-discuss-guide, .section__list');
+    const mainSection = (anchor?.closest('.section') as HTMLElement | null) || null;
+    if (!mainSection || !mainSection.parentElement) return;
 
-    if (cols.length >= 2) {
-        // ① 页面自带右栏：直接鎏金化，不再注入自己的卡片
-        cols[cols.length - 1].classList.add('fish-side-gold');
+    // 找 Hydro 自带的右栏内容（同一 .row 下的另一列）
+    const row = mainSection.closest('.row');
+    const mainColumn = mainSection.closest('.columns');
+    let sourceColumn: HTMLElement | null = null;
+    if (row) {
+        const cols = Array.from(row.querySelectorAll<HTMLElement>(':scope > .columns'));
+        sourceColumn = cols.find((c) => c !== mainColumn) || null;
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'fish-discuss-layout';
+    const mainBox = document.createElement('div');
+    mainBox.className = 'fish-discuss-layout__main';
+    const sideBox = document.createElement('div');
+    sideBox.className = 'fish-discuss-layout__side';
+
+    // 插到 .row 这一层（绕开各列的宽度约束），并隐藏原来的两列
+    const insertTarget: HTMLElement = row || mainSection.parentElement;
+    insertTarget.insertBefore(wrap, row ? (mainColumn || mainSection) : mainSection);
+    wrap.appendChild(mainBox);
+    wrap.appendChild(sideBox);
+    mainBox.appendChild(mainSection);
+    if (row && mainColumn) mainColumn.style.display = 'none';
+
+    if (sourceColumn && sourceColumn.children.length) {
+        // 把页面的右栏内容搬进我们的右列（避免重复造卡），并隐藏原列
+        for (const child of Array.from(sourceColumn.children)) sideBox.appendChild(child);
+        sourceColumn.style.display = 'none';
+        Array.from(sideBox.querySelectorAll<HTMLElement>('.section.side'))
+            .forEach((s) => s.classList.add('fish-side-gold'));
         return;
     }
-    if (document.querySelector('.fish-create-card') || document.querySelector('.fish-discuss-layout')) return;
 
-    // ② 兜底：没有两列结构 → 自建双栏（主内容左 / 卡片右上）
+    // 页面没有右栏 → 注入自带鎏金创建卡
     const nodeMatch2 = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
     const createUrl2 = nodeMatch2 ? `/discuss/node/${nodeMatch2[1]}/create` : '/discuss/create';
-    const host = anchor?.closest('.section') || anchor;
-    if (!host || !host.parentElement) return;
-
     const card = document.createElement('div');
     card.className = 'fish-create-card';
     card.innerHTML = `
@@ -123,18 +142,7 @@ function enhanceCreateCard(): void {
         <p class="fish-create-card__desc">有问题？有题解想分享？选一个节点开始发言。</p>
         <a class="fish-create-card__btn" href="${createUrl2}">开始创建 →</a>
     `;
-
-    const wrap = document.createElement('div');
-    wrap.className = 'fish-discuss-layout';
-    const mainCol = document.createElement('div');
-    mainCol.className = 'fish-discuss-layout__main';
-    const sideCol = document.createElement('div');
-    sideCol.className = 'fish-discuss-layout__side';
-    host.parentElement.insertBefore(wrap, host);
-    wrap.appendChild(mainCol);
-    wrap.appendChild(sideCol);
-    mainCol.appendChild(host);
-    sideCol.appendChild(card);
+    sideBox.appendChild(card);
 }
 
 /** ③ 节点磁贴加彩色图标 + 计数徽标 */
