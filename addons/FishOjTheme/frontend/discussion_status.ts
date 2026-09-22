@@ -39,15 +39,39 @@ function findEmptyState(): HTMLElement | null {
     return null;
 }
 
+/** 收集页面上的讨论节点（来自「讨论节点」组件里的链接），返回 [id, 显示名]
+ *  只取以 /discuss/node/<id> 结尾的链接，排除我们自己生成的 /create 链接 */
+function nodeQuickLinks(): Array<[string, string]> {
+    const out: Array<[string, string]> = [];
+    const as = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href*="/discuss/node/"]'));
+    for (const a of as) {
+        const href = (a.getAttribute('href') || '').split(/[?#]/)[0];
+        const m = /\/discuss\/node\/([^/]+)$/.exec(href);
+        if (!m) continue;
+        const id = decodeURIComponent(m[1]);
+        if (out.some(([i]) => i === id)) continue;
+        out.push([id, (a.textContent || '').trim() || id]);
+    }
+    return out;
+}
+
+/** 解析「创建讨论」的合法地址。
+ *  Hydro 只认 /discuss/node/<节点>/create；
+ *  直接访问 /discuss/create 会报 ValidationError（缺 did 字段）—— 之前 404 就是这个原因。 */
+function resolveCreateUrl(): string | null {
+    const nodeId = /^\/discuss\/node\/([^/]+)/.exec(location.pathname)?.[1];
+    if (nodeId) return `/discuss/node/${nodeId}/create`;
+    const quick = nodeQuickLinks();
+    return quick.length ? `/discuss/node/${quick[0][0]}/create` : null;
+}
+
 /** ① 空状态三步引导 */
 function enhanceEmptyState(): void {
     if (document.querySelector('.fish-discuss-guide')) return;
     const empty = findEmptyState();
     if (!empty) return;
 
-    // 在节点页（/discuss/node/xxx）时，创建链接直接指向该节点，而不是通用的 /discuss/create
-    const nodeMatch = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
-    const createUrl = nodeMatch ? `/discuss/node/${nodeMatch[1]}/create` : '/discuss/create';
+    const createUrl = resolveCreateUrl();
 
     const guide = document.createElement('div');
     guide.className = 'fish-discuss-guide';
@@ -68,7 +92,9 @@ function enhanceEmptyState(): void {
                 <div class="fish-step-ic">✍️</div>
                 <b class="fish-step-title">点击「创建讨论」</b>
                 <span class="fish-step-desc">选一个节点，写好标题和内容，支持 Markdown</span>
-                <a class="fish-step-go" href="${createUrl}">前往创建 →</a>
+                ${createUrl
+                    ? `<a class="fish-step-go" href="${createUrl}">前往创建 →</a>`
+                    : `<span class="fish-step-go fish-step-go--muted">需先有讨论节点</span>`}
             </div>
             <div class="fish-step">
                 <span class="fish-step-n">3</span>
@@ -78,7 +104,9 @@ function enhanceEmptyState(): void {
                 <span class="fish-step-go fish-step-go--muted">把链接甩进班级群即可 🚀</span>
             </div>
         </div>
-        <a class="fish-guide-btn" href="${createUrl}">✍️ 立即创建第一条讨论</a>
+        ${createUrl
+            ? `<a class="fish-guide-btn" href="${createUrl}">✍️ 立即创建第一条讨论</a>`
+            : `<p class="fish-guide-hint">目前还没有讨论节点，先请管理员创建一个吧～</p>`}
         <p class="fish-guide-hint">不是管理员？先 @ 一下管理员建好节点，再来发帖～</p>
     `;
     empty.insertAdjacentElement('afterend', guide);
@@ -97,14 +125,26 @@ function enhanceCreateCard(): void {
         const sections = document.querySelectorAll<HTMLElement>('body.page--discussion_main .section');
         container = sections[sections.length - 1] || side;
     }
-    const nodeMatch2 = /^\/discuss\/node\/([^/]+)/.exec(location.pathname);
-    const createUrl2 = nodeMatch2 ? `/discuss/node/${nodeMatch2[1]}/create` : '/discuss/create';
+    const nodeId = /^\/discuss\/node\/([^/]+)/.exec(location.pathname)?.[1];
+    const quick = nodeQuickLinks();
+    let action: string;
+    if (nodeId) {
+        action = `<a class="fish-create-card__btn" href="/discuss/node/${nodeId}/create">开始创建 →</a>`;
+    } else if (quick.length) {
+        // 主讨论页没有具体节点：直接列出各节点的快捷创建入口（避免 /discuss/create 报错）
+        action = `<div class="fish-create-chips">${quick
+            .slice(0, 6)
+            .map(([id, name]) => `<a class="fish-create-chip" href="/discuss/node/${id}/create">在「${name}」下创建</a>`)
+            .join('')}</div>`;
+    } else {
+        action = `<p class="fish-create-card__desc">还没有讨论节点，请管理员先创建一个。</p>`;
+    }
     const card = document.createElement('div');
     card.className = 'fish-create-card';
     card.innerHTML = `
         <h4 class="fish-create-card__title">✍️ 创建讨论</h4>
         <p class="fish-create-card__desc">有问题？有题解想分享？选一个节点开始发言。</p>
-        <a class="fish-create-card__btn" href="${createUrl2}">开始创建 →</a>
+        ${action}
     `;
     container!.insertAdjacentElement('afterbegin', card);
 }

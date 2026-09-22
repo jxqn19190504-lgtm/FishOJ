@@ -228,6 +228,29 @@ body.page--discussion_main .empty-line {
 }
 .fish-create-card__btn:hover { background: rgba(230, 200, 119, 0.3) !important; }
 
+/* 主讨论页：各节点的快捷创建入口（Hydro 只认 /discuss/node/<id>/create） */
+.fish-create-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+.fish-create-chip {
+  display: inline-block !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 5px 10px !important;
+  border-radius: var(--fishoj-radius-pill) !important;
+  background: rgba(230, 200, 119, 0.15) !important;
+  border: 1px solid rgba(230, 200, 119, 0.5) !important;
+  color: var(--fishoj-gold-2, #e6c877) !important;
+  text-decoration: none !important;
+}
+.fish-create-chip:hover {
+  background: rgba(230, 200, 119, 0.32) !important;
+}
+
 /* —— ③ 节点磁贴：彩色图标 + 计数徽标 —— */
 .fish-node-ic {
   display: inline-flex !important; align-items: center !important; justify-content: center !important;
