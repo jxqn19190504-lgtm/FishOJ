@@ -1,64 +1,78 @@
 /* ============================================================
    FishOJ · 深海鎏金 · 讨论页专属覆盖层（discussion_gilded.css）
-   页面：讨论节点列表 / 帖子列表 / 帖子详情
-   手法：讨论节点方块磁贴（大圆角 + 左侧鎏金条）、帖子列表 hover 金边、
-        空状态（无节点）居中鎏金虚线引导。
-   边界：仅覆盖稳定语义类，不动 DOM / 内核。
+   真实 DOM（已对照线上）：
+     body.page--discussion_main
+     .section / .section__header / .section__title / .section__body
+     .group-list（节点列表容器）
    说明：讨论节点需管理员在 /manage 创建；本样式只负责“壳”，
-        节点数据为空时也会给出友好引导，不影响功能。
+        节点为空时给出友好引导，不影响功能。
+   改造点（明显变化）：
+     ① 讨论节点 → 方块磁贴（左侧鎏金条 + 大圆角）
+     ② 区块标题鎏金前缀
+     ③ 空状态（无节点）居中鎏金虚线引导
    ============================================================ */
 
 /* —— 讨论节点：方块磁贴 + 左侧鎏金条 —— */
-.node,
-.node-card,
-.discussion-node,
-.section--discuss .card,
-.section--discuss .paper {
-  position: relative;
-  overflow: hidden;
+body.page--discussion_main .section__list__item,
+body.page--discussion_main .group-list > * {
+  position: relative !important;
+  display: block !important;
+  margin: 0 0 16px !important;
+  padding: 18px 20px 16px !important;
+  background: var(--fishoj-surface) !important;
   border: 1px solid var(--fishoj-border) !important;
   border-radius: var(--fishoj-radius-lg) !important;
   box-shadow: var(--fishoj-shadow-card) !important;
-  padding: 20px !important;
+  overflow: hidden !important;
   transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
               box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
               border-color var(--fishoj-duration-base) var(--fishoj-ease);
 }
-.node::before,
-.node-card::before,
-.discussion-node::before,
-.section--discuss .card::before,
-.section--discuss .paper::before {
-  content: "";
-  position: absolute;
+body.page--discussion_main .section__list__item::before,
+body.page--discussion_main .group-list > *::before {
+  content: "" !important;
+  position: absolute !important;
   top: 0; bottom: 0; left: 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+  width: 4px !important;
+  background: linear-gradient(180deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
 }
-.node:hover,
-.node-card:hover,
-.discussion-node:hover,
-.section--discuss .card:hover,
-.section--discuss .paper:hover {
-  transform: translateY(-4px);
+body.page--discussion_main .section__list__item:hover,
+body.page--discussion_main .group-list > *:hover {
+  transform: translateY(-4px) !important;
   border-color: var(--fishoj-gold) !important;
-  box-shadow: 0 18px 38px -16px rgba(23, 42, 84, 0.30),
-              0 0 0 1px rgba(255, 196, 94, 0.30) !important;
+  box-shadow: 0 18px 38px -16px rgba(255, 196, 94, 0.45) !important;
+}
+body.page--discussion_main .section__list__item a,
+body.page--discussion_main .group-list a {
+  color: var(--fishoj-navy) !important;
+  font-weight: 700 !important;
+  font-size: var(--fishoj-font-lg) !important;
+}
+body.page--discussion_main .section__list__item a:hover,
+body.page--discussion_main .group-list a:hover {
+  color: var(--fishoj-gold-deep) !important;
 }
 
-/* —— 帖子列表项 hover 鎏金左条 —— */
-.section--discuss .data-table tbody tr:hover,
-.discussion-thread:hover,
-.thread-list__item:hover {
-  background-color: var(--fishoj-gold-soft) !important;
-  box-shadow: inset 3px 0 0 var(--fishoj-gold) !important;
+/* —— 区块标题鎏金前缀 —— */
+body.page--discussion_main .section__title {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  padding-left: 14px !important;
+  position: relative !important;
+  border-bottom: 2px solid var(--fishoj-gold) !important;
+}
+body.page--discussion_main .section__title::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0; top: 4px; bottom: 6px;
+  width: 5px !important;
+  border-radius: 3px !important;
+  background: linear-gradient(180deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
 }
 
 /* —— 空状态（无节点 / 暂无讨论）：居中鎏金虚线引导 —— */
-.section--discuss .nothing,
-.section--discuss .empty-line,
-.discussion .nothing,
-.discussion .empty-line {
+body.page--discussion_main .nothing,
+body.page--discussion_main .empty-line {
   margin: 0 auto !important;
   max-width: 480px !important;
   text-align: center !important;
@@ -69,9 +83,17 @@
   padding: 32px !important;
 }
 
-/* —— 回复/编辑器区：圆角 + 聚焦金边 —— */
-.section--discuss textarea:focus,
-.discussion-editor textarea:focus {
-  border-color: var(--fishoj-gold) !important;
-  box-shadow: 0 0 0 3px rgba(255, 196, 94, 0.18) !important;
+/* —— 暗色适配 —— */
+.theme--dark body.page--discussion_main .section__list__item,
+.theme--dark body.page--discussion_main .group-list > *,
+[data-mantine-color-scheme="dark"] body.page--discussion_main .section__list__item,
+[data-mantine-color-scheme="dark"] body.page--discussion_main .group-list > * {
+  background: var(--fishoj-surface) !important;
+  border-color: var(--fishoj-border) !important;
+}
+.theme--dark body.page--discussion_main .section__list__item a,
+.theme--dark body.page--discussion_main .group-list a,
+[data-mantine-color-scheme="dark"] body.page--discussion_main .section__list__item a,
+[data-mantine-color-scheme="dark"] body.page--discussion_main .group-list a {
+  color: var(--fishoj-text) !important;
 }

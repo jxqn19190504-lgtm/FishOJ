@@ -1,74 +1,125 @@
 /* ============================================================
    FishOJ · 深海鎏金 · 比赛页专属覆盖层（contest_gilded.css）
-   页面：比赛列表 / 比赛详情
-   手法：比赛卡片方块化（大圆角 + 顶部鎏金条 + 明显 hover 抬升）、
-        状态徽标柔化（红→暖琥珀，保留语义）。
-   边界：仅覆盖稳定语义类，不动 DOM / 内核。
+   真实 DOM（已对照线上）：
+     <li class="section__list__item contest__item contest-type--acm">
+       <div class="media">
+         <div class="media__left medium"> <-- 日期 numbox (.contest__date)
+         <div class="media__body medium"> <-- title / supplementary(.contest-type-tag)
+   改造点（明显变化）：
+     ① 横向 media 长条 → 竖版鎏金卡片
+     ② 日期块 → 右上角鎏金角标
+     ③ 状态/类型徽标柔化（红→暖琥珀，保留语义）
+     ④ hover 上浮 + 金光
    ============================================================ */
 
-/* —— 比赛卡片：方块化 + 顶部鎏金条 + 明显 hover 抬升 —— */
-.contest,
-.contest-card,
-.contest__card,
-.section--contest .card,
-.section--contest .paper {
-  position: relative;
-  overflow: hidden;
+.contest__item {
+  position: relative !important;
+  display: block !important;
+  margin: 0 0 18px !important;
+  padding: 22px 22px 18px !important;
+  background: var(--fishoj-surface) !important;
   border: 1px solid var(--fishoj-border) !important;
   border-radius: var(--fishoj-radius-lg) !important;
   box-shadow: var(--fishoj-shadow-card) !important;
-  padding: 24px !important;
+  overflow: hidden !important;
   transition: transform var(--fishoj-duration-base) var(--fishoj-ease),
               box-shadow var(--fishoj-duration-base) var(--fishoj-ease),
               border-color var(--fishoj-duration-base) var(--fishoj-ease);
 }
-.contest::before,
-.contest-card::before,
-.contest__card::before,
-.section--contest .card::before,
-.section--contest .paper::before {
-  content: "";
-  position: absolute;
+/* 顶部鎏金条 */
+.contest__item::before {
+  content: "" !important;
+  position: absolute !important;
   top: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep));
+  height: 4px !important;
+  background: linear-gradient(90deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
 }
-.contest:hover,
-.contest-card:hover,
-.contest__card:hover,
-.section--contest .card:hover,
-.section--contest .paper:hover {
-  transform: translateY(-6px) scale(1.012);
+.contest__item .media { display: block !important; }
+.contest__item .media__left {
+  display: inline-flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  float: right !important;
+  margin: 0 0 10px 14px !important;
+  padding: 8px 14px !important;
+  border-radius: var(--fishoj-radius-md) !important;
+  background: var(--fishoj-gold-soft) !important;
+  border: 1px solid var(--fishoj-gold-soft-border) !important;
+}
+.contest__item .contest__date .numbox__num {
+  color: var(--fishoj-gold-ink) !important;
+  font-weight: 800 !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+}
+.contest__item .contest__date .numbox__text {
+  color: var(--fishoj-gold-ink-2) !important;
+  font-size: 11px !important;
+}
+.contest__item .media__body { display: block !important; }
+.contest__item .contest__title {
+  font-size: var(--fishoj-font-2xl) !important;
+  line-height: 1.3 !important;
+  margin: 2px 0 10px !important;
+}
+.contest__item .contest__title a { color: var(--fishoj-navy) !important; }
+.contest__item .contest__title a:hover { color: var(--fishoj-gold-deep) !important; }
+.contest__item .supplementary { margin-top: 12px !important; color: var(--fishoj-text-muted) !important; }
+.contest__item:hover {
+  transform: translateY(-5px) !important;
   border-color: var(--fishoj-gold) !important;
-  box-shadow: 0 22px 44px -18px rgba(23, 42, 84, 0.34),
-              0 0 0 1px rgba(255, 196, 94, 0.35) !important;
+  box-shadow: 0 20px 42px -18px rgba(255, 196, 94, 0.5) !important;
 }
 
-/* —— 状态徽标柔化：仅把红（进行中/警示）改为暖琥珀，保留语义；绿/蓝不动 —— */
+/* —— 区块标题鎏金前缀 —— */
+body.page--contest_main .section__title {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  padding-left: 14px !important;
+  position: relative !important;
+  border-bottom: 2px solid var(--fishoj-gold) !important;
+}
+body.page--contest_main .section__title::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0; top: 4px; bottom: 6px;
+  width: 5px !important;
+  border-radius: 3px !important;
+  background: linear-gradient(180deg, var(--fishoj-gold), var(--fishoj-gold-deep)) !important;
+}
+
+/* —— 状态/类型徽标柔化：红→暖琥珀（保留语义），绿/蓝不动 —— */
+.contest__item .contest-type-tag,
+.contest-type-tag,
 .badge--red,
 .label--red,
-.tag--red,
-.chip--red,
 [class*="badge"][class*="red"],
 [class*="label"][class*="red"],
 [class*="tag"][class*="red"] {
   background: var(--fishoj-gold-soft) !important;
   color: var(--fishoj-gold-ink) !important;
   border: 1px solid var(--fishoj-gold-soft-border) !important;
+  border-radius: var(--fishoj-radius-pill) !important;
 }
-.theme--dark .badge--red,
-.theme--dark .label--red,
-.theme--dark .tag--red,
+.theme--dark .contest-type-tag,
 .theme--dark [class*="badge"][class*="red"],
 .theme--dark [class*="label"][class*="red"],
-.theme--dark [class*="tag"][class*="red"],
-[data-mantine-color-scheme="dark"] .badge--red,
-[data-mantine-color-scheme="dark"] .label--red,
-[data-mantine-color-scheme="dark"] .tag--red,
+[data-mantine-color-scheme="dark"] .contest-type-tag,
 [data-mantine-color-scheme="dark"] [class*="badge"][class*="red"],
-[data-mantine-color-scheme="dark"] [class*="label"][class*="red"],
-[data-mantine-color-scheme="dark"] [class*="tag"][class*="red"] {
+[data-mantine-color-scheme="dark"] [class*="label"][class*="red"] {
   background: rgba(255, 196, 94, 0.14) !important;
   color: #ffd98a !important;
   border-color: rgba(255, 196, 94, 0.34) !important;
+}
+
+/* —— 暗色适配 —— */
+.theme--dark .contest__item,
+[data-mantine-color-scheme="dark"] .contest__item {
+  background: var(--fishoj-surface) !important;
+  border-color: var(--fishoj-border) !important;
+}
+.theme--dark .contest__item .contest__title a,
+[data-mantine-color-scheme="dark"] .contest__item .contest__title a {
+  color: var(--fishoj-text) !important;
 }
